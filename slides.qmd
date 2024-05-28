@@ -38,11 +38,11 @@ Chaque vague de MiDAS correspond à environ **600 Go** de données au format sas
 
 ## MiDAS : une base de données volumineuse {.smaller}
 
-MiDAS est l'une des bases de données les plus volumineuses du SSP :![Quelques bases du SSP](base%20ssp.PNG)
+MiDAS est l'une des bases de données les plus volumineuses du SSP :![Quelques bases du SSP](donnees_ssp.PNG)
 
 ## Structure de l'appariement {.smaller}
 
-![](structure%20midas.PNG){fig-align="center" width="1500"}
+![](structure_midas.PNG){fig-align="center"}
 
 ::: callout-tip
 ## Pourquoi Spark ?
@@ -730,7 +730,7 @@ Spark UI permet de consulter le plan logique et physique du traitement demandé.
 ::: panel-tabset
 ## DAG
 
-![](dag.jfif)
+![](dag.webp)
 
 ## GC
 
@@ -745,13 +745,13 @@ Spark UI permet de consulter le plan logique et physique du traitement demandé.
 
 -   **yarn** : disponibilité des ressources
 
-    ![](yarn%20scheduler.png)
+    ![](yarn_scheduler.png)
 
 -   **Sparkhistory** pour des traitements de sessions fermées
 
 ## Exporter de HDFS au local {.smaller}
 
-![](hdfs_browse.png)
+![](hdfs_browse.jfif)
 
 ## Pyspark : mode cluster
 
