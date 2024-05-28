@@ -1,0 +1,9 @@
+---
+title: "Ressources"
+---
+
+Liste imbriquées Lucie
+
+append des bases reduce union
+
+sdf_bind_rows

@@ -7,12 +7,28 @@ execute:
 
 website:
   title: "Formation sparklyr"
-  navbar:
-    left:
-      - href: slides.qmd
+  
+  sidebar:
+    pinned: true
+    align: center
+    style: "docked"
+    contents:
       - href: index.qmd
-        text: Home
-      - about.qmd
+        text: Introduction
+      - href: slides.qmd
+        text: Slides
+      - href: configuration.qmd
+        text: 'Configuration'
+      - href: dates.qmd
+        text: 'Les dates avec sparklyr'
+      - href: oom.qmd
+        text: 'Out of memory : help !'
+      - href: errors.qmd
+        text: 'Guide des erreurs'
+      - href: bonnes_pratiques.qmd
+        text: 'Bonnes pratiques'
+      - href: ressources.qmd
+        text: Ressources
 
 format:
   html:
