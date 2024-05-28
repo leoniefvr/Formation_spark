@@ -6,7 +6,7 @@ execute:
   
 
 website:
-  title: "test"
+  title: "Formation sparklyr"
   navbar:
     left:
       - href: slides.qmd
