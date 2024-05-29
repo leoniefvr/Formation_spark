@@ -128,29 +128,23 @@ Le processeur permet d'exécuter des tâches et des programmes : convertir un fi
 
 ## Un traitement peu coûteux {.smaller}
 
-![](formation%20sparklyr-Page-1.drawio.png)
+![](formation%20sparklyr-Page-1.drawio.png){fig-align="center" width="800"}
 
 Ce traitement est peu coûteux :
 
--   format parquet orienté colonne : seul le chargement de la colonne utilisée pour le calcul est nécessaire en mémoire vive
+-   chargement d'une seule colonne en RAM : format parquet orienté colonnes
 
--   peu de mémoire d'exécution : R est un langage vectorisé, sur l'ensemble du vecteur col 1, il applique la multiplication pour obtenir le vecteur col 4.
+-   peu de mémoire d'exécution : R est un langage vectorisé
 
 ## Un traitement coûteux {.smaller}
 
-![](formation%20sparklyr-Page-2.drawio.png)
+![](formation%20sparklyr-Page-2.drawio.png){fig-align="center" width="850"}
 
 Ce traitement nécessite :
 
 -   le chargement de davantage de colonnes en mémoire vive ;
 
--   davantage de mémoire d'exécution pour
-
-    -   comparer chaque ligne de df1_col1 à chaque ligne df2_col1
-
-    -   puis encore chaque ligne de df2_col1 à chaque_ligne de df2_col2
-
-        ▶️ pour effectuer l'intersection (inner_join).
+-   davantage de mémoire d'exécution pour effectuer l'intersection (inner_join).
 
 # Initiation au calcul distribué
 
@@ -204,6 +198,8 @@ Le calcul distribué avec spark apporte une solution à ces problématiques :
 
 ![](mode_local.PNG)
 
+## Mode local : concurrence  {.smaller}
+
 En mode local :
 
 -   une unique machine Java
@@ -225,6 +221,8 @@ En mode local :
 Le mode cluster permet une réelle distribution sur différents noeuds, qui sont en fait des ordinateurs distincts d'un serveur. Ces machines communiquent en réseau.
 
 ## Installation de spark sous CASD
+
+Voir la fiche dédier sur le site
 
 ## Le stockage distribué : HDFS {.smaller}
 
@@ -331,7 +329,7 @@ Spark optimise automatiquement les programmes soumis :
 
 ## Le plan d'exécution {.smaller}
 
-![](catalyst.PNG)
+![](catalyst.jpg)
 
 ## Récupérer un résultat {.smaller}
 
@@ -450,7 +448,7 @@ Ne pas charger plusieurs fois les mêmes données en cache
 
 ## L'utilisation de la mémoire du driver {.smaller}
 
-![](out_of_memory.drawio.png)
+![](collect.drawio.png)
 
 ## Ce qui change pour l'utilisateur {.smaller}
 
@@ -466,6 +464,8 @@ La majorité des commandes dplyr fonctionnent sur un spark_data_frame avec le pa
 
 ::: panel-tabset
 ## Dates
+
+Les fonctions de `lubridate()`ne sont pas adaptées au spark_data_frames.
 
 -   Convertir une chaîne de caractère de la forme AAAA-MM-DD en Date
 
@@ -513,7 +513,7 @@ La majorité des commandes dplyr fonctionnent sur un spark_data_frame avec le pa
 ::: callout-note
 ## Add_months
 
-Si la date en entrée est le dernier jour d'un mois, la date retournée avec \``add_months(date_entree, int(1))`\` sera le dernier jour calendaire du mois suivant.
+Si la date en entrée est le dernier jour d'un mois, la date retournée avec `add_months(date_entree, int(1))` sera le dernier jour calendaire du mois suivant.
 :::
 
 ::: callout-tip
@@ -524,7 +524,7 @@ Le int() est important car ces fonctions Hive n'accepte que les entiers pour l'a
 
 ## Tableau
 
--   Tri tableau pour calcul
+-   Tri dans un groupe pour effectuer un calcul séquentiel
 
     ```{r}
     #| eval: false
@@ -544,23 +544,66 @@ Le int() est important car ces fonctions Hive n'accepte que les entiers pour l'a
       
     ```
 
--   Concaténer les lignes ou les colonnes sdf_bind_cols
+-   Tri pour une sortie : `sdf_sort()` , `arrange()` ne fonctionne pas
 
--   Tri pour affichage sdf_sort
+-   Concaténer les lignes (ou les colonnes `sdf_bind_cols()`)
 
--   sdf_distinct et sdf_drop_duplicates
+    ```{r}
+    #| eval: false
+    #| echo: true
 
--   sdf_pivot
+    ODD_1 <- ODD_spark %>%
+      filter(KDPOD <= as.Date("2017-12-31")) %>%
+      mutate(groupe = "temoins")
+
+    ODD_2 <- ODD_spark %>%
+      filter(KDPOD >= as.Date("2021-12-31")) %>%
+      mutate(groupe = "traites")
+
+    ODD_evaluation <- sdf_bind_rows(ODD_1, ODD_2)
+
+    ```
+
+-   Dédoublonner une table
+
+    ```{r}
+    #| eval: false
+    #| echo: true
+
+    droits_dans_PJC <- PJC_spark %>%
+      sdf_distinct(id_midas, KROD3)
+
+    print(head(droits_dans_PJC, 5))
+
+    PJC_dedoublonnee <- PJC_spark %>%
+      sdf_drop_duplicates()
+
+    print(head(PJC_dedoublonnee, 5))
+
+    ```
+
+-   Pivot : les fonctions du packag `tidyr` ne fonctionnent pas sur données spark
+
+    ```{r}
+    #| eval: false
+    #| echo: true
+
+    ODD_sjr_moyen <- ODD_spark %>%
+      mutate(groupe = ifelse(KDPOD <= as.Date("2020-12-31"), "controles", "traites")) %>%
+      sdf_pivot(groupe ~ KCRGC,
+        fun.aggregate = list(KQCSJP = "mean")
+      )
+    ```
 
 ## Statistiques
 
--   summary sdf_describe
+-   Résumé statistique : `sdf_describe()` , `summary()`ne fonctionne pas.
 
--   sdf_dim
+-   Dimension : `sdf_dim`, la fonction `nrow()`ne fonctionne pas.
 
--   approximate quantile sdf_quantile
+-   Quantiles approximatifs : le calcul des quantiles sur données distirbuées renvoie une approximation car toutes les données ne peuvent pas être rappatriées sur la même machine physique du fait de la volumétrie, `sdf_quantile()`
 
--   sdf_random_split
+-   Echantillonnage aléatoire : `sdf_random_split`
 :::
 
 ## Une règle d'or : tester son code pour collecter le moins possible {.smaller .scrollable}
@@ -745,13 +788,13 @@ Spark UI permet de consulter le plan logique et physique du traitement demandé.
 
 -   **yarn** : disponibilité des ressources
 
-    ![](yarn_scheduler.png)
+    ![](yarn_scheduler.png){width="600"}
 
 -   **Sparkhistory** pour des traitements de sessions fermées
 
 ## Exporter de HDFS au local {.smaller}
 
-![](hdfs_browse.jfif)
+![](hdfs_browse.png)
 
 ## Pyspark : mode cluster
 
