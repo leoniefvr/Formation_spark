@@ -121,7 +121,7 @@
     "href": "slides.html#un-traitement-peu-coûteux",
     "title": "Initiation à Spark sous CASD",
     "section": "Un traitement peu coûteux",
-    "text": "Un traitement peu coûteux\n\nCe traitement est peu coûteux :\n\nformat parquet orienté colonne : seul le chargement de la colonne utilisée pour le calcul est nécessaire en mémoire vive\npeu de mémoire d’exécution : R est un langage vectorisé, sur l’ensemble du vecteur col 1, il applique la multiplication pour obtenir le vecteur col 4.",
+    "text": "Un traitement peu coûteux\n\nCe traitement est peu coûteux :\n\nchargement d’une seule colonne en RAM : format parquet orienté colonnes\npeu de mémoire d’exécution : R est un langage vectorisé",
     "crumbs": [
       "Slides"
     ]
@@ -131,7 +131,7 @@
     "href": "slides.html#un-traitement-coûteux",
     "title": "Initiation à Spark sous CASD",
     "section": "Un traitement coûteux",
-    "text": "Un traitement coûteux\n\nCe traitement nécessite :\n\nle chargement de davantage de colonnes en mémoire vive ;\ndavantage de mémoire d’exécution pour\n\ncomparer chaque ligne de df1_col1 à chaque ligne df2_col1\npuis encore chaque ligne de df2_col1 à chaque_ligne de df2_col2\n▶️ pour effectuer l’intersection (inner_join).",
+    "text": "Un traitement coûteux\n\nCe traitement nécessite :\n\nle chargement de davantage de colonnes en mémoire vive ;\ndavantage de mémoire d’exécution pour effectuer l’intersection (inner_join).",
     "crumbs": [
       "Slides"
     ]
@@ -171,7 +171,17 @@
     "href": "slides.html#mode-local-concurrence",
     "title": "Initiation à Spark sous CASD",
     "section": "Mode local : concurrence",
-    "text": "Mode local : concurrence\n\nEn mode local :\n\nune unique machine Java\nparallélisation des tâches sur différents coeurs de cette machine virtuelle\npas de stockage distribué, ca n’est pas du calcul distribué à proprement parler\naccélération par rapport à un mode de programmation classique séquentiel sur un unique coeur si beaucoup de ressources\nSur la bulle CASD, mauvaise gestion de la répartition des ressources en spark local\n▶️mode local à éviter absolument",
+    "text": "Mode local : concurrence",
+    "crumbs": [
+      "Slides"
+    ]
+  },
+  {
+    "objectID": "slides.html#mode-local-concurrence-1",
+    "href": "slides.html#mode-local-concurrence-1",
+    "title": "Initiation à Spark sous CASD",
+    "section": "Mode local : concurrence",
+    "text": "Mode local : concurrence\nEn mode local :\n\nune unique machine Java\nparallélisation des tâches sur différents coeurs de cette machine virtuelle\npas de stockage distribué, ca n’est pas du calcul distribué à proprement parler\naccélération par rapport à un mode de programmation classique séquentiel sur un unique coeur si beaucoup de ressources\nSur la bulle CASD, mauvaise gestion de la répartition des ressources en spark local\n▶️mode local à éviter absolument",
     "crumbs": [
       "Slides"
     ]
@@ -191,7 +201,7 @@
     "href": "slides.html#installation-de-spark-sous-casd",
     "title": "Initiation à Spark sous CASD",
     "section": "Installation de spark sous CASD",
-    "text": "Installation de spark sous CASD",
+    "text": "Installation de spark sous CASD\nVoir la fiche dédier sur le site",
     "crumbs": [
       "Slides"
     ]
@@ -311,7 +321,7 @@
     "href": "slides.html#quelques-fonctions-spécifiques",
     "title": "Initiation à Spark sous CASD",
     "section": "Quelques fonctions spécifiques",
-    "text": "Quelques fonctions spécifiques\n\nDatesTableauStatistiques\n\n\n\nConvertir une chaîne de caractère de la forme AAAA-MM-DD en Date\n\ndate_1 &lt;- as.Date(\"2024-05-26\")\n\nCalculer une durée entre deux dates\n\nPJC_spark &lt;- spark_read_parquet(sc,\n                                path = \"hdfs:///dataset/MiDAS_v4/pjc.parquet\",\n                                memory = FALSE)\n\nduree_pjc_df &lt;- PJC_spark %&gt;%\n  rename(date_fin_pjc = as.Date(KDFPJ),\n         date_deb_pjc = as.Date(KDDPJ)) %&gt;%\n  mutate(duree_pjc = datediff(date_fin_pjc, date_deb_pjc) + 1) %&gt;%\n  head(5)\n\nAjouter ou soustraire des jours ou des mois à une date\n\nduree_pjc_bis_df &lt;- duree_pjc_df %&gt;%\n  mutate(duree_pjc_plus_5 = date_add(duree_pjc, int(5)),\n         duree_pjc_moins_5 = date_sub(duree_pjc, int(5)),\n         duree_pjc_plus_1_mois = add_months(duree_pjc, int(1))) %&gt;%\n  head(5)\n\n\n\n\n\n\n\n\nAdd_months\n\n\nSi la date en entrée est le dernier jour d’un mois, la date retournée avec `add_months(date_entree, int(1))` sera le dernier jour calendaire du mois suivant.\n\n\n\n\n\n\n\n\n\nFormat\n\n\nLe int() est important car ces fonctions Hive n’accepte que les entiers pour l’ajout de jours : taper uniquement 5 est considéré comme un flottant dans R.\n\n\n\n\n\n\nTri tableau pour calcul\n\nODD_spark &lt;- spark_read_parquet(sc,\n                                path = \"hdfs:///dataset/MiDAS_v4/odd.parquet\",\n                                memory = FALSE)\n\nODD_premier &lt;- ODD_spark %&gt;%\n  group_by(id_midas) %&gt;%\n  window_order(id_midas, KDPOD) %&gt;%\n  mutate(date_premier_droit = first(KDPOD)) %&gt;%\n  ungroup() %&gt;%\n  distinct(id_midas, KROD3, date_premier_droit) %&gt;%\n  head(5)\n\nConcaténer les lignes ou les colonnes sdf_bind_cols\nTri pour affichage sdf_sort\nsdf_distinct et sdf_drop_duplicates\nsdf_pivot\n\n\n\n\nsummary sdf_describe\nsdf_dim\napproximate quantile sdf_quantile\nsdf_random_split",
+    "text": "Quelques fonctions spécifiques\n\nDatesTableauStatistiques\n\n\nLes fonctions de lubridate()ne sont pas adaptées au spark_data_frames.\n\nConvertir une chaîne de caractère de la forme AAAA-MM-DD en Date\n\ndate_1 &lt;- as.Date(\"2024-05-26\")\n\nCalculer une durée entre deux dates\n\nPJC_spark &lt;- spark_read_parquet(sc,\n                                path = \"hdfs:///dataset/MiDAS_v4/pjc.parquet\",\n                                memory = FALSE)\n\nduree_pjc_df &lt;- PJC_spark %&gt;%\n  rename(date_fin_pjc = as.Date(KDFPJ),\n         date_deb_pjc = as.Date(KDDPJ)) %&gt;%\n  mutate(duree_pjc = datediff(date_fin_pjc, date_deb_pjc) + 1) %&gt;%\n  head(5)\n\nAjouter ou soustraire des jours ou des mois à une date\n\nduree_pjc_bis_df &lt;- duree_pjc_df %&gt;%\n  mutate(duree_pjc_plus_5 = date_add(duree_pjc, int(5)),\n         duree_pjc_moins_5 = date_sub(duree_pjc, int(5)),\n         duree_pjc_plus_1_mois = add_months(duree_pjc, int(1))) %&gt;%\n  head(5)\n\n\n\n\n\n\n\n\nAdd_months\n\n\nSi la date en entrée est le dernier jour d’un mois, la date retournée avec add_months(date_entree, int(1)) sera le dernier jour calendaire du mois suivant.\n\n\n\n\n\n\n\n\n\nFormat\n\n\nLe int() est important car ces fonctions Hive n’accepte que les entiers pour l’ajout de jours : taper uniquement 5 est considéré comme un flottant dans R.\n\n\n\n\n\n\nTri dans un groupe pour effectuer un calcul séquentiel\n\nODD_spark &lt;- spark_read_parquet(sc,\n                                path = \"hdfs:///dataset/MiDAS_v4/odd.parquet\",\n                                memory = FALSE)\n\nODD_premier &lt;- ODD_spark %&gt;%\n  group_by(id_midas) %&gt;%\n  window_order(id_midas, KDPOD) %&gt;%\n  mutate(date_premier_droit = first(KDPOD)) %&gt;%\n  ungroup() %&gt;%\n  distinct(id_midas, KROD3, date_premier_droit) %&gt;%\n  head(5)\n\nTri pour une sortie : sdf_sort() , arrange() ne fonctionne pas\nConcaténer les lignes (ou les colonnes sdf_bind_cols())\n\nODD_1 &lt;- ODD_spark %&gt;%\n  filter(KDPOD &lt;= as.Date(\"2017-12-31\")) %&gt;%\n  mutate(groupe = \"temoins\")\n\nODD_2 &lt;- ODD_spark %&gt;%\n  filter(KDPOD &gt;= as.Date(\"2021-12-31\")) %&gt;%\n  mutate(groupe = \"traites\")\n\nODD_evaluation &lt;- sdf_bind_rows(ODD_1, ODD_2)\n\nDédoublonner une table\n\ndroits_dans_PJC &lt;- PJC_spark %&gt;%\n  sdf_distinct(id_midas, KROD3)\n\nprint(head(droits_dans_PJC, 5))\n\nPJC_dedoublonnee &lt;- PJC_spark %&gt;%\n  sdf_drop_duplicates()\n\nprint(head(PJC_dedoublonnee, 5))\n\nPivot : les fonctions du packag tidyr ne fonctionnent pas sur données spark\n\nODD_sjr_moyen &lt;- ODD_spark %&gt;%\n  mutate(groupe = ifelse(KDPOD &lt;= as.Date(\"2020-12-31\"), \"controles\", \"traites\")) %&gt;%\n  sdf_pivot(groupe ~ KCRGC,\n    fun.aggregate = list(KQCSJP = \"mean\")\n  )\n\n\n\n\n\nRésumé statistique : sdf_describe() , summary()ne fonctionne pas.\nDimension : sdf_dim, la fonction nrow()ne fonctionne pas.\nQuantiles approximatifs : le calcul des quantiles sur données distirbuées renvoie une approximation car toutes les données ne peuvent pas être rappatriées sur la même machine physique du fait de la volumétrie, sdf_quantile()\nEchantillonnage aléatoire : sdf_random_split",
     "crumbs": [
       "Slides"
     ]

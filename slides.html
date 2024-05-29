@@ -533,24 +533,19 @@
 <section id="un-traitement-peu-coûteux" class="slide level2 smaller">
 <h2>Un traitement peu coûteux</h2>
 
-<img data-src="formation sparklyr-Page-1.drawio.png" class="r-stretch"><p>Ce traitement est peu coûteux :</p>
+<img data-src="formation sparklyr-Page-1.drawio.png" class="quarto-figure quarto-figure-center r-stretch" width="800"><p>Ce traitement est peu coûteux :</p>
 <ul>
-<li class="fragment"><p>format parquet orienté colonne : seul le chargement de la colonne utilisée pour le calcul est nécessaire en mémoire vive</p></li>
-<li class="fragment"><p>peu de mémoire d’exécution : R est un langage vectorisé, sur l’ensemble du vecteur col 1, il applique la multiplication pour obtenir le vecteur col 4.</p></li>
+<li class="fragment"><p>chargement d’une seule colonne en RAM : format parquet orienté colonnes</p></li>
+<li class="fragment"><p>peu de mémoire d’exécution : R est un langage vectorisé</p></li>
 </ul>
 </section>
 <section id="un-traitement-coûteux" class="slide level2 smaller">
 <h2>Un traitement coûteux</h2>
 
-<img data-src="formation sparklyr-Page-2.drawio.png" class="r-stretch"><p>Ce traitement nécessite :</p>
+<img data-src="formation sparklyr-Page-2.drawio.png" class="quarto-figure quarto-figure-center r-stretch" width="850"><p>Ce traitement nécessite :</p>
 <ul>
 <li class="fragment"><p>le chargement de davantage de colonnes en mémoire vive ;</p></li>
-<li class="fragment"><p>davantage de mémoire d’exécution pour</p>
-<ul>
-<li class="fragment"><p>comparer chaque ligne de df1_col1 à chaque ligne df2_col1</p></li>
-<li class="fragment"><p>puis encore chaque ligne de df2_col1 à chaque_ligne de df2_col2</p>
-<p>▶️ pour effectuer l’intersection (inner_join).</p></li>
-</ul></li>
+<li class="fragment"><p>davantage de mémoire d’exécution pour effectuer l’intersection (inner_join).</p></li>
 </ul>
 </section></section>
 <section>
@@ -604,7 +599,10 @@
 <section id="mode-local-concurrence" class="slide level2 smaller">
 <h2>Mode local : concurrence</h2>
 
-<img data-src="mode_local.PNG" class="r-stretch"><p>En mode local :</p>
+<img data-src="mode_local.PNG" class="r-stretch"></section>
+<section id="mode-local-concurrence-1" class="slide level2 smaller">
+<h2>Mode local : concurrence</h2>
+<p>En mode local :</p>
 <ul>
 <li class="fragment"><p>une unique machine Java</p></li>
 <li class="fragment"><p>parallélisation des tâches sur différents coeurs de cette machine virtuelle</p></li>
@@ -621,6 +619,7 @@
 </section>
 <section id="installation-de-spark-sous-casd" class="slide level2">
 <h2>Installation de spark sous CASD</h2>
+<p>Voir la fiche dédier sur le site</p>
 </section>
 <section id="le-stockage-distribué-hdfs" class="slide level2 smaller">
 <h2>Le stockage distribué : HDFS</h2>
@@ -705,7 +704,7 @@
 <section id="le-plan-dexécution" class="slide level2 smaller">
 <h2>Le plan d’exécution</h2>
 
-<img data-src="catalyst.PNG" class="r-stretch"></section>
+<img data-src="catalyst.jpg" class="r-stretch"></section>
 <section id="récupérer-un-résultat" class="slide level2 smaller">
 <h2>Récupérer un résultat</h2>
 <p>Les résultats qu’il est recommandé de récupérer en mémoire vive en session R sont de la forme suivante :</p>
@@ -806,7 +805,7 @@
 <section id="lutilisation-de-la-mémoire-du-driver" class="slide level2 smaller">
 <h2>L’utilisation de la mémoire du driver</h2>
 
-<img data-src="out_of_memory.drawio.png" class="r-stretch"></section>
+<img data-src="collect.drawio.png" class="r-stretch"></section>
 <section id="ce-qui-change-pour-lutilisateur" class="slide level2 smaller">
 <h2>Ce qui change pour l’utilisateur</h2>
 <p>La majorité des commandes dplyr fonctionnent sur un spark_data_frame avec le package sparklyr. Les divergences sont les suivantes :</p>
@@ -822,6 +821,7 @@
 <ul id="tabset-4" class="panel-tabset-tabby"><li><a data-tabby-default="" href="#tabset-4-1">Dates</a></li><li><a href="#tabset-4-2">Tableau</a></li><li><a href="#tabset-4-3">Statistiques</a></li></ul>
 <div class="tab-content">
 <div id="tabset-4-1">
+<p>Les fonctions de <code>lubridate()</code>ne sont pas adaptées au spark_data_frames.</p>
 <ul>
 <li class="fragment"><p>Convertir une chaîne de caractère de la forme AAAA-MM-DD en Date</p>
 <div class="cell">
@@ -857,7 +857,7 @@
 <p><strong>Add_months</strong></p>
 </div>
 <div class="callout-content">
-<p>Si la date en entrée est le dernier jour d’un mois, la date retournée avec `<code>add_months(date_entree, int(1))</code>` sera le dernier jour calendaire du mois suivant.</p>
+<p>Si la date en entrée est le dernier jour d’un mois, la date retournée avec <code>add_months(date_entree, int(1))</code> sera le dernier jour calendaire du mois suivant.</p>
 </div>
 </div>
 </div>
@@ -877,7 +877,7 @@
 </div>
 <div id="tabset-4-2">
 <ul>
-<li class="fragment"><p>Tri tableau pour calcul</p>
+<li class="fragment"><p>Tri dans un groupe pour effectuer un calcul séquentiel</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a></a>ODD_spark <span class="ot">&lt;-</span> <span class="fu">spark_read_parquet</span>(sc,</span>
 <span id="cb9-2"><a></a>                                <span class="at">path =</span> <span class="st">"hdfs:///dataset/MiDAS_v4/odd.parquet"</span>,</span>
@@ -891,18 +891,47 @@
 <span id="cb9-10"><a></a>  <span class="fu">distinct</span>(id_midas, KROD3, date_premier_droit) <span class="sc">%&gt;%</span></span>
 <span id="cb9-11"><a></a>  <span class="fu">head</span>(<span class="dv">5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div></li>
-<li class="fragment"><p>Concaténer les lignes ou les colonnes sdf_bind_cols</p></li>
-<li class="fragment"><p>Tri pour affichage sdf_sort</p></li>
-<li class="fragment"><p>sdf_distinct et sdf_drop_duplicates</p></li>
-<li class="fragment"><p>sdf_pivot</p></li>
+<li class="fragment"><p>Tri pour une sortie : <code>sdf_sort()</code> , <code>arrange()</code> ne fonctionne pas</p></li>
+<li class="fragment"><p>Concaténer les lignes (ou les colonnes <code>sdf_bind_cols()</code>)</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a></a>ODD_1 <span class="ot">&lt;-</span> ODD_spark <span class="sc">%&gt;%</span></span>
+<span id="cb10-2"><a></a>  <span class="fu">filter</span>(KDPOD <span class="sc">&lt;=</span> <span class="fu">as.Date</span>(<span class="st">"2017-12-31"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb10-3"><a></a>  <span class="fu">mutate</span>(<span class="at">groupe =</span> <span class="st">"temoins"</span>)</span>
+<span id="cb10-4"><a></a></span>
+<span id="cb10-5"><a></a>ODD_2 <span class="ot">&lt;-</span> ODD_spark <span class="sc">%&gt;%</span></span>
+<span id="cb10-6"><a></a>  <span class="fu">filter</span>(KDPOD <span class="sc">&gt;=</span> <span class="fu">as.Date</span>(<span class="st">"2021-12-31"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb10-7"><a></a>  <span class="fu">mutate</span>(<span class="at">groupe =</span> <span class="st">"traites"</span>)</span>
+<span id="cb10-8"><a></a></span>
+<span id="cb10-9"><a></a>ODD_evaluation <span class="ot">&lt;-</span> <span class="fu">sdf_bind_rows</span>(ODD_1, ODD_2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div></li>
+<li class="fragment"><p>Dédoublonner une table</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a></a>droits_dans_PJC <span class="ot">&lt;-</span> PJC_spark <span class="sc">%&gt;%</span></span>
+<span id="cb11-2"><a></a>  <span class="fu">sdf_distinct</span>(id_midas, KROD3)</span>
+<span id="cb11-3"><a></a></span>
+<span id="cb11-4"><a></a><span class="fu">print</span>(<span class="fu">head</span>(droits_dans_PJC, <span class="dv">5</span>))</span>
+<span id="cb11-5"><a></a></span>
+<span id="cb11-6"><a></a>PJC_dedoublonnee <span class="ot">&lt;-</span> PJC_spark <span class="sc">%&gt;%</span></span>
+<span id="cb11-7"><a></a>  <span class="fu">sdf_drop_duplicates</span>()</span>
+<span id="cb11-8"><a></a></span>
+<span id="cb11-9"><a></a><span class="fu">print</span>(<span class="fu">head</span>(PJC_dedoublonnee, <span class="dv">5</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div></li>
+<li class="fragment"><p>Pivot : les fonctions du packag <code>tidyr</code> ne fonctionnent pas sur données spark</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a></a>ODD_sjr_moyen <span class="ot">&lt;-</span> ODD_spark <span class="sc">%&gt;%</span></span>
+<span id="cb12-2"><a></a>  <span class="fu">mutate</span>(<span class="at">groupe =</span> <span class="fu">ifelse</span>(KDPOD <span class="sc">&lt;=</span> <span class="fu">as.Date</span>(<span class="st">"2020-12-31"</span>), <span class="st">"controles"</span>, <span class="st">"traites"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb12-3"><a></a>  <span class="fu">sdf_pivot</span>(groupe <span class="sc">~</span> KCRGC,</span>
+<span id="cb12-4"><a></a>    <span class="at">fun.aggregate =</span> <span class="fu">list</span>(<span class="at">KQCSJP =</span> <span class="st">"mean"</span>)</span>
+<span id="cb12-5"><a></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div></li>
 </ul>
 </div>
 <div id="tabset-4-3">
 <ul>
-<li class="fragment"><p>summary sdf_describe</p></li>
-<li class="fragment"><p>sdf_dim</p></li>
-<li class="fragment"><p>approximate quantile sdf_quantile</p></li>
-<li class="fragment"><p>sdf_random_split</p></li>
+<li class="fragment"><p>Résumé statistique : <code>sdf_describe()</code> , <code>summary()</code>ne fonctionne pas.</p></li>
+<li class="fragment"><p>Dimension : <code>sdf_dim</code>, la fonction <code>nrow()</code>ne fonctionne pas.</p></li>
+<li class="fragment"><p>Quantiles approximatifs : le calcul des quantiles sur données distirbuées renvoie une approximation car toutes les données ne peuvent pas être rappatriées sur la même machine physique du fait de la volumétrie, <code>sdf_quantile()</code></p></li>
+<li class="fragment"><p>Echantillonnage aléatoire : <code>sdf_random_split</code></p></li>
 </ul>
 </div>
 </div>
@@ -929,34 +958,34 @@
 <p><img data-src="join.png"></p>
 <p>Solution rapide :</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a></a>table_finale <span class="ot">&lt;-</span> table_volumineuse_comme_PJC <span class="sc">%&gt;%</span></span>
-<span id="cb10-2"><a></a>  <span class="fu">right_join</span>(petite_table_mon_champ)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a></a>table_finale <span class="ot">&lt;-</span> table_volumineuse_comme_PJC <span class="sc">%&gt;%</span></span>
+<span id="cb13-2"><a></a>  <span class="fu">right_join</span>(petite_table_mon_champ)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Solution lente :</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a></a>table_finale <span class="ot">&lt;-</span> petite_table_mon_champ <span class="sc">%&gt;%</span></span>
-<span id="cb11-2"><a></a>  <span class="fu">left_join</span>(table_volumineuse_comme_PJC)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a></a>table_finale <span class="ot">&lt;-</span> petite_table_mon_champ <span class="sc">%&gt;%</span></span>
+<span id="cb14-2"><a></a>  <span class="fu">left_join</span>(table_volumineuse_comme_PJC)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
 <div id="tabset-5-2">
 <p>Lorsqu’une table intermédiaire est utilisée plusieurs fois dans un traitement, il est possible de la persister, c’est-à-dire enregistrer ce spark_data_frame sur le disque ou dans la mémoire des noeuds.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a></a>table_1 <span class="ot">&lt;-</span> mon_champ <span class="sc">%&gt;%</span></span>
-<span id="cb12-2"><a></a>  <span class="fu">left_join</span>(ODD, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"id_midas"</span>, <span class="st">"KROD3"</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb12-3"><a></a>  <span class="fu">rename</span>(<span class="at">duree_potentielle_indemnisation =</span> KPJDXP,</span>
-<span id="cb12-4"><a></a>         <span class="at">SJR =</span> KQCSJP,</span>
-<span id="cb12-5"><a></a>         <span class="at">date_debut_indemnisation =</span> KDPOD) <span class="sc">%&gt;%</span></span>
-<span id="cb12-6"><a></a>  <span class="fu">sdf_persist</span>()</span>
-<span id="cb12-7"><a></a></span>
-<span id="cb12-8"><a></a>duree <span class="ot">&lt;-</span> table_1 <span class="sc">%&gt;%</span></span>
-<span id="cb12-9"><a></a>  <span class="fu">summarise</span>(<span class="at">duree_moy =</span> <span class="fu">mean</span>(duree_potentielle_indemnisation),</span>
-<span id="cb12-10"><a></a>            <span class="at">duree_med =</span> <span class="fu">median</span>(duree_potentielle_indemnisation)) <span class="sc">%&gt;%</span></span>
-<span id="cb12-11"><a></a>  <span class="fu">collect</span>()</span>
-<span id="cb12-12"><a></a></span>
-<span id="cb12-13"><a></a>SJR <span class="ot">&lt;-</span> table_1 <span class="sc">%&gt;%</span></span>
-<span id="cb12-14"><a></a>  <span class="fu">summarise</span>(<span class="at">SJR_moy =</span> <span class="fu">mean</span>(SJR),</span>
-<span id="cb12-15"><a></a>            <span class="at">SJR_med =</span> <span class="fu">median</span>(SJR)) <span class="sc">%&gt;%</span></span>
-<span id="cb12-16"><a></a>  <span class="fu">collect</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a></a>table_1 <span class="ot">&lt;-</span> mon_champ <span class="sc">%&gt;%</span></span>
+<span id="cb15-2"><a></a>  <span class="fu">left_join</span>(ODD, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"id_midas"</span>, <span class="st">"KROD3"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb15-3"><a></a>  <span class="fu">rename</span>(<span class="at">duree_potentielle_indemnisation =</span> KPJDXP,</span>
+<span id="cb15-4"><a></a>         <span class="at">SJR =</span> KQCSJP,</span>
+<span id="cb15-5"><a></a>         <span class="at">date_debut_indemnisation =</span> KDPOD) <span class="sc">%&gt;%</span></span>
+<span id="cb15-6"><a></a>  <span class="fu">sdf_persist</span>()</span>
+<span id="cb15-7"><a></a></span>
+<span id="cb15-8"><a></a>duree <span class="ot">&lt;-</span> table_1 <span class="sc">%&gt;%</span></span>
+<span id="cb15-9"><a></a>  <span class="fu">summarise</span>(<span class="at">duree_moy =</span> <span class="fu">mean</span>(duree_potentielle_indemnisation),</span>
+<span id="cb15-10"><a></a>            <span class="at">duree_med =</span> <span class="fu">median</span>(duree_potentielle_indemnisation)) <span class="sc">%&gt;%</span></span>
+<span id="cb15-11"><a></a>  <span class="fu">collect</span>()</span>
+<span id="cb15-12"><a></a></span>
+<span id="cb15-13"><a></a>SJR <span class="ot">&lt;-</span> table_1 <span class="sc">%&gt;%</span></span>
+<span id="cb15-14"><a></a>  <span class="fu">summarise</span>(<span class="at">SJR_moy =</span> <span class="fu">mean</span>(SJR),</span>
+<span id="cb15-15"><a></a>            <span class="at">SJR_med =</span> <span class="fu">median</span>(SJR)) <span class="sc">%&gt;%</span></span>
+<span id="cb15-16"><a></a>  <span class="fu">collect</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
 <div id="tabset-5-3">
@@ -967,8 +996,8 @@
 <p>Le format parquet (avec arrow) et le framework spark permettent de gérer le partitionnement des données.</p>
 <p>Si les opérations sont souvent effectuées par régions par exemple, il est utile de forcer le stockage des données d’une même région au même endroit physique et accélère drastiquement le temps de calcul</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a></a><span class="fu">spark_write_parquet</span>(DE, <span class="at">partition_by =</span> <span class="fu">c</span>(<span class="st">"REGIND"</span>))</span>
-<span id="cb13-2"><a></a>sdf_coalesce</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a></a><span class="fu">spark_write_parquet</span>(DE, <span class="at">partition_by =</span> <span class="fu">c</span>(<span class="st">"REGIND"</span>))</span>
+<span id="cb16-2"><a></a>sdf_coalesce</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
 </div>
@@ -980,22 +1009,22 @@
 <ul>
 <li class="fragment"><p>collecter la table entière 🛑</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a></a>spark_data_frame_1 <span class="sc">%&gt;%</span></span>
-<span id="cb14-2"><a></a>  <span class="fu">collect</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a></a>spark_data_frame_1 <span class="sc">%&gt;%</span></span>
+<span id="cb17-2"><a></a>  <span class="fu">collect</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div></li>
 <li class="fragment"><p>afficher les premières lignes</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a></a>spark_data_frame_1 <span class="sc">%&gt;%</span></span>
-<span id="cb15-2"><a></a>  <span class="fu">head</span>(<span class="dv">10</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a></a>spark_data_frame_1 <span class="sc">%&gt;%</span></span>
+<span id="cb18-2"><a></a>  <span class="fu">head</span>(<span class="dv">10</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div></li>
 <li class="fragment"><p>Mettre les donner en cache</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a></a>spark_data_frame_1 <span class="sc">%&gt;%</span></span>
-<span id="cb16-2"><a></a>  <span class="fu">sdf_register</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb16-3"><a></a>  <span class="fu">tbl_cache</span>()</span>
-<span id="cb16-4"><a></a></span>
-<span id="cb16-5"><a></a>sc <span class="sc">%&gt;%</span> <span class="fu">spark_session</span>() <span class="sc">%&gt;%</span> <span class="fu">invoke</span>(<span class="st">"catalog"</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb16-6"><a></a>  <span class="fu">invoke</span>(<span class="st">"clearCache"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a></a>spark_data_frame_1 <span class="sc">%&gt;%</span></span>
+<span id="cb19-2"><a></a>  <span class="fu">sdf_register</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb19-3"><a></a>  <span class="fu">tbl_cache</span>()</span>
+<span id="cb19-4"><a></a></span>
+<span id="cb19-5"><a></a>sc <span class="sc">%&gt;%</span> <span class="fu">spark_session</span>() <span class="sc">%&gt;%</span> <span class="fu">invoke</span>(<span class="st">"catalog"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb19-6"><a></a>  <span class="fu">invoke</span>(<span class="st">"clearCache"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div></li>
 </ul>
 </section>
@@ -1048,14 +1077,14 @@
 <h2>Utiliser les interfaces</h2>
 <ul>
 <li class="fragment"><p><strong>yarn</strong> : disponibilité des ressources</p>
-<p><img data-src="yarn_scheduler.png"></p></li>
+<p><img data-src="yarn_scheduler.png" width="600"></p></li>
 <li class="fragment"><p><strong>Sparkhistory</strong> pour des traitements de sessions fermées</p></li>
 </ul>
 </section>
 <section id="exporter-de-hdfs-au-local" class="slide level2 smaller">
 <h2>Exporter de HDFS au local</h2>
 
-<img data-src="hdfs_browse.jfif" class="r-stretch"></section>
+<img data-src="hdfs_browse.png" class="r-stretch"></section>
 <section id="pyspark-mode-cluster" class="slide level2">
 <h2>Pyspark : mode cluster</h2>
 
