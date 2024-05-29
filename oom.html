@@ -158,7 +158,20 @@ ul.task-list li input[type="checkbox"] {
 <div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#comment-économiser-de-la-mémoire-ram-et-du-temps" id="toc-comment-économiser-de-la-mémoire-ram-et-du-temps" class="nav-link active" data-scroll-target="#comment-économiser-de-la-mémoire-ram-et-du-temps">Comment économiser de la mémoire RAM (et du temps) ?</a>
+  <ul class="collapse">
+  <li><a href="#collecter-le-moins-possible" id="toc-collecter-le-moins-possible" class="nav-link" data-scroll-target="#collecter-le-moins-possible">Collecter le moins possible 🤏</a></li>
+  <li><a href="#eviter-les-fonctions-spécifiques-à-sparklyr" id="toc-eviter-les-fonctions-spécifiques-à-sparklyr" class="nav-link" data-scroll-target="#eviter-les-fonctions-spécifiques-à-sparklyr">Eviter les fonctions spécifiques à sparklyr ⚠️</a></li>
+  <li><a href="#laisser-spark-travailler-pour-nous" id="toc-laisser-spark-travailler-pour-nous" class="nav-link" data-scroll-target="#laisser-spark-travailler-pour-nous">Laisser Spark travailler pour nous 💻</a></li>
+  <li><a href="#optimiser-le-chargement-en-cache-des-données" id="toc-optimiser-le-chargement-en-cache-des-données" class="nav-link" data-scroll-target="#optimiser-le-chargement-en-cache-des-données">Optimiser le chargement en cache des données 💿</a></li>
+  <li><a href="#si-tout-ceci-ne-fonctionne-pas-augmenter-les-ressources-dans-la-configuration" id="toc-si-tout-ceci-ne-fonctionne-pas-augmenter-les-ressources-dans-la-configuration" class="nav-link" data-scroll-target="#si-tout-ceci-ne-fonctionne-pas-augmenter-les-ressources-dans-la-configuration">Si tout ceci ne fonctionne pas : augmenter les ressources dans la configuration</a></li>
+  </ul></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
@@ -182,8 +195,46 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
+<section id="comment-économiser-de-la-mémoire-ram-et-du-temps" class="level1">
+<h1>Comment économiser de la mémoire RAM (et du temps) ?</h1>
+<section id="collecter-le-moins-possible" class="level2">
+<h2 class="anchored" data-anchor-id="collecter-le-moins-possible">Collecter le moins possible 🤏</h2>
+<ul>
+<li><p>L’export direct d’un spark data frame en parquet est quasiment instantanné : tu peux ensuite charger la table parquet en data frame R si tu souhaites la traiter en mémoire vive.</p></li>
+<li><p>Cet export direct n’est pas fonctionnel en spark local : encore une raison de passer sur le cluster Spark !</p></li>
+<li><p>Si le <code>collect()</code>est inévitable, il faut que la mémoire RAM allouée au driver soit assez importante pour récupérer le résultat : elle est paramétrable avec l’option <code>spark.driver.memory</code> de la configuration spark. Lorsque tu utilises une session sparklyr, le driver est dans la bulle Midares, donc théoriquement la limite physique de RAM que tu peux allouer au driver correspond à la taille de bulle (mais d’autres collègues auront aussi besoin de ces ressources).</p></li>
+</ul>
+</section>
+<section id="eviter-les-fonctions-spécifiques-à-sparklyr" class="level2">
+<h2 class="anchored" data-anchor-id="eviter-les-fonctions-spécifiques-à-sparklyr">Eviter les fonctions spécifiques à sparklyr ⚠️</h2>
+<ul>
+<li><p>Si tu as utilisé des fonctions telles que <code>compute()</code> dans ton programme, elles peuvent être à l’origine d’une erreur <code>Out of memory</code> : ces commandes ne sont pas bien adaptées à Spark et les résultats temporaires stockés en mémoire vive ne sont pas visibles dans l’espace dédié sur SparkUI onglet Storage, il semblerait que ces résultats temporaires soient stockés “au mauvais endroit” et occupent de l’espace sans que l’utilisateur y ait accès.</p></li>
+<li><p>Privilégier les fonctions <code>tbl_cache()</code> pour forcer l’exécution du programme.</p></li>
+</ul>
+</section>
+<section id="laisser-spark-travailler-pour-nous" class="level2">
+<h2 class="anchored" data-anchor-id="laisser-spark-travailler-pour-nous">Laisser Spark travailler pour nous 💻</h2>
+<ul>
+<li><p>Forcer l’exécution du programme le plus tard possible pour permettre à Spark d’optimiser tout le programme et d’utiiliser les ressources de la manière la plus parcimonieuse possible.</p></li>
+<li><p>Tester son programme sur une toute petite partie des tables, étape par étape, en forçant l’exécution (appel d’une action telle que <code>print()</code> ou <code>collect()</code> ) à chaque étape pour la phase de débuggage, puis supprimer toutes les actions intermédiaires non nécessaires du programme pour que Spark optimise tout le programme.</p></li>
+</ul>
+</section>
+<section id="optimiser-le-chargement-en-cache-des-données" class="level2">
+<h2 class="anchored" data-anchor-id="optimiser-le-chargement-en-cache-des-données">Optimiser le chargement en cache des données 💿</h2>
+<ul>
+<li><p>Si une table est chargée avec la fonction <code>spark_read_parquet(sc, path = "mon_chemin_vers_la_table", memory = FALSE)</code> et l’option <code>memory=FALSE</code> , les données ne seront chargées du disque à la mémoire cache qu’en cas de nécessité, c’est-à-dire si une action déclenche des transformations qui utilisent une partie de ces données.</p></li>
+<li><p>Charger une table en cache avec <code>memory = TRUE</code> force la mise en cache de toutes les partitions de cette table, ce qui immobilise des ressources et peut favoriser la survenue d’erreurs <code>Ouf of memory</code>. Si cette table n’est pas utilisée en totalité plusieurs fois dans le programme, ce chargement n’est pas optimal.</p></li>
+<li><p>S’il s’avère optimal de charger les données en cache, alors il faut donner à chaque exécuteur une quantité de mémoire vive suffisante pour laisser des ressources pour l’exécution.</p></li>
+<li><p>Pour consulter la taille des données chargées en cache, utiliser <strong>SparkUI, onglet Storage.</strong></p></li>
+</ul>
+</section>
+<section id="si-tout-ceci-ne-fonctionne-pas-augmenter-les-ressources-dans-la-configuration" class="level2">
+<h2 class="anchored" data-anchor-id="si-tout-ceci-ne-fonctionne-pas-augmenter-les-ressources-dans-la-configuration">Si tout ceci ne fonctionne pas : augmenter les ressources dans la configuration</h2>
+<p>Par souci de parcimonie et pour faciliter le travail de nos collègues sur des ressources partagées, cette option doit rester l’ultime recours pour éviter l’erreur <code>Out of memory</code> 🤝</p>
 
 
+</section>
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
