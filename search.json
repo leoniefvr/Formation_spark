@@ -10,61 +10,14 @@
     ]
   },
   {
-    "objectID": "ressources.html",
-    "href": "ressources.html",
-    "title": "Ressources",
+    "objectID": "bonnes_pratiques.html",
+    "href": "bonnes_pratiques.html",
+    "title": "Bonnes pratiques",
     "section": "",
-    "text": "Documentation CASD : Documentation Data Science\nDocumentation MiDAS : Lien vers le site\nDocumentation du package sparklyr : Package sparklyr",
+    "text": "Déconnexion ou fermeture R pour libérer les ressources 🛑\nNe plus utiliser spark en local 🖥️🖥️🖥️\nPyspark ou Sparklyr pour la production ❓\nUtilisation parcimonieuse des ressources ⚖️\nEnvoi des erreurs sparklyr : dépôt tel quel d’un code sparklyr qui génère une erreur dans le dossier de l’espace commun (documents publics) erreurs_sparklyr 📩",
     "crumbs": [
-      "Ressources"
+      "Bonnes pratiques"
     ]
-  },
-  {
-    "objectID": "ressources.html#listes-imbriquées-avec-spark",
-    "href": "ressources.html#listes-imbriquées-avec-spark",
-    "title": "Ressources",
-    "section": "Listes imbriquées avec spark",
-    "text": "Listes imbriquées avec spark\nListe imbriquées Lucie\nappend des bases reduce union -&gt; récupérer le programme",
-    "crumbs": [
-      "Ressources"
-    ]
-  },
-  {
-    "objectID": "dates.html",
-    "href": "dates.html",
-    "title": "Les dates avec sparklyr",
-    "section": "",
-    "text": "Les fonctions de lubridate()ne sont pas adaptées aux spark_data_frames.\n\nConvertir une chaîne de caractère de la forme AAAA-MM-DD en Date\n\ndate_1 &lt;- as.Date(\"2024-05-26\")\n\nCalculer une durée entre deux dates\n\nPJC_spark &lt;- spark_read_parquet(sc,\n                                path = \"hdfs:///dataset/MiDAS_v4/pjc.parquet\",\n                                memory = FALSE)\n\nduree_pjc_df &lt;- PJC_spark %&gt;%\n  rename(date_fin_pjc = as.Date(KDFPJ),\n         date_deb_pjc = as.Date(KDDPJ)) %&gt;%\n  mutate(duree_pjc = datediff(date_fin_pjc, date_deb_pjc) + 1) %&gt;%\n  head(5)\n\nAjouter ou soustraire des jours ou des mois à une date\n\nduree_pjc_bis_df &lt;- duree_pjc_df %&gt;%\n  mutate(duree_pjc_plus_5 = date_add(duree_pjc, int(5)),\n         duree_pjc_moins_5 = date_sub(duree_pjc, int(5)),\n         duree_pjc_plus_1_mois = add_months(duree_pjc, int(1))) %&gt;%\n  head(5)\n\n\n\n\n\n\n\n\nFormat\n\n\n\nLe int() est important car ces fonctions Hive n’accepte que les entiers pour l’ajout de jours : taper uniquement 5 est considéré comme un flottant dans R.\n\n\n\n\n\n\n\n\nAdd months\n\n\n\nSi la date en entrée est le dernier jour d’un mois, la date retournée avec add_months(date_entree, int(1)) sera le dernier jour calendaire du mois suivant.",
-    "crumbs": [
-      "Les dates avec sparklyr"
-    ]
-  },
-  {
-    "objectID": "dates.html#dates",
-    "href": "dates.html#dates",
-    "title": "Les dates avec sparklyr",
-    "section": "",
-    "text": "Les fonctions de lubridate()ne sont pas adaptées aux spark_data_frames.\n\nConvertir une chaîne de caractère de la forme AAAA-MM-DD en Date\n\ndate_1 &lt;- as.Date(\"2024-05-26\")\n\nCalculer une durée entre deux dates\n\nPJC_spark &lt;- spark_read_parquet(sc,\n                                path = \"hdfs:///dataset/MiDAS_v4/pjc.parquet\",\n                                memory = FALSE)\n\nduree_pjc_df &lt;- PJC_spark %&gt;%\n  rename(date_fin_pjc = as.Date(KDFPJ),\n         date_deb_pjc = as.Date(KDDPJ)) %&gt;%\n  mutate(duree_pjc = datediff(date_fin_pjc, date_deb_pjc) + 1) %&gt;%\n  head(5)\n\nAjouter ou soustraire des jours ou des mois à une date\n\nduree_pjc_bis_df &lt;- duree_pjc_df %&gt;%\n  mutate(duree_pjc_plus_5 = date_add(duree_pjc, int(5)),\n         duree_pjc_moins_5 = date_sub(duree_pjc, int(5)),\n         duree_pjc_plus_1_mois = add_months(duree_pjc, int(1))) %&gt;%\n  head(5)\n\n\n\n\n\n\n\n\nFormat\n\n\n\nLe int() est important car ces fonctions Hive n’accepte que les entiers pour l’ajout de jours : taper uniquement 5 est considéré comme un flottant dans R.\n\n\n\n\n\n\n\n\nAdd months\n\n\n\nSi la date en entrée est le dernier jour d’un mois, la date retournée avec add_months(date_entree, int(1)) sera le dernier jour calendaire du mois suivant.",
-    "crumbs": [
-      "Les dates avec sparklyr"
-    ]
-  },
-  {
-    "objectID": "index.html",
-    "href": "index.html",
-    "title": "Atelier d’initiation à spark avec R en mode cluster",
-    "section": "",
-    "text": "Bienvenue ! 👋\nCe site est une aide à l’utilisation de spark avec R sur un cluster de calcul Spark à destination de débutants en R ne connaissant pas du tout le fonctionnement et la programmation en spark.\nTu vas apprendre ici (je l’espère 🙂) :\n\nl’intérêt d’utiliser Spark pour manipuler des données volumineuses telles que l’appariement MiDAS ⏳\nle fonctionnement de Spark sur un cluster de calcul 🔢\nl’utilisation de Spark sous R avec le package sparklyr, très facile si tu connais dplyr 👨‍💻\nquelques pistes d’optimisation d’un programme avec Spark 💡\n\nDe quoi profiter ensuite du temps gagné grâce au calcul distribué ! 🚀",
-    "crumbs": [
-      "Introduction"
-    ]
-  },
-  {
-    "objectID": "about.html",
-    "href": "about.html",
-    "title": "About",
-    "section": "",
-    "text": "About this site\n\n1 + 1\n\n[1] 2"
   },
   {
     "objectID": "slides.html#au-programme",
@@ -487,13 +440,60 @@
     ]
   },
   {
-    "objectID": "bonnes_pratiques.html",
-    "href": "bonnes_pratiques.html",
-    "title": "Bonnes pratiques",
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "About",
     "section": "",
-    "text": "Déconnexion ou fermeture R pour libérer les ressources 🛑\nNe plus utiliser spark en local 🖥️🖥️🖥️\nPyspark ou Sparklyr pour la production ❓\nUtilisation parcimonieuse des ressources ⚖️\nEnvoi des erreurs sparklyr : dépôt tel quel d’un code sparklyr qui génère une erreur dans le dossier de l’espace commun (documents publics) erreurs_sparklyr 📩",
+    "text": "About this site\n\n1 + 1\n\n[1] 2"
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Atelier d’initiation à spark avec R en mode cluster",
+    "section": "",
+    "text": "Bienvenue ! 👋\nCe site est une aide à l’utilisation de spark avec R sur un cluster de calcul Spark à destination de débutants en R ne connaissant pas du tout le fonctionnement et la programmation en spark.\nTu vas apprendre ici (je l’espère 🙂) :\n\nl’intérêt d’utiliser Spark pour manipuler des données volumineuses telles que l’appariement MiDAS ⏳\nle fonctionnement de Spark sur un cluster de calcul 🔢\nl’utilisation de Spark sous R avec le package sparklyr, très facile si tu connais dplyr 👨‍💻\nquelques pistes d’optimisation d’un programme avec Spark 💡\n\nDe quoi profiter ensuite du temps gagné grâce au calcul distribué ! 🚀",
     "crumbs": [
-      "Bonnes pratiques"
+      "Introduction"
+    ]
+  },
+  {
+    "objectID": "dates.html",
+    "href": "dates.html",
+    "title": "Les dates avec sparklyr",
+    "section": "",
+    "text": "Les fonctions de lubridate()ne sont pas adaptées aux spark_data_frames.\n\nConvertir une chaîne de caractère de la forme AAAA-MM-DD en Date\n\ndate_1 &lt;- as.Date(\"2024-05-26\")\n\nCalculer une durée entre deux dates\n\nPJC_spark &lt;- spark_read_parquet(sc,\n                                path = \"hdfs:///dataset/MiDAS_v4/pjc.parquet\",\n                                memory = FALSE)\n\nduree_pjc_df &lt;- PJC_spark %&gt;%\n  rename(date_fin_pjc = as.Date(KDFPJ),\n         date_deb_pjc = as.Date(KDDPJ)) %&gt;%\n  mutate(duree_pjc = datediff(date_fin_pjc, date_deb_pjc) + 1) %&gt;%\n  head(5)\n\nAjouter ou soustraire des jours ou des mois à une date\n\nduree_pjc_bis_df &lt;- duree_pjc_df %&gt;%\n  mutate(duree_pjc_plus_5 = date_add(duree_pjc, int(5)),\n         duree_pjc_moins_5 = date_sub(duree_pjc, int(5)),\n         duree_pjc_plus_1_mois = add_months(duree_pjc, int(1))) %&gt;%\n  head(5)\n\n\n\n\n\n\n\n\nFormat\n\n\n\nLe int() est important car ces fonctions Hive n’accepte que les entiers pour l’ajout de jours : taper uniquement 5 est considéré comme un flottant dans R.\n\n\n\n\n\n\n\n\nAdd months\n\n\n\nSi la date en entrée est le dernier jour d’un mois, la date retournée avec add_months(date_entree, int(1)) sera le dernier jour calendaire du mois suivant.",
+    "crumbs": [
+      "Les dates avec sparklyr"
+    ]
+  },
+  {
+    "objectID": "dates.html#dates",
+    "href": "dates.html#dates",
+    "title": "Les dates avec sparklyr",
+    "section": "",
+    "text": "Les fonctions de lubridate()ne sont pas adaptées aux spark_data_frames.\n\nConvertir une chaîne de caractère de la forme AAAA-MM-DD en Date\n\ndate_1 &lt;- as.Date(\"2024-05-26\")\n\nCalculer une durée entre deux dates\n\nPJC_spark &lt;- spark_read_parquet(sc,\n                                path = \"hdfs:///dataset/MiDAS_v4/pjc.parquet\",\n                                memory = FALSE)\n\nduree_pjc_df &lt;- PJC_spark %&gt;%\n  rename(date_fin_pjc = as.Date(KDFPJ),\n         date_deb_pjc = as.Date(KDDPJ)) %&gt;%\n  mutate(duree_pjc = datediff(date_fin_pjc, date_deb_pjc) + 1) %&gt;%\n  head(5)\n\nAjouter ou soustraire des jours ou des mois à une date\n\nduree_pjc_bis_df &lt;- duree_pjc_df %&gt;%\n  mutate(duree_pjc_plus_5 = date_add(duree_pjc, int(5)),\n         duree_pjc_moins_5 = date_sub(duree_pjc, int(5)),\n         duree_pjc_plus_1_mois = add_months(duree_pjc, int(1))) %&gt;%\n  head(5)\n\n\n\n\n\n\n\n\nFormat\n\n\n\nLe int() est important car ces fonctions Hive n’accepte que les entiers pour l’ajout de jours : taper uniquement 5 est considéré comme un flottant dans R.\n\n\n\n\n\n\n\n\nAdd months\n\n\n\nSi la date en entrée est le dernier jour d’un mois, la date retournée avec add_months(date_entree, int(1)) sera le dernier jour calendaire du mois suivant.",
+    "crumbs": [
+      "Les dates avec sparklyr"
+    ]
+  },
+  {
+    "objectID": "ressources.html",
+    "href": "ressources.html",
+    "title": "Ressources",
+    "section": "",
+    "text": "Documentation CASD : Documentation Data Science\nDocumentation MiDAS : Lien vers le site\nDocumentation du package sparklyr : Package sparklyr",
+    "crumbs": [
+      "Ressources"
+    ]
+  },
+  {
+    "objectID": "ressources.html#listes-imbriquées-avec-spark",
+    "href": "ressources.html#listes-imbriquées-avec-spark",
+    "title": "Ressources",
+    "section": "Listes imbriquées avec spark",
+    "text": "Listes imbriquées avec spark\nListe imbriquées Lucie\nappend des bases reduce union -&gt; récupérer le programme",
+    "crumbs": [
+      "Ressources"
     ]
   },
   {
