@@ -1,3 +1,13 @@
 ---
 title: "Bonnes pratiques"
 ---
+
+-   Déconnexion ou fermeture R pour libérer les ressources 🛑
+
+-   Ne plus utiliser spark en local 🖥️🖥️🖥️
+
+-   Pyspark ou Sparklyr pour la production ❓
+
+-   Utilisation parcimonieuse des ressources ⚖️
+
+-   Envoi des erreurs sparklyr : dépôt tel quel d'un code sparklyr qui génère une erreur dans le dossier de l'espace commun (documents publics) erreurs_sparklyr 📩

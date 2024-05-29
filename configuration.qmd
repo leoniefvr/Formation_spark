@@ -1,3 +1,41 @@
 ---
 title: "Configuration"
 ---
+
+# Sur le cluster
+
+Il est nécessaire de configurer la session spark pour établir une connexion entre la session R et un cluster spark. Les paramètres à définir sont :
+
+-   Les ressources physiques utilisées :
+
+    1.  par le driver : avec **spark.driver.memory**
+
+    2.  par chaque worker avec **spark.executor.memory** et **spark.executor.cores**
+
+    3.  le nombre de worker avec **spark.executor.instances**
+
+    4.  La file sur laquelle on travaille avec **spark.yarn.queue**
+
+-   le nombre de partitions de chaque spark_data_frame avec **spark.sql.shuffle.partitions**
+
+-   la limite de taille des résulats qui peuvent être collectés par le driver avec **spark.driver.maxResultSize**
+
+```{r}
+#| eval: false
+#| echo: true
+
+conf <- spark_config()
+conf["spark.driver.memory"] <- "40Go"
+conf["spark.executor.memory"] <- "80Go"
+conf["spark.executor.cores"] <- 5
+conf["spark.executor.instances"] <- 2
+cont["spark.yarn.queue"] <- "prod"
+conf["spark.driver.maxResultSize"] <- 0
+conf["spark.sql.shuffle.partitions"] <- 200
+
+sc <- spark_connect(master = "yarn", config = conf)
+```
+
+# Les files du cluster spark Midares
+
+# 

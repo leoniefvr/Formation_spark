@@ -1,11 +1,19 @@
 ---
-title: "test"
+title: "Atelier d'initiation à spark avec R en mode cluster"
 ---
 
-This is a Quarto website.
+# Bienvenue ! 👋
 
-To learn more about Quarto websites visit <https://quarto.org/docs/websites>.
+Ce site est une aide à l'utilisation de spark avec R sur un cluster de calcul Spark à destination de débutants en R ne connaissant pas du tout le fonctionnement et la programmation en spark.
 
-```{r}
-1 + 1 + 1 + 1
-```
+Tu vas apprendre ici (je l'espère 🙂) :
+
+-   **l'intérêt d'utiliser Spark** pour manipuler des **données volumineuses** telles que l'appariement MiDAS ⏳
+
+-   le fonctionnement de **Spark** sur un **cluster** de calcul 🔢
+
+-   l'utilisation de Spark sous R avec le package **sparklyr**, très facile si tu connais **dplyr** 👨‍💻
+
+-   quelques pistes d'optimisation d'un programme avec Spark 💡
+
+De quoi profiter ensuite du temps gagné grâce au calcul distribué ! 🚀

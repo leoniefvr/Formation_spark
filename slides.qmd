@@ -1,5 +1,5 @@
 ---
-title: "Initiation à Spark sous CASD"
+title: "Initiation à Spark avec R en mode cluster"
 format: 
   revealjs:
     incremental: true

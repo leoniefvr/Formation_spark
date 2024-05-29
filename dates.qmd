@@ -1,3 +1,62 @@
 ---
 title: "Les dates avec sparklyr"
 ---
+
+## Dates
+
+Les fonctions de `lubridate()`ne sont pas adaptées aux spark_data_frames.
+
+-   Convertir une chaîne de caractère de la forme AAAA-MM-DD en Date
+
+    ```{r}
+    #| eval: false
+    #| echo: true
+
+    date_1 <- as.Date("2024-05-26")
+
+    ```
+
+-   Calculer une durée entre deux dates
+
+    ```{r}
+    #| eval: false
+    #| echo: true
+
+    PJC_spark <- spark_read_parquet(sc,
+                                    path = "hdfs:///dataset/MiDAS_v4/pjc.parquet",
+                                    memory = FALSE)
+
+    duree_pjc_df <- PJC_spark %>%
+      rename(date_fin_pjc = as.Date(KDFPJ),
+             date_deb_pjc = as.Date(KDDPJ)) %>%
+      mutate(duree_pjc = datediff(date_fin_pjc, date_deb_pjc) + 1) %>%
+      head(5)
+
+    ```
+
+-   Ajouter ou soustraire des jours ou des mois à une date
+
+    ```{r}
+    #| eval: false
+    #| echo: true
+
+
+    duree_pjc_bis_df <- duree_pjc_df %>%
+      mutate(duree_pjc_plus_5 = date_add(duree_pjc, int(5)),
+             duree_pjc_moins_5 = date_sub(duree_pjc, int(5)),
+             duree_pjc_plus_1_mois = add_months(duree_pjc, int(1))) %>%
+      head(5)
+
+    ```
+
+::: callout-tip
+## Format
+
+Le int() est important car ces fonctions Hive n'accepte que les entiers pour l'ajout de jours : taper uniquement 5 est considéré comme un flottant dans R.
+:::
+
+::: callout-note
+## Add months
+
+Si la date en entrée est le dernier jour d'un mois, la date retournée avec `add_months(date_entree, int(1))` sera le dernier jour calendaire du mois suivant.
+:::
