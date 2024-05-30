@@ -244,7 +244,7 @@
     "href": "slides.html#le-plan-dexécution",
     "title": "Initiation à Spark avec R en mode cluster",
     "section": "Le plan d’exécution",
-    "text": "Le plan d’exécution",
+    "text": "Le plan d’exécution\n\nsource : documentation CASD disponible à Documentation Data Science",
     "crumbs": [
       "Slides"
     ]
