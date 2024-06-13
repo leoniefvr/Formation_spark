@@ -1103,6 +1103,23 @@
 <div class="cell">
 <div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a></a><span class="fu">spark_write_parquet</span>(DE, <span class="at">partition_by =</span> <span class="fu">c</span>(<span class="st">"REGIND"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
+<div class="callout callout-warning callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Exports simultanés</strong></p>
+</div>
+<div class="callout-content">
+<p>HDFS supporte les exports simultanés, mais le temp d’export est plus long lorsque le NameNode est requêté par plusieurs personnes simultanément : d’après les tests cluster</p>
+<ul>
+<li class="fragment"><p>pour un petit export (5 minutes), le temps peut être multiplié par 4 ;</p></li>
+<li class="fragment"><p>pour un gros export (15 minutes), le temps peut être multiplié par 2.</p></li>
+</ul>
+</div>
+</div>
+</div>
 </div>
 </div>
 </div>
