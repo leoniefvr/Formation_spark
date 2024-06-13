@@ -279,7 +279,7 @@ Deux packages permettent de programmer avec Spark sous R :
 
 4.  Si une **erreur** est renvoyée par le driver, elle est interprétée par R avant d'être affichée en session R.
 
-## Sparklyr mode cluster 
+## Sparklyr mode cluster
 
 ![](schema_cluster.drawio.png){fig-align="center" width="691"}
 
@@ -406,7 +406,6 @@ conf["spark.sql.shuffle.partitions"] <- 200
 
 sc <- spark_connect(master = "yarn", config = conf)
 ```
-
 
 ## Le stockage distribué : HDFS {.smaller .scrollable}
 
@@ -747,7 +746,7 @@ Le `int()` est important car ces fonctions Hive n'accepte que les entiers pour l
 ## Quelques tips d'optimisation {.smaller .scrollable}
 
 ::: panel-tabset
-## Jointures
+### Jointures
 
 Pour effectuer ce type de jointure avec deux tables de volumétries différentes : A est petite, B est très volumineuse
 
@@ -773,7 +772,7 @@ table_finale <- petite_table_mon_champ %>%
   left_join(table_volumineuse_comme_PJC)
 ```
 
-## Persist
+### Persist
 
 Lorsqu'une table intermédiaire est utilisée plusieurs fois dans un traitement, il est possible de la persister, c'est-à-dire enregistrer ce `spark_data_frame`sur le disque ou dans la mémoire des noeuds.
 
@@ -801,13 +800,13 @@ SJR <- table_1 %>%
 
 ```
 
-## Chargement
+### Chargement
 
 Lorsqu'on charge des données dans le cluster Spark et que la table est appelée plusieurs fois dans le programme, il est conseillé de la charger en mémoire vive directement.
 
 Attention, si beaucoup de tables volumineuses sont chargées en mémoire, la fraction de la mémoire spark dédiée au stockage peut être insuffisante ou bien il peut ne pas rester assez de spark memory pour l'exécution.
 
-## Export et partitions
+### Export et partitions
 
 Le format `.parquet` (avec `arrow`) et le framework `spark` permettent de gérer le partitionnement des données.
 
@@ -820,6 +819,16 @@ Si les opérations sont souvent effectuées par régions par exemple, il est uti
 spark_write_parquet(DE, partition_by = c("REGIND"))
 
 ```
+
+::: callout-warning
+## Exports simultanés
+
+HDFS supporte les exports simultanés, mais le temp d'export est plus long lorsque le NameNode est requêté par plusieurs personnes simultanément : d'après les tests cluster
+
+-   pour un petit export (5 minutes), le temps peut être multiplié par 4 ;
+
+-   pour un gros export (15 minutes), le temps peut être multiplié par 2.
+:::
 :::
 
 ## Forcer le calcul {.smaller}
@@ -952,7 +961,7 @@ Si l'instruction `sc <- spark_connect(master = "yarn", config = conf` prend plus
 
 ## Exporter de HDFS au local {.smaller}
 
-::: {.r-stack}
+::: r-stack
 ![](hdfs_browse.png){.fragment width="1000" height="700"}
 
 ![](hdfs_download.png){.fragment width="1000" height="700"}
