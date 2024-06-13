@@ -4,7 +4,7 @@
     "href": "slides.html#au-programme",
     "title": "Initiation à Spark avec R en mode cluster",
     "section": "Au programme",
-    "text": "Au programme\n\nMiDAS : une base de données volumineuse 💾\nManipuler un appariement : une opération coûteuse 💲\nInitiation au calcul distribué 🖥️🖥️🖥️\nSparklyr : la solution ergonomique de sparkl sous R 👨‍💻\nPour aller plus loin ⏩",
+    "text": "Au programme\n\nMiDAS : une base de données volumineuse 💾\nManipuler un appariement : une opération coûteuse 💲\nInitiation au calcul distribué : quelles ressources réserver ? 🖥️🖥️🖥️\nSparklyr : la solution ergonomique de spark sous R 👨‍💻\nPour aller plus loin ⏩",
     "crumbs": [
       "Slides"
     ]
@@ -24,7 +24,7 @@
     "href": "slides.html#midas-une-base-de-données-volumineuse-1",
     "title": "Initiation à Spark avec R en mode cluster",
     "section": "MiDAS : une base de données volumineuse",
-    "text": "MiDAS : une base de données volumineuse\nChaque vague de MiDAS correspond à environ 600 Go de données au format sas. Les vagues fonctionnent par empilement :\n\nle gain de profondeur temporelle et l’entrée dans le champ de nouvelles personnes\nvagues sont appariables entre elles",
+    "text": "MiDAS : une base de données volumineuse\nChaque vague de MiDAS correspond à environ 600 Go de données au format sas. Les vagues fonctionnent par empilement :\n\nle gain de profondeur temporelle et l’entrée dans le champ de nouvelles personnes\nles vagues sont appariables entre elles",
     "crumbs": [
       "Slides"
     ]
@@ -34,7 +34,7 @@
     "href": "slides.html#midas-une-base-de-données-volumineuse-2",
     "title": "Initiation à Spark avec R en mode cluster",
     "section": "MiDAS : une base de données volumineuse",
-    "text": "MiDAS : une base de données volumineuse\nMiDAS est l’une des bases de données les plus volumineuses du SSP :",
+    "text": "MiDAS : une base de données volumineuse\nMiDAS est l’une des bases de données les plus volumineuses du SSP :\nLes administrations dont les données sont comparables à MiDAS utilisent un cluster Spark : Insee, Drees, Acoss…\n▶️Le cluster spark est la solution la plus efficiente pour traiter des données de cette ampleur. Apprendre à l’utiliser pourra vous être utile dans d’autres contextes que celui de la Dares.",
     "crumbs": [
       "Slides"
     ]
@@ -64,7 +64,7 @@
     "href": "slides.html#lespace-midares",
     "title": "Initiation à Spark avec R en mode cluster",
     "section": "L’espace MiDares",
-    "text": "L’espace MiDares\n\nRessourcesSchéma\n\n\nDes ressources partagées entre tous les utilsateurs simultanés :\n\n512 Go de mémoire vive (ou RAM)\n\n\n\n\n\n\n\nLa mémoire vive\n\n\nLa mémoire vive, aussi appelée RAM, se distingue de la mémoire de stockage (disque) par sa rapidité, notamment pour fournir des données au processeur pour effectuer des calculs, par sa volatilité (toutes les données sont perdues si l’ordinateur n’est plus alimenté) et par l’accès direct aux informations qui y sont stockées, quasi instantanné.\n\n\n\n\nUn processeur (ou CPU) composé de 32 coeurs\n\n\n\n\n\n\n\nLe processeur\n\n\nLe processeur permet d’exécuter des tâches et des programmes : convertir un fichier, exécuter un logiciel… Il est composé d’un ou de plusieurs coeurs : un coeur ne peut exécuter qu’une seule tâche à la fois. Si le processeur contient plusieurs coeurs, il peut exécuter autant de tâches en parallèle qu’il a de coeurs. Un processeur se caractérise aussi par sa fréquence : elle est globalement proportionnelle au nombre d’opération qu’il est capable d’effetuer par seconde.",
+    "text": "L’espace MiDares\n\nRessourcesSchéma\n\n\nDes ressources partagées entre tous les utilsateurs simultanés :\n\n512 Go de mémoire vive (ou RAM) : passage à 256 Go\n\n\n\n\n\n\n\nLa mémoire vive\n\n\nLa mémoire vive, aussi appelée RAM, se distingue de la mémoire de stockage (disque) par sa rapidité, notamment pour fournir des données au processeur pour effectuer des calculs, par sa volatilité (toutes les données sont perdues si l’ordinateur n’est plus alimenté) et par l’accès direct aux informations qui y sont stockées, quasi instantanné.\n\n\n\n\nUn processeur (ou CPU) composé de 32 coeurs : passage à 16 coeurs\n\n\n\n\n\n\n\nLe processeur\n\n\nLe processeur permet d’exécuter des tâches et des programmes : convertir un fichier, exécuter un logiciel… Il est composé d’un ou de plusieurs coeurs : un coeur ne peut exécuter qu’une seule tâche à la fois. Si le processeur contient plusieurs coeurs, il peut exécuter autant de tâches en parallèle qu’il a de coeurs. Un processeur se caractérise aussi par sa fréquence : elle est globalement proportionnelle au nombre d’opérations qu’il est capable d’effetuer par seconde.",
     "crumbs": [
       "Slides"
     ]
@@ -74,7 +74,7 @@
     "href": "slides.html#programmer-en-mémoire-vive",
     "title": "Initiation à Spark avec R en mode cluster",
     "section": "Programmer en mémoire vive",
-    "text": "Programmer en mémoire vive\n\nR : la mémoire vive, état dans l’environnement\nSAS : lecture/écriture sur le disque\nMiDAS au format sas &gt;&gt; taille de la mémoire vive disponible du serveur CASD –&gt; format parquet\nImpossible de charger tout MiDAS en mémoire vive\nDes solutions existent pour manipuler les données sous R sans les charger entièrement en mémoire vive :\narrow (avec des requêtes dplyr)\nduckDB\n▶️ Insuffisantes pour les traitements les plus coûteux sur MiDAS en R : la partie de la mémoire vive utilisée pour stocker les données correspond à autant de puissance de calcul indisponible pour les traitements.",
+    "text": "Programmer en mémoire vive\n\nR : la mémoire vive, état dans l’environnement\nSAS : lecture/écriture sur le disque\nMiDAS au format sas &gt;&gt; taille de la mémoire vive disponible du serveur CASD –&gt; format .parquet\nImpossible de charger tout MiDAS en mémoire vive\nDes solutions existent pour manipuler les données sous R sans les charger entièrement en mémoire vive :\narrow (avec des requêtes dplyr)\nduckDB : recommandé par le SSPLab pour des données jusqu’à 100Go\n▶️ Insuffisantes pour les traitements les plus coûteux sur MiDAS en R : la partie de la mémoire vive utilisée pour stocker les données correspond à autant de puissance de calcul indisponible pour les traitements.",
     "crumbs": [
       "Slides"
     ]
@@ -84,7 +84,7 @@
     "href": "slides.html#les-traitements-coûteux-en-puissance-de-calcul",
     "title": "Initiation à Spark avec R en mode cluster",
     "section": "Les traitements coûteux en puissance de calcul",
-    "text": "Les traitements coûteux en puissance de calcul\n\nles jointures\nles opérations en group_by\ndistinct\n▶️ Exécution séquentielle sur un coeur du processeur + beaucoup de mémoire vive (données temporaires)\n▶️ Erreur “out of memory”.",
+    "text": "Les traitements coûteux en puissance de calcul\n\nles jointures\nles opérations en group_by()\ndistinct()\n▶️ Exécution séquentielle sur un coeur du processeur + beaucoup de mémoire vive (données temporaires)\n▶️ Erreur “out of memory”.",
     "crumbs": [
       "Slides"
     ]
@@ -104,7 +104,7 @@
     "href": "slides.html#un-traitement-coûteux",
     "title": "Initiation à Spark avec R en mode cluster",
     "section": "Un traitement coûteux",
-    "text": "Un traitement coûteux\n\nCe traitement nécessite :\n\nle chargement de davantage de colonnes en mémoire vive ;\ndavantage de mémoire d’exécution pour effectuer l’intersection (inner_join).",
+    "text": "Un traitement coûteux\n\nCe traitement nécessite :\n\nle chargement de davantage de colonnes en mémoire vive ;\ndavantage de mémoire d’exécution pour effectuer l’intersection (inner_join()).",
     "crumbs": [
       "Slides"
     ]
@@ -134,7 +134,7 @@
     "href": "slides.html#spark",
     "title": "Initiation à Spark avec R en mode cluster",
     "section": "Spark",
-    "text": "Spark\n\nApache Spark : librairie open source développée dans le langage Scala\nScala : langage compilé, rapide et distribuable qui peut être exécuté dans une machine virtuelle Java\nExemple Scala ?\nScala adapté pour maîtriser toutes les fonctionnalités de Spark et optimiser au maximum les traitements en spark\nSpark est compatible avec les langages Scala, R, Python, Java, et peut interpréter des commandes SQL.\nDeux packages existent sous R :\n\nsparkR proposé par Apache Spark\nsparklyr, qui permet d’utiliser directement des commandes dplyr traduites en spark par le package.",
+    "text": "Spark\n\nApache Spark : librairie open source développée dans le langage scala\nScala : langage compilé, rapide et distribuable qui peut être exécuté dans une machine virtuelle Java\n\nval TopHorrorsIGN2022 = Seq(\n  (9, \"Pearl\"),\n  (6, \"The Sadness\"),\n  (6, \"Offseason\"),\n  (7, \"Hatching\"),\n  (8, \"x\")\n).toDF(\"IMDB Rating\", \"IGN Movie Picks\")\n\nval TopHorrorsTheAVClub2022 = Seq(\n  (7, \"Nope\"),\n  (9, \"Pearl\"),\n  (8, \"x\"),\n  (5, \"Barbarian\"),\n  (5, \"Bones And All\")\n).toDF(\"IMDB Rating\", \"AVC Movie Picks\")\n\nimport org.apache.spark.sql.functions.col\n\nval cols = List(col(\"IGN Movie Picks\"), col(\"AVC Movie Picks\"))\n\nval query = TopHorrorsIGN2022(\n  \"IGN Movie Picks\"\n) === TopHorrorsTheAVClub2022(\"AVC Movie Picks\")\n\nval outerJoin = TopHorrorsIGN2022\n  .join(TopHorrorsTheAVClub2022, query, \"outer\")\n  .select(cols: _*)\n\nouterJoin.show()\n\nscala adapté pour maîtriser toutes les fonctionnalités de spark et optimiser au maximum les traitements en spark\nspark est compatible avec les langages scala, R, python, java, et peut interpréter des commandes SQL.\nDeux packages existent sous R :\n\nsparkR proposé par Apache Spark\nsparklyr, qui permet d’utiliser directement des commandes dplyr traduites en spark par le package.",
     "crumbs": [
       "Slides"
     ]
@@ -164,7 +164,7 @@
     "href": "slides.html#installation-de-spark-sous-casd",
     "title": "Initiation à Spark avec R en mode cluster",
     "section": "Installation de spark sous CASD",
-    "text": "Installation de spark sous CASD\nVoir la fiche dédier sur le site",
+    "text": "Installation de spark sous CASD\nVoir la fiche dédiée sur le site",
     "crumbs": [
       "Slides"
     ]
@@ -174,7 +174,7 @@
     "href": "slides.html#le-stockage-distribué-hdfs",
     "title": "Initiation à Spark avec R en mode cluster",
     "section": "Le stockage distribué : HDFS",
-    "text": "Le stockage distribué : HDFS\n\nstockage sur différentes machines : ici les noeuds du cluster spark, c’est-à-dire les différents ordinateurs workers du cluster\ndonnées divisées en blocs plus petits de taille fixe et répartis sur les machines\nchaque bloc est répliqué trois fois pour être résilient face aux pannes\nun NameNode supervise les métadonnées et gère la structure du système de fichiers\nles DataNodes stockent effectivement les blocs de données\nle système HDFS est relié à la bulle Midares : possible de charger des données en clique-bouton de la bulle vers HDFS de manière très rapide et de télécharger des tables de HDFS pour les récupérer en local\n\n\n\n\n\n\nLes exports sur HDFS\n\n\nLorsqu’on exporte une table depuis notre session R vers HDFS, celle-ci est automatiquement partitionnée, comme le reste des données.\nAinsi, cette table sera stockée en plusieurs morceaux sous HDFS et répliquée.\nIl est possible de maîtriser le nombre de partitions avec la commande sdf_coalesce(partitions = 5) du package sparklyr.",
+    "text": "Le stockage distribué : HDFS\n\nstockage sur différentes machines : ici les noeuds du cluster spark, c’est-à-dire les différents ordinateurs workers du cluster\ndonnées divisées en blocs plus petits de taille fixe et répartis sur les machines\nchaque bloc est répliqué trois fois pour être résilient face aux pannes\nun NameNode supervise les métadonnées et gère la structure du système de fichiers\nles DataNodes stockent effectivement les blocs de données\nle système HDFS est relié à la bulle Midares : possible de charger des données en clique-bouton de la bulle vers HDFS de manière très rapide et de télécharger des tables de HDFS pour les récupérer en local\n\n\n\n\n\n\nLes exports sur HDFS\n\n\nLorsqu’on exporte une table depuis notre session R vers HDFS, celle-ci est automatiquement partitionnée, comme le reste des données.\nAinsi, cette table sera stockée en plusieurs morceaux sous HDFS et répliquée.\nIl est possible de maîtriser le nombre de partitions avec la commande sdf_coalesce(partitions = 5) du package sparklyr.\nL’idéal est d’adapter le nombre de partitions à la taille d’un bloc : un bloc mesure 128 MB. Lorsqu’un bloc disque est utilisé, même à 1%, il n’est pas utilisable pour un autre stockage.\nExporter un fichier de 1MB en 200 partitions réserve 200 blocs inutilement.",
     "crumbs": [
       "Slides"
     ]
@@ -194,7 +194,7 @@
     "href": "slides.html#la-lazy-evaluation",
     "title": "Initiation à Spark avec R en mode cluster",
     "section": "La lazy evaluation",
-    "text": "La lazy evaluation\nSpark distingue deux types d’opérations :\n\nles transformations : ce sont des opérations qui prennent en entrée un spark_data_frame et retournent un spark_data_frame, elles ne déclenchent aucun calcul lorsqu’elles sont appelées.\nPar exemple, le programme ci-dessous est compilé instantanément et ne déclenche pas d’exécution :\n\nune_transformation &lt;- un_spark_data_frame %&gt;%\n  group_by(identifiant) %&gt;%\n  mutate(une_somme = sum(revenus))\n\nles actions : ce sont des opérations qui demandent le calcul d’un résultat et qui déclenchent le calcul et l’exécution de toutes les transformations compilées jusqu’à l’appel de l’action.\nPar exemple, le programme ci-dessous déclenche le calcul de la cellule `une_transformation` et de la moyenne des revenus :\n\nrevenu_moyen &lt;- une_transformation %&gt;%\n  summarise(revenu_moyen = mean(une_somme)) %&gt;%\n  print()\n\nLes principales actions sont : print(), collect(), head(), tbl_cache() (écrire un spark_data_frame en mémoire pour le réutiliser).",
+    "text": "La lazy evaluation\nSpark distingue deux types d’opérations :\n\nles transformations : ce sont des opérations qui prennent en entrée un spark_data_frame et retournent un spark_data_frame, elles ne déclenchent aucun calcul lorsqu’elles sont appelées.\nPar exemple, le programme ci-dessous est compilé instantanément et ne déclenche pas d’exécution :\n\nune_transformation &lt;- un_spark_data_frame %&gt;%\n  group_by(identifiant) %&gt;%\n  mutate(une_somme = sum(revenus))\n\nles actions : ce sont des opérations qui demandent le calcul d’un résultat et qui déclenchent le calcul et l’exécution de toutes les transformations compilées jusqu’à l’appel de l’action.\nPar exemple, le programme ci-dessous déclenche le calcul de la cellule une_transformation et de la moyenne des revenus :\n\nrevenu_moyen &lt;- une_transformation %&gt;%\n  summarise(revenu_moyen = mean(une_somme)) %&gt;%\n  print()\n\nLes principales actions sont : print(), collect(), head(), tbl_cache() (écrire un spark_data_frame en mémoire pour le réutiliser).",
     "crumbs": [
       "Slides"
     ]
@@ -204,7 +204,7 @@
     "href": "slides.html#la-lazy-evaluation-1",
     "title": "Initiation à Spark avec R en mode cluster",
     "section": "La lazy evaluation",
-    "text": "La lazy evaluation\nSpark optimise automatiquement les programmes soumis :\n\nCompilation des transformations\nIntégration dans un plan d’exécution : éventuelles erreurs du programme soulevées avant l’exécution\nOptimisation du plan logique par le module Catalyst (driver Spark)\nPar exemple si j’écris le programme :\n\nnon_optimal &lt;- table_1 %&gt;%\n  mutate(duree_contrat = DATEDIFF(fin_contrat, debut_contrat)) %&gt;%\n  filter(debut_contrat &gt;= as.Date(\"2023-01-01\"))\n\nCatalyst réécrit :\n\nnon_optimal &lt;- table_1 %&gt;%\n  filter(debut_contrat &gt;= as.Date(\"2023-01-01\")) %&gt;%\n  mutate(duree_contrat = DATEDIFF(fin_contrat, debut_contrat))\n\nCette optimisation est réalisée sur toutes les transformations compilée avant qu’une action déclenche l’exécution.\nDéclencher le moins d’actions possibles dans son programme permet de tirer pleinement parti de Catalyst et de gagner un temps certain.\nPour profiter des avantages de spark, la manière de programmer recommandée est différente de celle prédominante en R classique.",
+    "text": "La lazy evaluation\nSpark optimise automatiquement les programmes soumis :\n\nCompilation des transformations\nIntégration dans un plan d’exécution : éventuelles erreurs du programme soulevées avant l’exécution\nOptimisation du plan logique par le module Catalyst (driver Spark)\nPar exemple si j’écris le programme :\n\nnon_optimal &lt;- table_1 %&gt;%\n  mutate(duree_contrat = DATEDIFF(fin_contrat, debut_contrat)) %&gt;%\n  filter(debut_contrat &gt;= as.Date(\"2023-01-01\"))\n\nCatalyst réécrit :\n\nnon_optimal &lt;- table_1 %&gt;%\n  filter(debut_contrat &gt;= as.Date(\"2023-01-01\")) %&gt;%\n  mutate(duree_contrat = DATEDIFF(fin_contrat, debut_contrat))\n\nCette optimisation est réalisée sur toutes les transformations compilée avant qu’une action déclenche l’exécution.\nRéalisation de plans physiques possibles et sélection du meilleur plan physique (au regard de la localisation des données requises).\nDéclencher le moins d’actions possibles dans son programme permet de tirer pleinement parti de Catalyst et de gagner un temps certain.\nPour profiter des avantages de spark, la manière de programmer recommandée est différente de celle prédominante en R classique.",
     "crumbs": [
       "Slides"
     ]
@@ -214,7 +214,7 @@
     "href": "slides.html#le-plan-dexécution",
     "title": "Initiation à Spark avec R en mode cluster",
     "section": "Le plan d’exécution",
-    "text": "Le plan d’exécution\n\nsource : Documentation Data Science",
+    "text": "Le plan d’exécution\n\nsource : documentation CASD disponible à Documentation Data Science",
     "crumbs": [
       "Slides"
     ]
@@ -244,7 +244,7 @@
     "href": "slides.html#configuration-cluster",
     "title": "Initiation à Spark avec R en mode cluster",
     "section": "Configuration cluster",
-    "text": "Configuration cluster\nDeux étapes majeures dans le traitement de données sous R diffère en sparklyr par rapport à une programmation classique en dplyr :\n\nConfigurationImport-export\n\n\nIl est nécessaire de configurer la session spark pour établir une connexion entre la session R et un cluster spark. Les paramètres à définir sont :\n\nLes ressources physiques utilisées :\n\npar le driver : avec spark.driver.memory\npar chaque worker avec spark.executor.memory et spark.executor.cores\nle nombre de worker avec spark.executor.instances\nLa file sur laquelle on travaille avec spark.yarn.queue\n\nle nombre de partitions de chaque spark_data_frame avec spark.sql.shuffle.partitions\nla limite de taille des résulats qui peuvent être collectés par le driver avec spark.driver.maxResultSize\n\n\nconf &lt;- spark_config()\nconf[\"spark.driver.memory\"] &lt;- \"40Go\"\nconf[\"spark.executor.memory\"] &lt;- \"80Go\"\nconf[\"spark.executor.cores\"] &lt;- 5\nconf[\"spark.executor.instances\"] &lt;- 2\ncont[\"spark.yarn.queue\"] &lt;- \"prod\"\nconf[\"spark.driver.maxResultSize\"] &lt;- 0\nconf[\"spark.sql.shuffle.partitions\"] &lt;- 200\n\nsc &lt;- spark_connect(master = \"yarn\", config = conf)\n\n\n\nLes données doivent être disponibles dans les workers sous forme de spark_data_frame :\n\ncaché en mémoire directement : si utilisées plusieurs fois pour gagner du temps\nlaissé sur disque tant qu’aucune action ne déclenche un traitement qui nécessite son chargement en mémoire\n▶️ chargement en mémoire vive couteux en temps : avec la configuration présentée, le chargement du FNA, du FHS et des MMO prend au moins 25 minutes.\nPour passer un data.frame R en spark_data_frame : copy_to()",
+    "text": "Configuration cluster\nDeux étapes majeures dans le traitement de données sous R diffère en sparklyr par rapport à une programmation classique en dplyr :\n\nConfigurationImport-export\n\n\nIl est nécessaire de configurer la session spark pour établir une connexion entre la session R et un cluster spark. Les paramètres à définir sont :\n\nLes ressources physiques utilisées :\n\npar le driver : avec spark.driver.memory (avec parcimonie)\npar chaque worker avec spark.executor.memory(valeur max 140 Go) et spark.executor.cores (valeur max 8 coeurs)\nle nombre de workers avec spark.executor.instances (2 ou 3 suffisent)\nLa file sur laquelle on travaille avec spark.yarn.queue (prod ou dev)\n\nle nombre de partitions de chaque spark_data_frame avec spark.sql.shuffle.partitions (200 par défaut)\nla limite de taille des résulats qui peuvent être collectés par le driver avec spark.driver.maxResultSize (0 est la meilleure option)\n\n\nconf &lt;- spark_config()\nconf[\"spark.driver.memory\"] &lt;- \"40Go\"\nconf[\"spark.executor.memory\"] &lt;- \"80Go\"\nconf[\"spark.executor.cores\"] &lt;- 5\nconf[\"spark.executor.instances\"] &lt;- 2\ncont[\"spark.yarn.queue\"] &lt;- \"prod\"\nconf[\"spark.driver.maxResultSize\"] &lt;- 0\nconf[\"spark.sql.shuffle.partitions\"] &lt;- 200\n\nsc &lt;- spark_connect(master = \"yarn\", config = conf)\n\n\n\nLes données doivent être disponibles dans les workers sous forme de spark_data_frame :\n\ncaché en mémoire directement : si utilisées plusieurs fois pour gagner du temps\nlaissé sur disque tant qu’aucune action ne déclenche un traitement qui nécessite son chargement en mémoire\n▶️ chargement en mémoire vive couteux en temps : avec la configuration présentée, le chargement du FNA, du FHS et des MMO prend au moins 25 minutes.\nPour passer un data.frame R en spark_data_frame : copy_to()",
     "crumbs": [
       "Slides"
     ]
@@ -254,7 +254,7 @@
     "href": "slides.html#lutilisation-de-la-mémoire-dans-un-worker",
     "title": "Initiation à Spark avec R en mode cluster",
     "section": "L’utilisation de la mémoire dans un worker",
-    "text": "L’utilisation de la mémoire dans un worker\n\n\n\n\n\n\n\n\n\n\n\n\n\nTip\n\n\nNe pas charger plusieurs fois les mêmes données en cache",
+    "text": "L’utilisation de la mémoire dans un worker\n\n\n\n\n\n\n\n\n\n\n\n\n\nTip\n\n\nNe pas charger plusieurs fois les mêmes données en cache, ou si besoin augmenter la part de la mémoire allouée au stockage avec spark.memory.storageFraction.\n\n\n\n\nconf &lt;- spark_config()\nconf[\"spark.driver.memory\"] &lt;- \"40Go\"\nconf[\"spark.executor.memory\"] &lt;- \"80Go\"\nconf[\"spark.memory.fraction\"] &lt;- 0.8\nconf[\"spark.executor.cores\"] &lt;- 5\nconf[\"spark.executor.instances\"] &lt;- 2\ncont[\"spark.yarn.queue\"] &lt;- \"prod\"\nconf[\"spark.driver.maxResultSize\"] &lt;- 0\nconf[\"spark.sql.shuffle.partitions\"] &lt;- 200\n\nsc &lt;- spark_connect(master = \"yarn\", config = conf)\n\n\nconf &lt;- spark_config()\nconf[\"spark.driver.memory\"] &lt;- \"40Go\"\nconf[\"spark.executor.memory\"] &lt;- \"80Go\"\nconf[\"spark.memory.fraction\"] &lt;- 0.8\nconf[\"spark.memory.storageFraction\"] &lt;- 0.4\nconf[\"spark.executor.cores\"] &lt;- 5\nconf[\"spark.executor.instances\"] &lt;- 2\ncont[\"spark.yarn.queue\"] &lt;- \"prod\"\nconf[\"spark.driver.maxResultSize\"] &lt;- 0\nconf[\"spark.sql.shuffle.partitions\"] &lt;- 200\n\nsc &lt;- spark_connect(master = \"yarn\", config = conf)",
     "crumbs": [
       "Slides"
     ]
@@ -274,7 +274,7 @@
     "href": "slides.html#ce-qui-change-pour-lutilisateur",
     "title": "Initiation à Spark avec R en mode cluster",
     "section": "Ce qui change pour l’utilisateur",
-    "text": "Ce qui change pour l’utilisateur\nLa majorité des commandes dplyr fonctionnent sur un spark_data_frame avec le package sparklyr. Les divergences sont les suivantes :\n\npour effectuer des opérations avec les dates, il faut utiliser les fonctions Hive spécifiques.\narrange() ne fonctionne pas sur un spark_data_frame, il faut lui substituer window_order.\ndes fonctions spécifiques aux spark data frames : sdf_bind_rows pour empiler les lignes par exemple.",
+    "text": "Ce qui change pour l’utilisateur\nLa majorité des commandes dplyr fonctionnent sur un spark_data_frame avec le package sparklyr. Les divergences sont les suivantes :\n\npour effectuer des opérations avec les dates, il faut utiliser les fonctions Hive spécifiques.\narrange() ne fonctionne pas sur un spark_data_frame, il faut lui substituer window_order().\ndes fonctions spécifiques aux spark data frames : sdf_bind_rows() pour empiler les lignes par exemple.",
     "crumbs": [
       "Slides"
     ]
@@ -304,7 +304,7 @@
     "href": "slides.html#quelques-tips-doptimisation",
     "title": "Initiation à Spark avec R en mode cluster",
     "section": "Quelques tips d’optimisation",
-    "text": "Quelques tips d’optimisation\n\nJointuresPersistChargementExport et partitions\n\n\nPour effectuer ce type de jointure avec deux tables de volumétries différentes : A est petite, B est très volumineuse\n\nSolution rapide :\n\ntable_finale &lt;- table_volumineuse_comme_PJC %&gt;%\n  right_join(petite_table_mon_champ)\n\nSolution lente :\n\ntable_finale &lt;- petite_table_mon_champ %&gt;%\n  left_join(table_volumineuse_comme_PJC)\n\n\n\nLorsqu’une table intermédiaire est utilisée plusieurs fois dans un traitement, il est possible de la persister, c’est-à-dire enregistrer ce spark_data_frame sur le disque ou dans la mémoire des noeuds.\n\ntable_1 &lt;- mon_champ %&gt;%\n  left_join(ODD, by = c(\"id_midas\", \"KROD3\")) %&gt;%\n  rename(duree_potentielle_indemnisation = KPJDXP,\n         SJR = KQCSJP,\n         date_debut_indemnisation = KDPOD) %&gt;%\n  sdf_persist()\n\nduree &lt;- table_1 %&gt;%\n  summarise(duree_moy = mean(duree_potentielle_indemnisation),\n            duree_med = median(duree_potentielle_indemnisation)) %&gt;%\n  collect()\n\nSJR &lt;- table_1 %&gt;%\n  summarise(SJR_moy = mean(SJR),\n            SJR_med = median(SJR)) %&gt;%\n  collect()\n\n\n\nLorsqu’on charge des données dans le cluster Spark et que la table est appelée plusieurs fois dans le programme, il est conseillé de la charger en mémoire vive directement.\nAttention, si beaucoup de tables volumineuses sont chargées en mémoire, la fraction de la mémoire spark dédiée au stockage peut être insuffisante ou bien il peut ne pas rester assez de spark memory pour l’exécution.\n\n\nLe format parquet (avec arrow) et le framework spark permettent de gérer le partitionnement des données.\nSi les opérations sont souvent effectuées par régions par exemple, il est utile de forcer le stockage des données d’une même région au même endroit physique et accélère drastiquement le temps de calcul\n\nspark_write_parquet(DE, partition_by = c(\"REGIND\"))\nsdf_coalesce",
+    "text": "Quelques tips d’optimisation\n\nJointuresPersistChargementExport et partitions\n\n\nPour effectuer ce type de jointure avec deux tables de volumétries différentes : A est petite, B est très volumineuse\n\nSolution rapide :\n\ntable_finale &lt;- table_volumineuse_comme_PJC %&gt;%\n  right_join(petite_table_mon_champ)\n\nSolution lente :\n\ntable_finale &lt;- petite_table_mon_champ %&gt;%\n  left_join(table_volumineuse_comme_PJC)\n\n\n\nLorsqu’une table intermédiaire est utilisée plusieurs fois dans un traitement, il est possible de la persister, c’est-à-dire enregistrer ce spark_data_framesur le disque ou dans la mémoire des noeuds.\n\ntable_1 &lt;- mon_champ %&gt;%\n  left_join(ODD, by = c(\"id_midas\", \"KROD3\")) %&gt;%\n  rename(duree_potentielle_indemnisation = KPJDXP,\n         SJR = KQCSJP,\n         date_debut_indemnisation = KDPOD) %&gt;%\n  sdf_persist()\n\nduree &lt;- table_1 %&gt;%\n  summarise(duree_moy = mean(duree_potentielle_indemnisation),\n            duree_med = median(duree_potentielle_indemnisation)) %&gt;%\n  collect()\n\nSJR &lt;- table_1 %&gt;%\n  summarise(SJR_moy = mean(SJR),\n            SJR_med = median(SJR)) %&gt;%\n  collect()\n\n\n\nLorsqu’on charge des données dans le cluster Spark et que la table est appelée plusieurs fois dans le programme, il est conseillé de la charger en mémoire vive directement.\nAttention, si beaucoup de tables volumineuses sont chargées en mémoire, la fraction de la mémoire spark dédiée au stockage peut être insuffisante ou bien il peut ne pas rester assez de spark memory pour l’exécution.\n\n\nLe format .parquet (avec arrow) et le framework spark permettent de gérer le partitionnement des données.\nSi les opérations sont souvent effectuées par régions par exemple, il est utile de forcer le stockage des données d’une même région au même endroit physique et accélère drastiquement le temps de calcul\n\nspark_write_parquet(DE, partition_by = c(\"REGIND\"))",
     "crumbs": [
       "Slides"
     ]
@@ -324,7 +324,7 @@
     "href": "slides.html#les-erreurs-en-sparklyr",
     "title": "Initiation à Spark avec R en mode cluster",
     "section": "Les erreurs en sparklyr",
-    "text": "Les erreurs en sparklyr\nSparklyr traduit le code dplyr fourni en scala, mais interprète également les messages d’erreurs envoyés du cluster vers la session R.\nSparklyr n’est cependant pas performant pour interpréter ces erreurs.\nN’hésitez pas à enregistrer le code générant un message d’erreur dans Documents publics/erreurs_sparklyr\nUn test du code pas-à-pas permet d’isoler le problème.",
+    "text": "Les erreurs en sparklyr\nsparklyr traduit le code dplyr fourni en scala, mais interprète également les messages d’erreurs envoyés du cluster vers la session R.\nsparklyr n’est cependant pas performant pour interpréter ces erreurs.\nN’hésitez pas à enregistrer le code générant un message d’erreur dans Documents publics/erreurs_sparklyr\nUn test du code pas-à-pas permet d’isoler le problème.",
     "crumbs": [
       "Slides"
     ]
@@ -354,7 +354,7 @@
     "href": "slides.html#la-gestion-de-la-mémoire-avec-spark",
     "title": "Initiation à Spark avec R en mode cluster",
     "section": "La gestion de la mémoire avec spark",
-    "text": "La gestion de la mémoire avec spark\nLes shuffles sont les opérations les plus gourmandes en temps.\nSpark UI permet de consulter le plan logique et physique du traitement demandé. Trois outils permettent d’optimiser les traitements :\n\nDAGGCMémoire",
+    "text": "La gestion de la mémoire avec spark\nLes shuffles sont les opérations les plus gourmandes en temps.\n\n\n\n\n\n\nQu’est-ce qu’un shuffle ?\n\n\nUn shuffle est un échange de données entre différents noeuds du cluster.\nNous avons vu qu’utiliser sparkdans un cluster implique de distribuer également le stockage des données.\nPar exemple :\n\nje demande un traitement sur la table PJC du FNA\nsi un noeud contenant déjà les données de PJC est disponible, le cluster manager envoie le traitement à ce noeud\nsi tous les noeuds contenant les données de PJC sont déjà réservés, alors le cluster manager demande le traitement à un autre noeud, par exemple le noeud 1\nil demande à un noeud contenant les données PJC, par exemple le noeud 4, d’envoyer ces données au noeud 1 qui va exécuter le traitement\ncet échange de données est en réseau filaire : un échange filaire est beaucoup plus lent qu’un envoi interne par le disque du noeud 1 à la RAM du noeud 1\nc’est pourquoi pour optimiser un programme spark, il est possible de limiter les shuffles",
     "crumbs": [
       "Slides"
     ]
@@ -415,6 +415,76 @@
     "title": "Initiation à Spark avec R en mode cluster",
     "section": "Mode local : concurrence",
     "text": "Mode local : concurrence\nEn mode local :\n\nune unique machine Java\nparallélisation des tâches sur différents coeurs de cette machine virtuelle\npas de stockage distribué, ca n’est pas du calcul distribué à proprement parler\naccélération par rapport à un mode de programmation classique séquentiel sur un unique coeur si beaucoup de ressources\nSur la bulle CASD, mauvaise gestion de la répartition des ressources en spark local\n▶️mode local à éviter absolument",
+    "crumbs": [
+      "Slides"
+    ]
+  },
+  {
+    "objectID": "slides.html#configuration-des-ressources-cluster",
+    "href": "slides.html#configuration-des-ressources-cluster",
+    "title": "Initiation à Spark avec R en mode cluster",
+    "section": "Configuration des ressources cluster",
+    "text": "Configuration des ressources cluster",
+    "crumbs": [
+      "Slides"
+    ]
+  },
+  {
+    "objectID": "slides.html#lutilisation-de-la-mémoire-du-driver-1",
+    "href": "slides.html#lutilisation-de-la-mémoire-du-driver-1",
+    "title": "Initiation à Spark avec R en mode cluster",
+    "section": "L’utilisation de la mémoire du driver",
+    "text": "L’utilisation de la mémoire du driver\nLorsqu’il est nécessaire de collecter une table volumineuse, il faut donc prévoir assez de mémoire RAM pour le driver.\n\nconf &lt;- spark_config()\nconf[\"spark.driver.memory\"] &lt;- \"40Go\"\nconf[\"spark.executor.memory\"] &lt;- \"80Go\"\nconf[\"spark.executor.cores\"] &lt;- 5\nconf[\"spark.executor.instances\"] &lt;- 2\ncont[\"spark.yarn.queue\"] &lt;- \"prod\"\nconf[\"spark.driver.maxResultSize\"] &lt;- 0\nconf[\"spark.sql.shuffle.partitions\"] &lt;- 200\n\nsc &lt;- spark_connect(master = \"yarn\", config = conf)\n\n\n\n\n\n\n\nBonne pratique de partage des ressources\n\n\nLe driver est instancié dans la bulle Midares, qui a vocation à être réduite suite à la généralisation du cluster.\n\nLa bulle Midares a besoin de RAM minimale pour fonctionner, 100% des ressources ne sont donc pas disponibles pour sparklyr.\nPour permettre le travail simultané fluide de 10 utilisateurs, la mémoire allouée au driver recommandée pour chaque utilisateur est de 15 Go.\nL’export d’une table sdf directement au format .parquet est une alternative plus rapide, plus efficiente et qui permet par la suite de charger ses données en R classique et de travailler sur un df R sans utiliser sparklyr.",
+    "crumbs": [
+      "Slides"
+    ]
+  },
+  {
+    "objectID": "slides.html#comment-tester-son-code-pour-collecter-le-moins-possible",
+    "href": "slides.html#comment-tester-son-code-pour-collecter-le-moins-possible",
+    "title": "Initiation à Spark avec R en mode cluster",
+    "section": "Comment tester son code pour collecter le moins possible ?",
+    "text": "Comment tester son code pour collecter le moins possible ?\nLa programmation en spark doit être adaptée aux contraintes de volumétrie des données : test de chaque étape, puis ne forcer le calcul qu’à la fin pour que Catalyst optimise l’ensemble du programme\nLa principale différence avec la programmation en R classique est que la visualisation de tables complètes volumineuses n’est pas recommandée :\n\ngoulets d’étranglement même avec spark, car toutes les données sont rapatriées vers le driver puis vers la session R ;\nlongue : échange entre tous les noeuds impliqués dans le calcul et le driver, puis un échange driver-session R ;\nbeaucoup moins efficace que l’export direct en parquet du résultat (presque instantanné) : charger ensuite sa table finale en data frame R classique pour effectuer l’étude.\n\nS’il est nécessaire de collecter, il faut prévoir beaucoup de RAM pour le driver avec le paramètre spark.driver.memory.",
+    "crumbs": [
+      "Slides"
+    ]
+  },
+  {
+    "objectID": "slides.html#sparkui-un-outil-doptimisation",
+    "href": "slides.html#sparkui-un-outil-doptimisation",
+    "title": "Initiation à Spark avec R en mode cluster",
+    "section": "SparkUI : un outil d’optimisation",
+    "text": "SparkUI : un outil d’optimisation\nSpark UI permet de consulter le plan logique et physique du traitement demandé. Trois outils permettent d’optimiser les traitements :\n\nDAGGCMémoire\n\n\n\n\n\nVérifier que le gc time est inférieur à 10% du temps pour exécuter la tâche ✅\n\n\n\nVérifier que la storage memory ne sature pas la mémoire ✅",
+    "crumbs": [
+      "Slides"
+    ]
+  },
+  {
+    "objectID": "slides.html#ma-session-ne-sinstancie-jamais",
+    "href": "slides.html#ma-session-ne-sinstancie-jamais",
+    "title": "Initiation à Spark avec R en mode cluster",
+    "section": "Ma session ne s’instancie jamais",
+    "text": "Ma session ne s’instancie jamais\nSi l’instruction sc &lt;- spark_connect(master = \"yarn\", config = conf prend plus de 10 minutes, il est utile d’ouvrir l’interface de yarn pour vérifier que la file n’est pas déjà entièrement occupée. L’erreur peut ne survenir qu’au bout d’une vingtaine de minutes : le job est ACCEPTED dans yarn, ou FAILED si la session n’a pas pu être instanciée par manque de ressources disponibles.",
+    "crumbs": [
+      "Slides"
+    ]
+  },
+  {
+    "objectID": "slides.html#exporter-de-hdfs-au-local-1",
+    "href": "slides.html#exporter-de-hdfs-au-local-1",
+    "title": "Initiation à Spark avec R en mode cluster",
+    "section": "Exporter de HDFS au local",
+    "text": "Exporter de HDFS au local",
+    "crumbs": [
+      "Slides"
+    ]
+  },
+  {
+    "objectID": "slides.html#sparklyr-mode-cluster",
+    "href": "slides.html#sparklyr-mode-cluster",
+    "title": "Initiation à Spark avec R en mode cluster",
+    "section": "Sparklyr mode cluster",
+    "text": "Sparklyr mode cluster",
     "crumbs": [
       "Slides"
     ]
