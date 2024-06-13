@@ -352,7 +352,7 @@ pjc_df_spark <- copy_to(sc, "PJC")
 
 ## Configuration des ressources cluster
 
-![](mode_cluster.PNG)
+![](schema_cluster.drawio.png){fig-align="center" width="691"}
 
 ## L'utilisation de la mémoire dans un worker {.smaller .scrollable}
 
