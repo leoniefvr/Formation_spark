@@ -130,7 +130,7 @@ Le processeur permet d'**exécuter des tâches et des programmes** : convertir u
 
     ▶️ Erreur "out of memory".
 
-## Un traitement peu coûteux {.smaller}
+## Un traitement peu coûteux : un traitement MAP {.smaller}
 
 ![](formation%20sparklyr-Page-1.drawio.png){fig-align="center" width="800"}
 
@@ -140,7 +140,7 @@ Ce traitement est peu coûteux :
 
 -   peu de mémoire d'exécution : R est un langage vectorisé
 
-## Un traitement coûteux {.smaller}
+## Un traitement coûteux : un traitement REDUCE {.smaller}
 
 ![](formation%20sparklyr-Page-2.drawio.png){fig-align="center" width="850"}
 
@@ -154,18 +154,21 @@ Ce traitement nécessite :
 
 ## Calcul distribué et calcul parallèle {.smaller}
 
-::: panel-tabset
+::: columns
+::: {.column width="50%"}
 ### Calcul non distribué
 
-Lorsqu'un traitement Big Data est demandé par l'utilisateur dans la session R, plusieurs problèmes peuvent se poser :
+Les problématiques Big Data en R sont les suivantes :
 
 -   la taille des données : chargées en mémoire pour effectuer les calculs avec R
 
--   le temps de calcul : si plusieurs étapes sont nécessaires pour un traitement, elles sont effectuées de manière séquentielle par le processeur (très long)
+-   le temps de calcul : les étapes du traitement sont effectuées de manière séquentielle par le processeur (très long)
 
 -   l'optimisation du programme
+:::
 
-### Calcul distribué avec spark
+::: {.column width="50%"}
+### Calcul distribué spark
 
 Le calcul distribué avec spark apporte une solution à ces problématiques :
 
@@ -175,10 +178,31 @@ Le calcul distribué avec spark apporte une solution à ces problématiques :
 
 -   optimisation automatique du code
 :::
+:::
 
-## Le cluster de calcul Midares : mode interactif {.smaller}
+## Un traitement MAP distribué {.smaller}
 
-![](schema_cluster.drawio.png){fig-align="center" width="691"}
+![](map_distribue.drawio.png)
+
+Si les données sont stockées sur différents ordinateurs :
+
+-   les calculs peuvent être effectués en parallèle ;
+
+-   gain de temps lié à l'augmentation des ressources informatiques pour effectuer le calcul et à la parallélisation.
+
+Les traitements MAP se prêtent parfaitement au calcul distribué et parallèle.
+
+## Un traitement REDUCE distribué {.smaller}
+
+![](reduce_distribue.drawio.png)
+
+Si les données sont stockées sur différents ordinateurs :
+
+-   il faut les rappatrier au même endroit pour effectuer la jointure ;
+
+-   cet échange est effectué en réseau entre les ordinateurs : l'envoi réseau a un coût non négligeable en temps.
+
+Les traitements REDUCE ne se prêtent pas bien au calcul distribué et parallèle.
 
 ## Spark {.smaller .scrollable}
 
@@ -231,219 +255,128 @@ Le calcul distribué avec spark apporte une solution à ces problématiques :
 
     -   **sparklyr**, qui permet d'utiliser directement des commandes dplyr traduites en spark par le package.
 
-## Mode local : concurrence {.smaller}
-
-![](mode_local.PNG)
-
-## Mode local : concurrence {.smaller}
-
-En mode local :
-
--   une unique machine Java
-
--   parallélisation des tâches sur différents coeurs de cette machine virtuelle
-
--   pas de stockage distribué, ca n'est pas du calcul distribué à proprement parler
-
--   accélération par rapport à un mode de programmation classique séquentiel sur un unique coeur si beaucoup de ressources
-
--   Sur la bulle CASD, mauvaise gestion de la répartition des ressources en spark local
-
-    ▶️mode local à éviter absolument
-
-## Mode cluster : non concurrence {.smaller}
-
-![](mode_cluster.PNG)
-
-Le mode cluster permet une réelle distribution sur différents noeuds, qui sont en fait des ordinateurs distincts d'un serveur. Ces machines communiquent en réseau.
-
-## Installation de spark sous CASD
+## Installation de spark sous CASD {.smaller}
 
 Voir la fiche dédiée sur le site
 
-## Sparklyr et SparkR {.smaller}
+## La machine virtuelle Java {.smaller}
 
-Deux packages permettent de programmer avec Spark sous R :
+Spark est rédigé en scala, un langage qui a besoin d'une machine virtuelle Java pour être exécuté. La machine virtuelle Java est scalable : l'utilisateur peut choisir quelles ressources physiques elle a le droit d'utiliser sur l'ensemble des ressources physiques disponibles sur l'ordinateur. C'est un mini ordinateur créé par spark à l'intérieur de notre propre ordinateur, qui utilise les ressources de ce dernier.
 
--   **SparkR :** ce package, maintenu par Apache Spark, permet d'utiliser une syntaxe proche de `spark`, `scala`, ou directement du code `SQL` pour manipuler des données dans une session R.
+::: callout-note
+## Machine virtuelle
 
--   **Sparklyr :** ce package permet d'utiliser directement la syntaxe `dplyr` dans une session Spark sous R.
+Une machine virtuelle a les mêmes caractéristiques qu'un ordinateur :
 
-**Sparklyr** fonctionne selon ces étapes :
+-   un système d'exploitation : Windows, Linux, MacOS
 
-1.  La **JVM driver spark est instanciée dans la bulle Midares** pour utiliser `sparklyr`.
+-   des ressources physiques : CPU, RAM et stockage disque
 
-2.  Les instructions `dplyr` appelées sur un `spark_data_frame` sont **traduites par les fonctions du package** `sparklyr` **en** `scala`, puis envoyées au driver.
-
-3.  Le programme en `scala` est exécuté sur le **cluster**.
-
-4.  Si une **erreur** est renvoyée par le driver, elle est interprétée par R avant d'être affichée en session R.
-
-## Sparklyr mode cluster
-
-![](schema_cluster.drawio.png){fig-align="center" width="691"}
-
-## Configuration cluster {.smaller .scrollable}
-
-Deux étapes majeures dans le traitement de données sous R diffère en sparklyr par rapport à une programmation classique en `dplyr` :
-
-::: panel-tabset
-### Configuration
-
-Il est nécessaire de configurer la session spark pour établir une connexion entre la session R et un cluster spark. Les paramètres à définir sont :
-
--   Les ressources physiques utilisées :
-
-    1.  par le **driver** : avec `spark.driver.memory` **(avec parcimonie)**
-
-    2.  par chaque **worker** avec `spark.executor.memory`(valeur max **140 Go**) et `spark.executor.cores` (valeur max **8 coeurs**)
-
-    3.  le nombre de **workers** avec `spark.executor.instances` **(2 ou 3 suffisent)**
-
-    4.  La **file** sur laquelle on travaille avec `spark.yarn.queue` **(prod ou dev)**
-
--   le nombre de **partitions** de chaque `spark_data_frame` avec `spark.sql.shuffle.partitions` **(200 par défaut)**
-
--   la **limite de taille des résulats** qui peuvent être **collectés** par le driver avec `spark.driver.maxResultSize` **(0 est la meilleure option)**
-
-```{r}
-#| eval: false
-#| echo: true
-
-conf <- spark_config()
-conf["spark.driver.memory"] <- "40Go"
-conf["spark.executor.memory"] <- "80Go"
-conf["spark.executor.cores"] <- 5
-conf["spark.executor.instances"] <- 2
-cont["spark.yarn.queue"] <- "prod"
-conf["spark.driver.maxResultSize"] <- 0
-conf["spark.sql.shuffle.partitions"] <- 200
-
-sc <- spark_connect(master = "yarn", config = conf)
-```
-
-### Import-export
-
-Les données doivent être disponibles dans les workers sous forme de `spark_data_frame` :
-
--   **caché en mémoire directement** : si utilisées plusieurs fois pour gagner du temps
-
--   laissé sur disque tant qu'aucune action ne déclenche un traitement qui nécessite son chargement en mémoire
-
-    ▶️ chargement en mémoire vive couteux en temps : avec la configuration présentée, le chargement du FNA, du FHS et des MMO prend au moins 25 minutes.
-
--   Pour passer un `data.frame` R en spark_data_frame : `copy_to()`
-
-```{r}
-#| eval: false
-
-pjc_df_spark <- spark_read_parquet(sc,
-                                  path = "hdfs:///dataset/MiDAS_v4/FNA/pjc.parquet",
-                                  memory = TRUE)
-
-pjc_filtree <- pjc_df_spark %>%
-  filter(KDDPJ >= as.Date("2022-01-01"))
-
-spark_write_parquet(pjc_filtree, "hdfs:///tmp/pjc_filtree.parquet")
-
-pjc_df_spark <- copy_to(sc, "PJC")
-```
+La différence avec un ordinateur : une machine virtuelle peut être créée sur un serveur physique en réservant une petite partie des ressources du serveur seulement, ce qui permet de créer plusieurs ordinateurs différents sur une seule infractructure physique
 :::
 
-## Configuration des ressources cluster
-
-![](schema_cluster.drawio.png){fig-align="center" width="691"}
-
-## L'utilisation de la mémoire dans un worker {.smaller .scrollable}
+## Deux manières d'utiliser Spark {.smaller .scrollable}
 
 ::: columns
 ::: {.column width="50%"}
-![](memoire_worker_1.drawio.png)
+### Avec un seul ordinateur
+
+Ce mode est appelé Spark local.
+
+-   une unique machine virtuelle Java est créée pour exécuter le code spark
+
+-   tâches parallélisées sur les différents coeurs (CPU) du processeur de la machine virtuelle Java
+
+-   l'ordinateur sur lequel est créée cette machine virtuelle Java est la bulle MiDARES, équivalent d'un unique gros ordinateur
 :::
 
 ::: {.column width="50%"}
-![](memoire_worker_2.drawio.png)
+### Sur un cluster de calcul
+
+Un cluster de calcul est un ensemble d'ordinateurs ou machines virtuelles connectés en réseau.
+
+-   une machine virtuelle Java est créée par spark dans chaque ordinateur du cluster
+
+-   tâches parallélisées sur les différents ordinateurs du cluster
+
+-   la session R reste sur la bulle MiDARES, le code R est traduit en scala puis envoyé sur le cluster pour être exécuté.
 :::
 :::
 
-::: callout-tip
-Ne pas charger plusieurs fois les mêmes données en cache, ou si besoin augmenter la part de la mémoire allouée au stockage avec `spark.memory.storageFraction`.
-:::
+## Mode local : schéma {.smaller}
+
+![](mode_local.PNG)
+
+## Mode local : à éviter {.smaller}
+
+En mode local :
+
+-   les ressources utilisées par la machine virtuelle sont celles de la bulle
+
+-   il faut allouer suffisamment de coeurs à la JVM pour paralléliser
+
+-   même si l'utilisateur choisit des ressources faibles, les ressources réelles utilisées dans une session spark peuvent être plus élevées : mauvaise gestion de l'allocation des ressources
+
+-   accélération sensible par rapport à un mode de programmation classique séquentiel sur un unique coeur si beaucoup de ressources
+
+-   Sur la bulle CASD, mauvaise gestion de la répartition des ressources en spark local : l'utilisation simultanée de spark par plusieurs membres de la bulle entraînent des ralentissements considérables
+
+    ▶️mode local à éviter absolument
+
+## Le cluster de calcul Midares : présentation {.smaller}
+
+![](schema_cluster.drawio.png){fig-align="center" width="691"}
+
+## Se connecter à Spark sur un cluster {.smaller}
+
+Se connecter à spark revient à demander à spark de créer toutes les JVM demandées capables de lire du scala.
+
+Pour se connecter à spark depuis R avec le package `sparklyr` :
 
 ```{r}
+#| eval: false
+#| echo: true
 #| code-line-numbers: "4"
-#| eval: false
-#| echo: true
+
+library(sparklyr)
 
 conf <- spark_config()
-conf["spark.driver.memory"] <- "40Go"
-conf["spark.executor.memory"] <- "80Go"
-conf["spark.memory.fraction"] <- 0.8
-conf["spark.executor.cores"] <- 5
-conf["spark.executor.instances"] <- 2
-cont["spark.yarn.queue"] <- "prod"
-conf["spark.driver.maxResultSize"] <- 0
-conf["spark.sql.shuffle.partitions"] <- 200
-
+conf$spark.executor.instances <- 5
 sc <- spark_connect(master = "yarn", config = conf)
+    
 ```
+
+Le paramètre `spark.executor.instances` correspond au nombre d'ordinateurs sur lequel on souhaite paralléliser le travail d'exécution de code. Ici, l'utilisateur demande 5 ordinateurs du cluster.
+
+Nous verrons plus loin quels paramètres nous devons préciser dans le fichier de configuration.
+
+## Une connexion {.smaller}
+
+Toutes les JVM demandées (5) sont instanciées dans les ordinateurs du cluster, avec les paramètres définis.
+
+![](schema_cluster.drawio.png){fig-align="center" width="691"}
+
+## La vie d'un programme rédigé en sparklyr {.smaller}
+
+Avec `sparklyr`, il est possible de programmer directement en `dplyr` pour utiliser spark.
 
 ```{r}
-#| code-line-numbers: "5"
 #| eval: false
 #| echo: true
 
-conf <- spark_config()
-conf["spark.driver.memory"] <- "40Go"
-conf["spark.executor.memory"] <- "80Go"
-conf["spark.memory.fraction"] <- 0.8
-conf["spark.memory.storageFraction"] <- 0.4
-conf["spark.executor.cores"] <- 5
-conf["spark.executor.instances"] <- 2
-cont["spark.yarn.queue"] <- "prod"
-conf["spark.driver.maxResultSize"] <- 0
-conf["spark.sql.shuffle.partitions"] <- 200
+# un data frame que j'envoie dans spark
+un_df <- data.frame(c(1,2,3), c("A", "B", "C"))
+names(un_df) <- c("col_num", "col_char")
 
-sc <- spark_connect(master = "yarn", config = conf)
+# C'est maintenant un spark_data_frame
+copy_to(sc, un_df)
+    
+un_df_transforme <- un_df %>%
+    mutate(une_nouvelle_col = col_num*2)
+
 ```
 
-## Le stockage distribué : HDFS {.smaller .scrollable}
-
--   **stockage sur différentes machines :** ici les noeuds du cluster spark, c'est-à-dire les différents ordinateurs workers du cluster
-
--   données divisées **en blocs** plus petits de taille fixe et répartis sur les machines
-
--   chaque bloc est **répliqué trois fois** pour être résilient face aux pannes
-
--   un **NameNode** supervise les **métadonnées** et gère la structure du système de fichiers
-
--   les **DataNodes** stockent effectivement les blocs de données
-
--   le **système HDFS** est relié à la bulle Midares : possible de charger des données en clique-bouton de la bulle vers HDFS de manière très rapide et de télécharger des tables de HDFS pour les récupérer en local
-
-    ::: callout-caution
-    ## Les exports sur HDFS
-
-    Lorsqu'on exporte une table depuis notre session R vers HDFS, celle-ci est **automatiquement partitionnée**, comme le reste des données.
-
-    Ainsi, cette table sera stockée en plusieurs morceaux sous HDFS et répliquée.
-
-    Il est possible de maîtriser le nombre de partitions avec la commande `sdf_coalesce(partitions = 5)` du package `sparklyr`.
-
-    L'idéal est d'**adapter le nombre de partitions à la taille d'un bloc** : un bloc mesure 128 MB. Lorsqu'un bloc disque est utilisé, même à 1%, il n'est pas utilisable pour un autre stockage.
-
-    Exporter un fichier de 1MB en 200 partitions réserve 200 blocs inutilement.
-    :::
-
-## Le stockage distribué : HDFS {.smaller .scrollable}
-
-![](stockage_distribue.drawio.png){fig-align="center" width="2000"}
-
-▶️ Les réplications de données ont deux fonctions :
-
--   augementer la **flexibilité de la distribution** des traitements
-
--   augmenter la **résilience** en cas de panne d'un noeud
+Si j'exécute ce programme, je ne pourrai pas ouvrir `un_df_transforme`, d'ailleurs, il ne se sera rien passé.
 
 ## La lazy evaluation {.smaller .scrollable}
 
@@ -476,51 +409,262 @@ Spark distingue deux types d'opérations :
 
     Les principales actions sont : `print()`, `collect()`, `head()`, `tbl_cache()` (écrire un `spark_data_frame` en mémoire pour le réutiliser).
 
-## La lazy evaluation {.smaller .scrollable}
+## La vie d'un programme rédigé en sparklyr
 
-Spark optimise automatiquement les programmes soumis :
+Prenons l'exemple d'un programme contenant une action.
 
-1.  Compilation des transformations
+```{r}
+#| eval: false
 
-2.  Intégration dans un **plan d'exécution** : éventuelles erreurs du programme soulevées avant l'exécution
+# un data frame que j'envoie dans spark
+un_df <- data.frame(c(1,2,3,4,5), c("A", "B", "C", "D", "E"))
+names(un_df) <- c("col_num", "col_char")
 
-3.  Optimisation du plan logique par le module **Catalyst** (driver Spark)
+# C'est maintenant un spark_data_frame
+copy_to(sc, un_df)
+    
+un_df_transforme <- un_df %>%
+    mutate(une_nouvelle_col = col_num*2) %>%
+    head(3) %>%
+    print()
 
-    Par exemple si j'écris le programme :
+```
 
-    ```{r}
-    #| eval: false
-    #| echo: true
+## Le rôle du driver {.smaller}
 
-    non_optimal <- table_1 %>%
-      mutate(duree_contrat = DATEDIFF(fin_contrat, debut_contrat)) %>%
-      filter(debut_contrat >= as.Date("2023-01-01"))
-    ```
+![](schema_cluster.drawio.png){fig-align="center" width="400"}
 
-    Catalyst réécrit :
+-   Le programme R est traduit en scala grâce au package `sparklyr`
 
-    ```{r}
-    #| eval: false
-    #| echo: true
+-   Le driver évalue le programme, il lit le code `scala` mais n'exécute rien du tout
 
-    non_optimal <- table_1 %>%
-      filter(debut_contrat >= as.Date("2023-01-01")) %>%
-      mutate(duree_contrat = DATEDIFF(fin_contrat, debut_contrat))
-    ```
-
-    Cette optimisation est réalisée sur toutes les transformations compilée avant qu'une action déclenche l'exécution.
-
-4.  Réalisation de plans physiques possibles et sélection du **meilleur plan physique** (au regard de la localisation des données requises).
-
-5.  **Déclencher le moins d'actions possibles** dans son programme permet de tirer pleinement parti de Catalyst et de gagner un temps certain.
-
-6.  Pour profiter des avantages de spark, la manière de programmer recommandée est différente de celle prédominante en R classique.
+-   S'il remarque une erreur, l'erreur est envoyée directement à l'utilisateur en session R avant l'exécution du programme : c'est la force de la lazy evaluation.
 
 ## Le plan d'exécution {.smaller}
 
 ![](catalyst.jpg)
 
 source : documentation CASD disponible à [Documentation Data Science](https://casd-eu.gitbook.io/data-science/)
+
+AJOUTER UN DAG
+
+## Le rôle du driver : Catalyst {.smaller .scrollable}
+
+Le driver contient un programme nommé Catalyst qui optimise le code `scala` automatiquement.
+
+Spark optimise automatiquement les programmes soumis :
+
+1.  Compilation des transformations pour soulever les éventuelles erreurs
+
+2.  Intégration dans un **plan d'exécution** contenant les étapes nécessaires pour parvenir au résultat demandé par le programme
+
+3.  Optimisation du plan logique par le module **Catalyst** (driver Spark)
+
+Par exemple si j'écris le programme :
+
+```{r}
+#| eval: false 
+#| echo: true  
+
+non_optimal <- table_1 %>%   
+    mutate(duree_contrat = DATEDIFF(fin_contrat, debut_contrat)) %>%   
+    filter(debut_contrat >= as.Date("2023-01-01"))
+```
+
+```         
+Catalyst réécrit :
+```
+
+```{r}
+#| eval: false 
+#| echo: true  
+
+optimal <- table_1 %>%   
+    filter(debut_contrat >= as.Date("2023-01-01")) %>%   
+    mutate(duree_contrat = DATEDIFF(fin_contrat, debut_contrat))
+```
+
+Cette optimisation est réalisée sur toutes les transformations compilée avant qu'une action déclenche l'exécution.
+
+## Le rôle du driver : Catalyst {.smaller .scrollable}
+
+![](dag.webp)
+
+## Le rôle du driver : Catalyst {.smaller .scrollable}
+
+4.  Réalisation de plans physiques possibles et sélection du **meilleur plan physique** (au regard de la localisation des données requises). Le plan physique est la distribution des différents calculs aux machines du cluster.
+
+5.  **Déclencher le moins d'actions possibles** dans son programme permet de tirer pleinement parti de Catalyst et de gagner un temps certain.
+
+6.  Pour profiter des avantages de spark, la manière de programmer recommandée est différente de celle prédominante en R classique.
+
+## Le rôle du cluster manager {.smaller}
+
+![](schema_cluster.drawio.png){fig-align="center" width="400"}
+
+Le cluster manager distribue les traitements physiques aux ordinateurs du cluster :
+
+-   il connaît le meilleur plan physique fourni par Catalyst ;
+
+-   il connaît les ressources disponibles et occupées par toutes les machines du cluster ;
+
+-   il affecte les ressources disponibles à la session spark.
+
+## Le rôle du worker {.smaller}
+
+![](schema_cluster.drawio.png){fig-align="center" width="400"}
+
+Le worker effectue le morceau de programme qu'on lui affecte et renvoie le résultat au driver, qui lui-même affiche le résultat en session R :
+
+-   il ne connaît que les tâches qu'on lui a affectées ;
+
+-   il peut communiquer avec le driver en réseau pour renvoyer un résultat ;
+
+-   il peut communiquer avec les autres workers en réseau pour partager des données ou des résultats intermédiaires : c'est un shuffle.
+
+## Où sont les données ? {.smaller}
+
+![](schema_cluster.drawio.png){fig-align="center" width="400"}
+
+## Où sont les données ?
+
+![](hdfs_browse.png)
+
+## Transfert de la bulle à HDFS {.smaller}
+
+![](hdfs_dowload.PNG)
+
+## Transfert de HDFS à la bulle {.smaller}
+
+![](hdfs_midas.PNG)
+
+## Mais où sont réellement les données ? HDFS {.smaller}
+
+Hadoop Distributed File System (HDFS)
+
+-   **stockage sur différentes machines :** ici les noeuds du cluster spark, c'est-à-dire les différents ordinateurs workers du cluster
+
+-   données divisées **en blocs** plus petits de taille fixe et répartis sur les machines : aucune table de MiDAS n'existe en entier sur le cluster
+
+-   chaque bloc est **répliqué trois fois** : il existe trois fois les 10 premières lignes de la table FNA sur trois ordinateurs différents du cluster (résilience)
+
+-   un **NameNode** supervise les **métadonnées** et gère la structure du système de fichiers
+
+-   les **DataNodes** stockent effectivement les blocs de données : les datanodes sont en fait les disques des workers du cluster, chaque ordinateur du cluster dispose d'un disque avec une partie des données MiDAS
+
+-   le **système HDFS** est relié à la bulle Midares : possible de charger des données en clique-bouton de la bulle vers HDFS de manière très rapide et de télécharger des tables de HDFS pour les récupérer en local
+
+# Programmer avec sparklyr
+
+## Paramétrer sa session {.smaller .scrollable}
+
+Il faut préciser quelles ressources réserver pour chaque unité spark : le driver, le nombre d'ordinateurs workers (appelées instances), la RAM, le nombre de coeurs
+
+La configuration par défaut est :
+
+Il est nécessaire de configurer la session spark pour établir une connexion entre la session R et un cluster spark. Les paramètres à définir sont :
+
+-   Les ressources physiques utilisées :
+
+    1.  par le **driver** : avec `spark.driver.memory` **(avec parcimonie)**
+
+    2.  par chaque **worker** avec `spark.executor.memory`(valeur max **140 Go**) et `spark.executor.cores` (valeur max **8 coeurs**)
+
+    3.  le nombre de **workers** avec `spark.executor.instances` **(2 ou 3 suffisent)**
+
+    4.  La **file** sur laquelle on travaille avec `spark.yarn.queue` **(prod ou dev)**
+
+-   le nombre de **partitions** de chaque `spark_data_frame` avec `spark.sql.shuffle.partitions` **(200 par défaut)**
+
+-   la **limite de taille des résulats** qui peuvent être **collectés** par le driver avec `spark.driver.maxResultSize` **(0 est la meilleure option)**
+
+```{r}
+#| eval: false
+#| echo: true
+
+conf <- spark_config()
+conf["spark.driver.memory"] <- "40Go"
+conf["spark.executor.memory"] <- "60Go"
+conf["spark.executor.cores"] <- 4
+conf["spark.executor.instances"] <- 2
+cont["spark.yarn.queue"] <- "prod"
+conf["spark.driver.maxResultSize"] <- 0
+conf["spark.sql.shuffle.partitions"] <- 200
+
+sc <- spark_connect(master = "yarn", config = conf)
+```
+
+## Mode cluster : non concurrence grâce au cluster manager {.smaller}
+
+![](mode_cluster.PNG)
+
+Le mode cluster permet une réelle distribution sur différents noeuds, qui sont en fait des ordinateurs distincts d'un serveur. Ces machines communiquent en réseau.
+
+Capture d'écran réservation des ressources
+
+Il est donc nécessaire de se déconnecter pour libérer les ressources : des ressources réservées, même lorsqu'aucun programme ne tourne, ne peuvent jamais être affectées à d'autres utilisateurs.
+
+```{r}
+#| eval: false
+
+spark_disconnect_all()
+```
+
+## Importer les données depuis HDFS sous R {.smaller .scrollable}
+
+Les données doivent être disponibles dans les workers sous forme de `spark_data_frame` :
+
+-   **caché en mémoire directement** : si utilisées de très nombreuses fois pour gagner du temps
+
+-   laissé sur disque tant qu'aucune action ne déclenche un traitement qui nécessite son chargement en mémoire
+
+    ▶️ chargement en mémoire vive couteux en temps : avec la configuration présentée, le chargement du FNA, du FHS et des MMO prend au moins 25 minutes.
+
+-   Pour passer un `data.frame` R en spark_data_frame : `copy_to()`
+
+```{r}
+#| eval: false
+#| echo: true
+
+pjc_df_spark <- spark_read_parquet(sc,
+                                  path = "hdfs:///dataset/MiDAS_v4/FNA/pjc.parquet",
+                                  memory = TRUE)
+
+pjc_filtree <- pjc_df_spark %>%
+  filter(KDDPJ >= as.Date("2022-01-01"))
+
+spark_write_parquet(pjc_filtree, "hdfs:///tmp/pjc_filtree.parquet")
+
+pjc_df_spark <- copy_to(sc, "PJC")
+```
+
+## Les exports sur HDFS {.smaller .scrollable}
+
+::: callout-caution
+## Les exports sur HDFS
+
+Lorsqu'on exporte une table depuis notre session R vers HDFS, celle-ci est **automatiquement partitionnée**, comme le reste des données.
+
+Ainsi, cette table sera stockée en plusieurs morceaux sous HDFS et répliquée.
+
+Il est possible de maîtriser le nombre de partitions avec la commande `sdf_coalesce(partitions = 5)` du package `sparklyr`.
+
+L'idéal est d'**adapter le nombre de partitions à la taille d'un bloc** : un bloc mesure 128 MB. Lorsqu'un bloc disque est utilisé, même à 1%, il n'est pas utilisable pour un autre stockage.
+
+Exporter un fichier de 1MB en 200 partitions réserve 200 blocs inutilement.
+:::
+
+## Les shuffles {.smaller}
+
+![](reduce_distribue.drawio.png)
+
+Comme nous l'avons vu, les traitements REDUCE ne se prêtent pas très bien au calcul distribué :
+
+-   augmenter le nombre de workers augmente la probabilité de devoir effectuer des shuffles
+
+-   il est recommandé de se limiter à deux workers comme dans la configuration proposée
+
+-   réserver d'autres ressources n'est souvent pas efficient et monopolise les ressources pour les autres utilisateurs.
 
 ## Récupérer un résultat {.smaller}
 
@@ -568,7 +712,7 @@ Le driver est instancié dans la bulle Midares, qui a vocation à être réduite
 
 -   Pour permettre le **travail simultané fluide de 10 utilisateurs**, la mémoire allouée au driver recommandée pour chaque utilisateur est de **15 Go**.
 
--   L'export d'une table `sdf` directement au format `.parquet` est une alternative plus rapide, plus efficiente et qui permet par la suite de charger ses données en R classique et de travailler sur un `df` R sans utiliser `sparklyr`.
+-   **L'export d'une table** `sdf` directement au format `.parquet` est une alternative plus rapide, plus efficiente et qui permet par la suite de charger ses données en R classique et de travailler sur un `df` R sans utiliser `sparklyr`.
 :::
 
 ## Comment tester son code pour collecter le moins possible ? {.smaller .scrollable}
@@ -589,13 +733,17 @@ S'il est nécessaire de collecter, il faut prévoir **beaucoup de RAM pour le dr
 
 ## Ce qui change pour l'utilisateur {.smaller}
 
-La majorité des commandes `dplyr` fonctionnent sur un spark_data_frame avec le package `sparklyr`. Les divergences sont les suivantes :
+La majorité des commandes `dplyr` fonctionnent sur un spark_data_frame avec le package `sparklyr`. Les divergences principales sont les suivantes :
 
--   pour effectuer des opérations avec les dates, il faut utiliser les fonctions Hive spécifiques.
-
--   `arrange()` ne fonctionne pas sur un spark_data_frame, il faut lui substituer `window_order()`.
-
--   des fonctions spécifiques aux spark data frames : `sdf_bind_rows()` pour empiler les lignes par exemple.
+| Fonctionnalité                 | tidyverse      | sparklyr                         |
+|--------------------------|-----------------|-----------------------------|
+| import d'un fichier `.parquet` | `read_parquet` | `spark_read_parquet()`           |
+| tri d'un tableau               | `arrange()`    | `window_order()` ou `sdf_sort()` |
+| opérations sur les dates       | `lubridate`    | fonctions Hive                   |
+| empiler des tableaux           | `bind_rows()`  | `sdf_bind_rows()`                |
+| nombre de lignes d'un tableau  | `nrow()`       | `sdf_nrow()`                     |
+| faire pivoter un tableau       | `tidyr`        | `sdf_pivot()`                    |
+| export d'un `spark_data_frame` |                | `spark_write_parquet()`          |
 
 ## Quelques fonctions spécifiques {.smaller .scrollable}
 
@@ -906,7 +1054,7 @@ Les **shuffles** sont les opérations les plus gourmandes en temps.
 
 Un shuffle est un **échange de données entre différents noeuds** du cluster.
 
-Nous avons vu qu'utiliser `spark`dans un cluster implique de distribuer également le stockage des données.
+Nous avons vu qu'utiliser `spark` dans un cluster implique de distribuer également le stockage des données.
 
 Par exemple :
 
@@ -921,6 +1069,65 @@ Par exemple :
 5.  cet échange de données est en réseau filaire : un échange filaire est beaucoup plus lent qu'un envoi interne par le disque du noeud 1 à la RAM du noeud 1
 
 6.  c'est pourquoi pour optimiser un programme spark, il est possible de limiter les shuffles
+:::
+
+## L'utilisation de la mémoire dans un worker {.smaller .scrollable}
+
+::: columns
+::: {.column width="50%"}
+![](memoire_worker_1.drawio.png)
+:::
+
+::: {.column width="50%"}
+![](memoire_worker_2.drawio.png)
+:::
+:::
+
+::: callout-tip
+Ne pas charger plusieurs fois les mêmes données en cache, ou si besoin augmenter la part de la mémoire allouée au stockage avec `spark.memory.storageFraction`.
+:::
+
+::: columns
+::: {.column width="50%"}
+```{r}
+#| code-line-numbers: "4"
+#| eval: false
+#| echo: true
+
+conf <- spark_config()
+conf["spark.driver.memory"] <- "40Go"
+conf["spark.executor.memory"] <- "80Go"
+conf["spark.memory.fraction"] <- 0.8
+conf["spark.executor.cores"] <- 5
+conf["spark.executor.instances"] <- 2
+cont["spark.yarn.queue"] <- "prod"
+conf["spark.driver.maxResultSize"] <- 0
+conf["spark.sql.shuffle.partitions"] <- 200
+
+sc <- spark_connect(master = "yarn", config = conf)
+```
+:::
+
+::: {.column width="50%"}
+```{r}
+#| code-line-numbers: "5"
+#| eval: false
+#| echo: true
+
+conf <- spark_config()
+conf["spark.driver.memory"] <- "40Go"
+conf["spark.executor.memory"] <- "80Go"
+conf["spark.memory.fraction"] <- 0.8
+conf["spark.memory.storageFraction"] <- 0.4
+conf["spark.executor.cores"] <- 5
+conf["spark.executor.instances"] <- 2
+cont["spark.yarn.queue"] <- "prod"
+conf["spark.driver.maxResultSize"] <- 0
+conf["spark.sql.shuffle.partitions"] <- 200
+
+sc <- spark_connect(master = "yarn", config = conf)
+```
+:::
 :::
 
 ## SparkUI : un outil d'optimisation {.smaller .scrollable}
@@ -949,9 +1156,25 @@ Vérifier que la `storage memory` ne sature pas la mémoire ✅
 
 -   **yarn** : disponibilité des ressources
 
-    ![](yarn_scheduler.png){width="600"}
+    ![](yarn_scheduler.PNG)
 
 -   **Sparkhistory** pour des traitements de sessions fermées
+
+Le sparkhistory entraîne l'enregistrement de logs assez lourdes, il est donc désactivé par défaut. Pour l'activer sur un programme :
+
+```{r}
+#| eval: false
+#| echo: true
+
+conf <- spark_config()
+conf["spark.eventLog.enabled"] <- "true"
+conf["spark.eventLog.dir"] <- "hdfs://midares-deb11-nn-01.midares.local:9000/spark-logs"
+conf["appName"] <- "un_nom_de_traitement"
+
+sc <- spark_connect(master = "yarn", config = conf)
+
+
+```
 
 ## Ma session ne s'instancie jamais {.smaller}
 
