@@ -1,39 +1,43 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>https://leoniefvr.github.io/Formation_spark/slides.html</loc>
+    <lastmod>2024-10-03T16:39:32.555Z</lastmod>
+  </url>
+  <url>
     <loc>https://leoniefvr.github.io/Formation_spark/configuration.html</loc>
-    <lastmod>2024-07-16T11:04:12.378Z</lastmod>
-  </url>
-  <url>
-    <loc>https://leoniefvr.github.io/Formation_spark/index.html</loc>
-    <lastmod>2024-07-16T11:04:12.382Z</lastmod>
-  </url>
-  <url>
-    <loc>https://leoniefvr.github.io/Formation_spark/oom.html</loc>
-    <lastmod>2024-07-16T11:04:12.382Z</lastmod>
-  </url>
-  <url>
-    <loc>https://leoniefvr.github.io/Formation_spark/dates.html</loc>
-    <lastmod>2024-07-16T11:04:12.378Z</lastmod>
+    <lastmod>2024-10-03T16:39:32.533Z</lastmod>
   </url>
   <url>
     <loc>https://leoniefvr.github.io/Formation_spark/bonnes_pratiques.html</loc>
-    <lastmod>2024-07-16T11:04:12.374Z</lastmod>
+    <lastmod>2024-10-03T16:39:32.533Z</lastmod>
   </url>
   <url>
-    <loc>https://leoniefvr.github.io/Formation_spark/slides.html</loc>
-    <lastmod>2024-07-16T11:04:12.546Z</lastmod>
+    <loc>https://leoniefvr.github.io/Formation_spark/slides_v.html</loc>
+    <lastmod>2024-10-03T16:39:32.555Z</lastmod>
   </url>
   <url>
-    <loc>https://leoniefvr.github.io/Formation_spark/about.html</loc>
-    <lastmod>2024-07-16T11:04:12.374Z</lastmod>
+    <loc>https://leoniefvr.github.io/Formation_spark/index.html</loc>
+    <lastmod>2024-10-03T16:39:32.544Z</lastmod>
   </url>
   <url>
-    <loc>https://leoniefvr.github.io/Formation_spark/ressources.html</loc>
-    <lastmod>2024-07-16T11:04:12.546Z</lastmod>
+    <loc>https://leoniefvr.github.io/Formation_spark/dates.html</loc>
+    <lastmod>2024-10-03T16:39:32.533Z</lastmod>
+  </url>
+  <url>
+    <loc>https://leoniefvr.github.io/Formation_spark/oom.html</loc>
+    <lastmod>2024-10-03T16:39:32.544Z</lastmod>
   </url>
   <url>
     <loc>https://leoniefvr.github.io/Formation_spark/errors.html</loc>
-    <lastmod>2024-07-16T11:04:12.378Z</lastmod>
+    <lastmod>2024-10-03T16:39:32.533Z</lastmod>
+  </url>
+  <url>
+    <loc>https://leoniefvr.github.io/Formation_spark/about.html</loc>
+    <lastmod>2024-10-03T16:39:32.533Z</lastmod>
+  </url>
+  <url>
+    <loc>https://leoniefvr.github.io/Formation_spark/ressources.html</loc>
+    <lastmod>2024-10-03T16:39:32.555Z</lastmod>
   </url>
 </urlset>
