@@ -471,9 +471,7 @@ non_optimal <- table_1 %>%
     filter(debut_contrat >= as.Date("2023-01-01"))
 ```
 
-```         
-Catalyst réécrit :
-```
+    Catalyst réécrit :
 
 ```{r}
 #| eval: false 
@@ -736,7 +734,7 @@ S'il est nécessaire de collecter, il faut prévoir **beaucoup de RAM pour le dr
 La majorité des commandes `dplyr` fonctionnent sur un spark_data_frame avec le package `sparklyr`. Les divergences principales sont les suivantes :
 
 | Fonctionnalité                 | tidyverse      | sparklyr                         |
-|--------------------------|-----------------|-----------------------------|
+|---------------------------|-----------------|----------------------------|
 | import d'un fichier `.parquet` | `read_parquet` | `spark_read_parquet()`           |
 | tri d'un tableau               | `arrange()`    | `window_order()` ou `sdf_sort()` |
 | opérations sur les dates       | `lubridate`    | fonctions Hive                   |

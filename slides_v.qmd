@@ -1,0 +1,632 @@
+---
+title: "Initiation à Spark avec R en mode cluster"
+format: revealjs
+---
+
+## Au programme
+
+1.  MiDAS : une base de données volumineuse
+
+2.  Utiliser MiDAS avec R : un défi
+
+3.  Sparklyr : l'outil ergonomique de spark en R
+
+4.  Optimiser la mémoire : pourquoi et comment
+
+5.  Les bonnes pratiques
+
+6.  Pour aller plus loin
+
+# Un rapide tour de table 💬
+
+# MiDAS : une base de données volumineuses
+
+## Qu'est-ce que MiDAS ?
+
+![](/images/midas_traj_1.PNG){fig-align="right" width="900"}
+
+![](/images/midas_traj_2.PNG){fig-align="right" width="780"}
+
+## Une des bases les plus volumineuses du SSP {.smaller}
+
+![](/images/donnees_ssp.PNG){fig-align="center"}
+
+Les administrations dont les données sont comparables à MiDAS utilisent un cluster Spark : Insee, Drees, Acoss...
+
+▶️Le cluster spark est une solution la très efficiente pour traiter des données de cette ampleur.
+
+## Concrètement, qu'est-ce que MiDAS ? {.smaller}
+
+![](/images/structure_midas.png){fig-align="center"}
+
+::: callout-tip
+## Pourquoi Spark ?
+
+La manipulation des données MiDAS en l'état implique de nombreuses opérations de jointures qui nécessitent une puissance de calcul et un temps certains.
+:::
+
+## Où est MiDAS sur la bulle ? {.smaller}
+
+Disponible dans l'espace commun (= Documents publics) : C:\\Users\\Public\\Documents\\MiDAS_parquet\\Vague X
+
+<br>
+
+Au format **parquet** :
+
+-   **compression** efficace des données : taux de compression de 5 à 10 par rapport au format csv
+
+-   orienté **colonnes**
+
+-   chargement efficace **en mémoire** des données
+
+-   **stockage partitionné** des données avec `write_dataset()`
+
+-   traiter des données **sur disque**
+
+-   **indépendant du logiciel** utilisé : R, python, spark...
+
+## La documentation en ligne {.smaller}
+
+<br>
+
+::: columns
+::: {.column width="35%"}
+[Documentation en ligne](https://documentationmidas.github.io/Documentation_MiDAS/Presentation/pr%C3%A9sentation.html)
+
+-   Dictionnaire des données
+
+-   Fiches présentant les concepts de l'indemnisation, du retour à l'emploi
+
+-   Exemples d'implémentation en R
+
+-   Conseils quallité des variables
+:::
+
+::: {.column width="65%"}
+![](/images/documentation_midas.PNG){fig-align="center"}
+:::
+:::
+
+# Et vous, quels sont vos usages de MiDAS ? 👁️‍🗨️
+
+# Traiter MiDAS en R : un défi 👨‍💻
+
+## Une bulle CASD {.smaller}
+
+Des ressources partagées entre tous les utilsateurs simultanés :
+
+-   512 Go de mémoire vive (ou RAM) : passage à 256 Go
+-   Un processeur (ou CPU) composé de 32 coeurs : passage à 16 coeurs
+
+![](/images/schema_ordinateur.png){fig-align="center"}
+
+## Une bulle CASD {.smaller}
+
+::: panel-tabset
+### La mémoire vive
+
+La mémoire vive, aussi appelée **RAM**, se distingue de la mémoire de stockage (disque) :
+
+-   par sa **rapidité**, notamment pour fournir des données au processeur pour effectuer des calculs
+
+-   par sa **volatilité** (toutes les données sont perdues si l'ordinateur n'est plus alimenté)
+
+-   par l'accès direct aux informations qui y sont stockées, **quasi instantanné**.
+
+### Le processeur
+
+Le processeur :
+
+-   permet d'**exécuter des tâches et des programmes** : convertir un fichier, exécuter un logiciel
+
+-   est composé d'un ou de plusieurs **coeurs** : un coeur ne peut exécuter qu'une seule tâche à la fois. Si le processeur contient plusieurs coeurs, il peut exécuter autant de tâches en parallèle qu'il a de coeurs
+
+-   se caractérise aussi par sa **fréquence** : elle est globalement proportionnelle au nombre d'opérations qu'il est capable d'effetuer par seconde.
+:::
+
+## Traiter MiDAS en R : les limites
+
+1.  Charger les données en mémoire vive
+
+```{r}
+#| eval: false
+#| echo: true
+  
+  path_fna <- "C:/Users/Public/Documents/MiDAS_parquet/Vague 4/FNA/"
+  
+  PJC <- read_parquet(paste0(path_fna, "pjc.parquet"), memory = TRUE)
+  ODD <- read_parquet(paste0(path_fna, "odd.parquet"), memory = TRUE)
+
+
+```
+
+. . .
+
+2.  Réaliser des opérations coûteuses en ressources
+
+```{r}
+#| eval: false
+#| echo: true
+  
+jointure <- PJC %>%
+  rename(KROD1 = KROD3) %>%
+  left_join(ODD, by = c("id_midas", "KROD1"))
+
+
+```
+
+. . .
+
+3.  Le partage des ressources de la bulle
+
+Chaque utilisateur peut mobiliser toutes les ressouces de la bulle.
+
+## Traitement léger versus coûteux {.smaller}
+
+::: panel-tabset
+## MAP = léger {.smaller}
+
+![](/images/formation%20sparklyr-Page-1.drawio.png){fig-align="center"}
+
+::: notes
+Ce traitement est peu coûteux :
+
+-   chargement d'une seule colonne en RAM : format parquet orienté colonnes
+
+-   peu de mémoire d'exécution : R est un langage vectorisé
+:::
+
+## REDUCE = coûteux {.smaller}
+
+![](/images/formation%20sparklyr-Page-2.drawio.png){fig-align="center"}
+
+::: notes
+Ce traitement nécessite :
+
+-   le chargement de davantage de colonnes en mémoire vive ;
+
+-   davantage de mémoire d'exécution pour effectuer l'intersection (`inner_join()`).
+:::
+
+## REDUCE en R
+
+-   les jointures
+
+-   les opérations en `group_by()`
+
+-   `distinct()`
+
+    ▶️ Exécution séquentielle sur un coeur du processeur + beaucoup de mémoire vive (données temporaires)
+
+    ▶️ Erreur "out of memory".
+:::
+
+## Pourquoi spark ? {.smaller}
+
++------------------------+------------------------+----------------------------------+
+| Solution testée        | Avantage               | Limites rencontrée               |
++========================+========================+==================================+
+| Package « data.table » | Calculs parallélisés   | pour bases \< RAM                |
+|                        |                        |                                  |
+|                        |                        | Syntaxe très différente de dplyr |
++------------------------+------------------------+----------------------------------+
+| Format « parquet » +   | Stockage moins lourd   | Taille en mémoire inchangée      |
+|                        |                        |                                  |
+| package « arrow »      | Chargement efficient   |                                  |
++------------------------+------------------------+----------------------------------+
+| DuckDB                 | Gestionnaire de BDD    | Pour des bases \< 100 Go         |
+|                        |                        |                                  |
+|                        |                        | Fonctions et options non codées  |
++------------------------+------------------------+----------------------------------+
+| Spark en mode local    | Traitements distribués | Consomme beaucoup de ressources  |
+|                        |                        |                                  |
+|                        |                        | Inadapté pour une unique bulle   |
+|                        |                        |                                  |
+|                        |                        | Nécessite le « collect() »       |
++------------------------+------------------------+----------------------------------+
+
+## Un gain de temps considérable {.smaller}
+
+<br>
+
++---------------------+-----------------------------------------+---------------------------------------------+
+|                     | Calcul de la durée moyenne d'un contrat | Retour à l'emploi salarié des indemnisables |
++=====================+=========================================+=============================================+
+| Classique R         | 4 heures                                | Crash                                       |
++---------------------+-----------------------------------------+---------------------------------------------+
+| Arrow + duckdb      | 8 minutes                               | 3 heures seul sur la bulle                  |
++---------------------+-----------------------------------------+---------------------------------------------+
+| Arrow + spark local | 1 minute                                | 2 minutes                                   |
++---------------------+-----------------------------------------+---------------------------------------------+
+
+Mais alors, pourquoi le cluster ? 🤔
+
+# Et vous, quels sont vos problématiques et vos solutions ? ⚠️
+
+# Comment on fait du spark cluster avec R version courte ? ⏲️
+
+## Où est Midas, 2ème édition {.smaller}
+
+Le cluster a son propre explorateur de fichiers à mettre en favori dans son navigateur : https://midares-deb11-nn-01.midares.local:9870/
+
+::: r-stack
+![](/images/hdfs_browse.png){.fragment fig-align="center" width="900" height="500"}
+
+![](/images/hdfs_midas.png){.fragment fig-align="center" width="900" height="500"}
+:::
+
+## Un cluster de calcul
+
+![](/images/schema_cluster.drawio.png){fig-align="center"}
+
+## Connexion
+
+::: panel-tabset
+## Traitement léger
+
+```{r}
+#| eval: false
+#| echo: true
+
+conf <- spark_config()
+conf["spark.driver.memory"] <- "40Go"
+conf["spark.executor.memory"] <- "60Go"
+conf["spark.executor.cores"] <- 4
+conf["spark.executor.instances"] <- 2
+cont["spark.yarn.queue"] <- "prod"
+conf["spark.driver.maxResultSize"] <- 0
+conf["spark.sql.shuffle.partitions"] <- 200
+
+sc <- spark_connect(master = "yarn", config = conf)
+```
+
+## Traitement lourd
+
+```{r}
+#| eval: false
+#| echo: true
+
+library(sparklyr)
+library(dplyr)
+library(dbplyr)
+
+conf <- spark_config()
+conf["spark.driver.memory"] <- "40Go"
+conf["spark.executor.memory"] <- "140Go"
+conf["spark.executor.cores"] <- 8
+conf["spark.executor.instances"] <- 2
+cont["spark.yarn.queue"] <- "prod"
+conf["spark.driver.maxResultSize"] <- 0
+conf["spark.sql.shuffle.partitions"] <- 200
+
+sc <- spark_connect(master = "yarn", config = conf)
+```
+:::
+
+## Chargement des données en spark
+
+<br>
+
+```{r}
+#| eval: false
+#| echo: true
+
+### Depuis HDFS
+mmo_17_df_spark <- spark_read_parquet(sc,
+                                  path = "hdfs:///dataset/MiDAS_v4/mmo/mmo_2017.parquet",
+                                  memory = FALSE)
+
+### Passer un dataframe R en spark
+mon_data_frame <- data.frame(c("Anna", "Paul"), c(15, 20))
+mon_data_frame_spark <- copy_to(sc, "mon_data_frame")
+```
+
+<br>
+
+▶️ chargement en mémoire vive couteux en temps : par défaut, `memory = FALSE`
+
+## Sparklyr, c'est comme dplyr
+
+Ensuite, vous pouvez programmer avec `dplyr` !
+
+```{r}
+#| eval: false
+#| echo: true
+
+mmo_17_df_spark <- mmo_17_df_spark %>%
+  rename(debut_contrat = DebutCTT) %>%
+  filter(debut_contrat >= as.Date("2017-01-01") & debut_contrat < as.Date("2017-02-01")) %>%
+  mutate(mois_debut_contrat = substr(debut_contrat,6,7))
+
+
+```
+
+## La lazy evaluation {.smaller}
+
+Spark distingue deux types d'opérations :
+
+-   **les transformations :** prennent en entrée un `spark_data_frame` et retournent un `spark_data_frame`, elles ne déclenchent aucun calcul
+
+    Par exemple, le programme ci-dessous ne déclenche pas d'exécution :
+
+```{r}
+#| eval: false
+#| echo: true
+
+mmo_17_df_spark_mois <- mmo_17_df_spark %>%
+  rename(debut_contrat = DebutCTT) %>%
+  filter(debut_contrat >= as.Date("2017-01-01") & debut_contrat < as.Date("2017-06-01")) %>%
+  mutate(mois_debut_contrat = substr(debut_contrat,6,7))
+
+
+```
+
+-   **les actions :** forcent le calcul d'un résultat pour le récupérer et déclenchent l'exécution de toutes les transformations compilées jusqu'à l'appel de l'action.
+
+    Par exemple, le programme ci-dessous déclenche le calcul de toute la cellule précédente :
+
+```{r}
+#| eval: false
+#| echo: true
+
+nb_debut_contrat_fev_17 <- mmo_17_df_spark_mois %>%
+  group_by(mois_debut_contrat) %>%
+  summarise(nb_contrats = n()) %>%
+  print()
+
+```
+
+## Récupérer un résultat
+
+Les principales actions sont :
+
+-   `print()`
+
+-   `collect()`
+
+-   `head()`
+
+-   `tbl_cache()` (écrire un `spark_data_frame` en mémoire pour le réutiliser)
+
+## ... presque tout comme dplyr {.smaller .scrollable}
+
+::: panel-tabset
+## Dates
+
+Les fonctions de `lubridate()`ne sont pas adaptées au `spark_data_frames`.
+
+-   Convertir une chaîne de caractère de la forme AAAA-MM-DD en Date
+
+    ```{r}
+    #| eval: false
+    #| echo: true
+
+    date_1 <- as.Date("2024-05-26")
+
+    ```
+
+-   Calculer une durée entre deux dates
+
+    ```{r}
+    #| eval: false
+    #| echo: true
+
+    PJC_spark <- spark_read_parquet(sc,
+                                    path = "hdfs:///dataset/MiDAS_v4/pjc.parquet",
+                                    memory = FALSE)
+
+    duree_pjc_df <- PJC_spark %>%
+      rename(date_fin_pjc = as.Date(KDFPJ),
+             date_deb_pjc = as.Date(KDDPJ)) %>%
+      mutate(duree_pjc = datediff(date_fin_pjc, date_deb_pjc) + 1) %>%
+      head(5)
+
+    ```
+
+-   Ajouter ou soustraire des jours ou des mois à une date
+
+    ```{r}
+    #| eval: false
+    #| echo: true
+
+
+    duree_pjc_bis_df <- duree_pjc_df %>%
+      mutate(duree_pjc_plus_5 = date_add(duree_pjc, int(5)),
+             duree_pjc_moins_5 = date_sub(duree_pjc, int(5)),
+             duree_pjc_plus_1_mois = add_months(duree_pjc, int(1))) %>%
+      head(5)
+
+    ```
+
+::: callout-note
+## Add_months
+
+Si la date en entrée est le dernier jour d'un mois, la date retournée avec `add_months(date_entree, int(1))` sera le dernier jour calendaire du mois suivant.
+:::
+
+::: callout-tip
+## Format
+
+Le `int()` est important car ces fonctions Hive n'accepte que les entiers pour l'ajout de jours : taper uniquement 5 est considéré comme un flottant dans R.
+:::
+
+## Tableau
+
+-   Tri dans un groupe pour effectuer un calcul séquentiel
+
+    ```{r}
+    #| eval: false
+    #| echo: true
+
+    ODD_spark <- spark_read_parquet(sc,
+                                    path = "hdfs:///dataset/MiDAS_v4/odd.parquet",
+                                    memory = FALSE)
+
+    ODD_premier <- ODD_spark %>%
+      group_by(id_midas) %>%
+      window_order(id_midas, KDPOD) %>%
+      mutate(date_premier_droit = first(KDPOD)) %>%
+      ungroup() %>%
+      distinct(id_midas, KROD3, date_premier_droit) %>%
+      head(5)
+      
+    ```
+
+-   Tri pour une sortie : `sdf_sort()` , `arrange()` ne fonctionne pas
+
+-   Concaténer les lignes (ou les colonnes `sdf_bind_cols()`)
+
+    ```{r}
+    #| eval: false
+    #| echo: true
+
+    ODD_1 <- ODD_spark %>%
+      filter(KDPOD <= as.Date("2017-12-31")) %>%
+      mutate(groupe = "temoins")
+
+    ODD_2 <- ODD_spark %>%
+      filter(KDPOD >= as.Date("2021-12-31")) %>%
+      mutate(groupe = "traites")
+
+    ODD_evaluation <- sdf_bind_rows(ODD_1, ODD_2)
+
+    ```
+
+-   Dédoublonner une table
+
+    ```{r}
+    #| eval: false
+    #| echo: true
+
+    droits_dans_PJC <- PJC_spark %>%
+      sdf_distinct(id_midas, KROD3)
+
+    print(head(droits_dans_PJC, 5))
+
+    PJC_dedoublonnee <- PJC_spark %>%
+      sdf_drop_duplicates()
+
+    print(head(PJC_dedoublonnee, 5))
+
+    ```
+
+-   Pivot : les fonctions du packag `tidyr` ne fonctionnent pas sur données spark
+
+    ```{r}
+    #| eval: false
+    #| echo: true
+
+    ODD_sjr_moyen <- ODD_spark %>%
+      mutate(groupe = ifelse(KDPOD <= as.Date("2020-12-31"), "controles", "traites")) %>%
+      sdf_pivot(groupe ~ KCRGC,
+        fun.aggregate = list(KQCSJP = "mean")
+      )
+    ```
+
+## Statistiques
+
+-   Résumé statistique : `sdf_describe()` , `summary()`ne fonctionne pas.
+
+-   Dimension : `sdf_dim`, la fonction `nrow()`ne fonctionne pas.
+
+-   Quantiles approximatifs : le calcul des quantiles sur données distirbuées renvoie une approximation car toutes les données ne peuvent pas être rappatriées sur la même machine physique du fait de la volumétrie, `sdf_quantile()`
+
+-   Echantillonnage aléatoire : `sdf_random_split`
+:::
+
+## Exporter des données {.smaller}
+
+Export des spark data frames directement sous HDFS.
+
+```{r}
+#| eval: false
+#| echo: true
+
+ma_table <- data.frame(c("Anne", "Paul"), c(25,30))
+
+ma_table_spark <- copy_to(sc, ma_table)
+
+spark_write_parquet(ma_table_spark, "hdfs:///resultats/ma_table.parquet")
+
+```
+
+Possibilité de récupérer ce fichier sur la bulle MiDARES = en local.
+
+::: callout-warning
+## Exports simultanés
+
+HDFS supporte les exports simultanés, mais le temp d'export est plus long lorsque le NameNode est requêté par plusieurs personnes simultanément : d'après les tests cluster
+
+-   pour un petit export (5 minutes), le temps peut être multiplié par 4 ;
+
+-   pour un gros export (15 minutes), le temps peut être multiplié par 2.
+:::
+
+## Si on souhaite la récupérer en local
+
+::: callout-caution
+## Les exports sur HDFS
+
+Lorsqu'on exporte une table depuis notre session R vers HDFS, celle-ci est **automatiquement partitionnée**, comme le reste des données.
+
+Ainsi, cette table sera stockée en plusieurs morceaux sous HDFS et répliquée.
+
+Il est possible de maîtriser le nombre de partitions avec la commande `sdf_coalesce(partitions = 5)` du package `sparklyr`.
+
+L'idéal est d'**adapter le nombre de partitions à la taille d'un bloc** : un bloc mesure 128 MB. Lorsqu'un bloc disque est utilisé, même à 1%, il n'est pas utilisable pour un autre stockage.
+
+Exporter un fichier de 1MB en 200 partitions réserve 200 blocs inutilement.
+:::
+
+
+## Télécharger des données en local {.smaller}
+
+::: r-stack
+![](images/hdfs_browse.png){.fragment width="1000" height="700"}
+
+![](/images/hdfs_dowload.PNG){.fragment}
+:::
+
+# Optimiser le code : non ! Mais optimiser la mémoire...
+
+## Pas besoin d'optimiser son code !
+
+## La mémoire du driver
+
+## Programmer sans collecter
+
+## Cacher une table
+
+
+# Les bonnes pratiques
+
+## Spark local : non
+
+## Inutile de prendre toutes les ressources 
+
+## Fermer sa session
+
+## Mutualiser les expériences
+
+
+# Pour aller plus loin
+
+## Partitionnement
+
+Le format `.parquet` (avec `arrow`) et le framework `spark` permettent de gérer le partitionnement des données.
+
+Si les opérations sont souvent effectuées par régions par exemple, il est utile de forcer le stockage des données d'une même région au même endroit physique et accélère drastiquement le temps de calcul :
+
+```{r}
+#| eval: false
+#| echo: true
+
+spark_write_parquet(ma_table, "hdfs:///resultats/ma_table.parquet", partition_by = c("region"))
+
+```
+
+## SparkUI
+
+## Yarn
+
+## Pyspark

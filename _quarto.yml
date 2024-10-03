@@ -15,7 +15,7 @@ website:
     contents:
       - href: index.qmd
         text: Introduction
-      - href: slides.qmd
+      - href: slides_v.qmd
         text: Slides
       - href: configuration.qmd
         text: 'Configuration'
