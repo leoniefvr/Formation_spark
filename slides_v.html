@@ -505,7 +505,20 @@
 <li>Un processeur (ou CPU) composé de 32 coeurs : passage à 16 coeurs</li>
 </ul>
 
-<img data-src="./images/schema_ordinateur.png" class="quarto-figure quarto-figure-center r-stretch"></section>
+<img data-src="./images/schema_ordinateur.png" class="quarto-figure quarto-figure-center r-stretch"><aside class="notes">
+<p>Bulle CASD = un gros ordinateur partagé par plusieurs utilisateurs, besoin du voc ordinateur pour comprendre spark</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
 <section id="une-bulle-casd-1" class="slide level2 smaller">
 <h2>Une bulle CASD</h2>
 <div class="panel-tabset">
@@ -556,6 +569,19 @@
 <li>Le partage des ressources de la bulle</li>
 </ol>
 <p>Chaque utilisateur peut mobiliser toutes les ressouces de la bulle.</p>
+<aside class="notes">
+<p>Données &gt; RAM et R fonctionne dans la mémoire vive (pour ça que plus rapide que SAS) Jointures coûteux : on va voir pourquoi après tlm sur la même bulle sans allocation des ressources = ralentissements</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
 </div>
 </section>
 <section id="traitement-léger-versus-coûteux" class="slide level2 smaller">
@@ -615,6 +641,7 @@
 <ul>
 <li><p>les jointures</p></li>
 <li><p>les opérations en <code>group_by()</code></p></li>
+<li><p>les opérations de tri avec <code>arrange()</code></p></li>
 <li><p><code>distinct()</code></p>
 <p>▶️ Exécution séquentielle sur un coeur du processeur + beaucoup de mémoire vive (données temporaires)</p>
 <p>▶️ Erreur “out of memory”.</p></li>
@@ -622,6 +649,21 @@
 </div>
 </div>
 </div>
+<aside class="notes">
+<p>Parquet orienté colonne donc ne charge que les colonnes nécessaires en mémoire R vectorisé : opération appliquée à tout le vecteur = traitement rapide</p>
+<p>Jointure coûteuse parce que comparaison ligne à ligne</p>
+<p>window funcions</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
 </section>
 <section id="pourquoi-spark-1" class="slide level2 smaller">
 <h2>Pourquoi spark ?</h2>
@@ -673,14 +715,14 @@
 <p><br></p>
 <table class="caption-top" style="width:99%;">
 <colgroup>
-<col style="width: 19%">
-<col style="width: 37%">
-<col style="width: 41%">
+<col style="width: 14%">
+<col style="width: 53%">
+<col style="width: 31%">
 </colgroup>
 <thead>
 <tr class="header">
 <th></th>
-<th>Calcul de la durée moyenne d’un contrat</th>
+<th>Calcul de la durée moyenne du premier contrat pour tous les individus MiDAS</th>
 <th>Retour à l’emploi salarié des indemnisables</th>
 </tr>
 </thead>
@@ -703,6 +745,21 @@
 </tbody>
 </table>
 <p>Mais alors, pourquoi le cluster ? 🤔</p>
+</section>
+<section id="une-bonne-allocation-des-ressources-entre-utilisateurs" class="slide level2">
+<h2>Une bonne allocation des ressources entre utilisateurs</h2>
+<div class="r-stack">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="./images/mode_local.PNG" class="fragment quarto-figure quarto-figure-center" width="1000" height="450"></p>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="./images/mode_cluster.PNG" class="fragment quarto-figure quarto-figure-center" width="1000" height="450"></p>
+</figure>
+</div>
+</div>
 </section></section>
 <section id="et-vous-quels-sont-vos-problématiques-et-vos-solutions" class="title-slide slide level1 center">
 <h1>Et vous, quels sont vos problématiques et vos solutions ? ⚠️</h1>
@@ -741,16 +798,20 @@
 <div class="tab-content">
 <div id="tabset-3-1">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a></a>conf <span class="ot">&lt;-</span> <span class="fu">spark_config</span>()</span>
-<span id="cb3-2"><a></a>conf[<span class="st">"spark.driver.memory"</span>] <span class="ot">&lt;-</span> <span class="st">"40Go"</span></span>
-<span id="cb3-3"><a></a>conf[<span class="st">"spark.executor.memory"</span>] <span class="ot">&lt;-</span> <span class="st">"60Go"</span></span>
-<span id="cb3-4"><a></a>conf[<span class="st">"spark.executor.cores"</span>] <span class="ot">&lt;-</span> <span class="dv">4</span></span>
-<span id="cb3-5"><a></a>conf[<span class="st">"spark.executor.instances"</span>] <span class="ot">&lt;-</span> <span class="dv">2</span></span>
-<span id="cb3-6"><a></a>cont[<span class="st">"spark.yarn.queue"</span>] <span class="ot">&lt;-</span> <span class="st">"prod"</span></span>
-<span id="cb3-7"><a></a>conf[<span class="st">"spark.driver.maxResultSize"</span>] <span class="ot">&lt;-</span> <span class="dv">0</span></span>
-<span id="cb3-8"><a></a>conf[<span class="st">"spark.sql.shuffle.partitions"</span>] <span class="ot">&lt;-</span> <span class="dv">200</span></span>
-<span id="cb3-9"><a></a></span>
-<span id="cb3-10"><a></a>sc <span class="ot">&lt;-</span> <span class="fu">spark_connect</span>(<span class="at">master =</span> <span class="st">"yarn"</span>, <span class="at">config =</span> conf)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a></a><span class="fu">library</span>(sparklyr)</span>
+<span id="cb3-2"><a></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb3-3"><a></a><span class="fu">library</span>(dbplyr)</span>
+<span id="cb3-4"><a></a></span>
+<span id="cb3-5"><a></a>conf <span class="ot">&lt;-</span> <span class="fu">spark_config</span>()</span>
+<span id="cb3-6"><a></a>conf[<span class="st">"spark.driver.memory"</span>] <span class="ot">&lt;-</span> <span class="st">"20Go"</span></span>
+<span id="cb3-7"><a></a>conf[<span class="st">"spark.executor.memory"</span>] <span class="ot">&lt;-</span> <span class="st">"60Go"</span></span>
+<span id="cb3-8"><a></a>conf[<span class="st">"spark.executor.cores"</span>] <span class="ot">&lt;-</span> <span class="dv">4</span></span>
+<span id="cb3-9"><a></a>conf[<span class="st">"spark.executor.instances"</span>] <span class="ot">&lt;-</span> <span class="dv">2</span></span>
+<span id="cb3-10"><a></a>cont[<span class="st">"spark.yarn.queue"</span>] <span class="ot">&lt;-</span> <span class="st">"prod"</span></span>
+<span id="cb3-11"><a></a>conf[<span class="st">"spark.driver.maxResultSize"</span>] <span class="ot">&lt;-</span> <span class="dv">0</span></span>
+<span id="cb3-12"><a></a>conf[<span class="st">"spark.sql.shuffle.partitions"</span>] <span class="ot">&lt;-</span> <span class="dv">200</span></span>
+<span id="cb3-13"><a></a></span>
+<span id="cb3-14"><a></a>sc <span class="ot">&lt;-</span> <span class="fu">spark_connect</span>(<span class="at">master =</span> <span class="st">"yarn"</span>, <span class="at">config =</span> conf)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
 <div id="tabset-3-2">
@@ -760,7 +821,7 @@
 <span id="cb4-3"><a></a><span class="fu">library</span>(dbplyr)</span>
 <span id="cb4-4"><a></a></span>
 <span id="cb4-5"><a></a>conf <span class="ot">&lt;-</span> <span class="fu">spark_config</span>()</span>
-<span id="cb4-6"><a></a>conf[<span class="st">"spark.driver.memory"</span>] <span class="ot">&lt;-</span> <span class="st">"40Go"</span></span>
+<span id="cb4-6"><a></a>conf[<span class="st">"spark.driver.memory"</span>] <span class="ot">&lt;-</span> <span class="st">"20Go"</span></span>
 <span id="cb4-7"><a></a>conf[<span class="st">"spark.executor.memory"</span>] <span class="ot">&lt;-</span> <span class="st">"140Go"</span></span>
 <span id="cb4-8"><a></a>conf[<span class="st">"spark.executor.cores"</span>] <span class="ot">&lt;-</span> <span class="dv">8</span></span>
 <span id="cb4-9"><a></a>conf[<span class="st">"spark.executor.instances"</span>] <span class="ot">&lt;-</span> <span class="dv">2</span></span>
@@ -792,6 +853,7 @@
 </section>
 <section id="sparklyr-cest-comme-dplyr" class="slide level2">
 <h2>Sparklyr, c’est comme dplyr</h2>
+<p><br></p>
 <p>Ensuite, vous pouvez programmer avec <code>dplyr</code> !</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a></a>mmo_17_df_spark <span class="ot">&lt;-</span> mmo_17_df_spark <span class="sc">%&gt;%</span></span>
@@ -824,6 +886,24 @@
 <span id="cb8-4"><a></a>  <span class="fu">print</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
+<section id="la-lazy-evaluation-un-gain-de-temps-considérable" class="slide level2">
+<h2>La lazy evaluation : un gain de temps considérable</h2>
+<p><br></p>
+<div class="callout callout-tip callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>La gestion des erreurs</strong></p>
+</div>
+<div class="callout-content">
+<p>En réalité, lorsqu’on appuie ysur le bouton <code>run</code>, il ne se passe pas “rien”. Le code est compilé par spark : les erreurs sont repérées avant même que le code soit exécuté !</p>
+</div>
+</div>
+</div>
+<p>INSERER EXEMPLE ERREUR REPEREE A LA COMPILATION</p>
+</section>
 <section id="récupérer-un-résultat" class="slide level2">
 <h2>Récupérer un résultat</h2>
 <p>Les principales actions sont :</p>
@@ -836,6 +916,61 @@
 </section>
 <section id="presque-tout-comme-dplyr" class="slide level2 smaller scrollable">
 <h2>… presque tout comme dplyr</h2>
+<p>La majorité des commandes <code>dplyr</code> fonctionnent sur un spark_data_frame avec le package <code>sparklyr</code>. Les divergences principales sont les suivantes :</p>
+<table class="caption-top" style="width:99%;">
+<colgroup>
+<col style="width: 38%">
+<col style="width: 19%">
+<col style="width: 40%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Fonctionnalité</th>
+<th>tidyverse</th>
+<th>sparklyr</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>import d’un fichier <code>.parquet</code></td>
+<td><code>read_parquet</code></td>
+<td><code>spark_read_parquet()</code></td>
+</tr>
+<tr class="even">
+<td>tri d’un tableau</td>
+<td><code>arrange()</code></td>
+<td><code>window_order()</code> ou <code>sdf_sort()</code></td>
+</tr>
+<tr class="odd">
+<td>opérations sur les dates</td>
+<td><code>lubridate</code></td>
+<td>fonctions Hive</td>
+</tr>
+<tr class="even">
+<td>empiler des tableaux</td>
+<td><code>bind_rows()</code></td>
+<td><code>sdf_bind_rows()</code></td>
+</tr>
+<tr class="odd">
+<td>nombre de lignes d’un tableau</td>
+<td><code>nrow()</code></td>
+<td><code>sdf_nrow()</code></td>
+</tr>
+<tr class="even">
+<td>faire pivoter un tableau</td>
+<td><code>tidyr</code></td>
+<td><code>sdf_pivot()</code></td>
+</tr>
+<tr class="odd">
+<td>export d’un <code>spark_data_frame</code></td>
+<td></td>
+<td><code>spark_write_parquet()</code></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="quelques-fonctions-spécifiques" class="slide level2 smaller scrollable">
+<h2>Quelques fonctions spécifiques</h2>
 <div class="panel-tabset">
 <ul id="tabset-4" class="panel-tabset-tabby"><li><a data-tabby-default="" href="#tabset-4-1">Dates</a></li><li><a href="#tabset-4-2">Tableau</a></li><li><a href="#tabset-4-3">Statistiques</a></li></ul>
 <div class="tab-content">
@@ -958,7 +1093,7 @@
 </section>
 <section id="exporter-des-données" class="slide level2 smaller">
 <h2>Exporter des données</h2>
-<p>Export des spark data frames directement sous HDFS.</p>
+<p>Export des spark data frames directement sous HDFS : à aucun moment on n’ouvre la table : on peut traiter des données beaucoup plus volumnieuses que la mémoire RAM !</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a></a>ma_table <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="fu">c</span>(<span class="st">"Anne"</span>, <span class="st">"Paul"</span>), <span class="fu">c</span>(<span class="dv">25</span>,<span class="dv">30</span>))</span>
 <span id="cb16-2"><a></a></span>
@@ -985,7 +1120,7 @@
 </div>
 </div>
 </section>
-<section id="si-on-souhaite-la-récupérer-en-local" class="slide level2">
+<section id="si-on-souhaite-la-récupérer-en-local" class="slide level2 smaller">
 <h2>Si on souhaite la récupérer en local</h2>
 <div class="callout callout-caution callout-titled callout-style-default">
 <div class="callout-body">
@@ -998,11 +1133,20 @@
 <div class="callout-content">
 <p>Lorsqu’on exporte une table depuis notre session R vers HDFS, celle-ci est <strong>automatiquement partitionnée</strong>, comme le reste des données.</p>
 <p>Ainsi, cette table sera stockée en plusieurs morceaux sous HDFS et répliquée.</p>
-<p>Il est possible de maîtriser le nombre de partitions avec la commande <code>sdf_coalesce(partitions = 5)</code> du package <code>sparklyr</code>.</p>
-<p>L’idéal est d’<strong>adapter le nombre de partitions à la taille d’un bloc</strong> : un bloc mesure 128 MB. Lorsqu’un bloc disque est utilisé, même à 1%, il n’est pas utilisable pour un autre stockage.</p>
-<p>Exporter un fichier de 1MB en 200 partitions réserve 200 blocs inutilement.</p>
+<p>Il est possible de maîtriser le nombre de partitions avec la commande <code>sdf_coalesce(partitions = 1)</code> du package <code>sparklyr</code>.</p>
+<p>Avec <code>sdf_coalesce(partitions = 1)</code>, on n’aura qu’un seul fichier à télécharger depuis HDFS.</p>
+<p>Avec <code>sdf_coalesce(partitions = 200)</code>, on aura 200 morceaux de notre fichier à télécharger à la main (pas possible de faire tout sélectionner sous HDFS !).</p>
+<p>L’idéal est d’<strong>adapter le nombre de partitions à la taille d’un bloc</strong> : un bloc mesure 128 MB.</p>
 </div>
 </div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a></a>ma_table <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="fu">c</span>(<span class="st">"Anne"</span>, <span class="st">"Paul"</span>), <span class="fu">c</span>(<span class="dv">25</span>,<span class="dv">30</span>))</span>
+<span id="cb17-2"><a></a></span>
+<span id="cb17-3"><a></a>ma_table_spark <span class="ot">&lt;-</span> <span class="fu">copy_to</span>(sc, ma_table) <span class="sc">%&gt;%</span></span>
+<span id="cb17-4"><a></a>  <span class="fu">sdf_coalesce</span>(<span class="at">partitions =</span> <span class="dv">1</span>)</span>
+<span id="cb17-5"><a></a></span>
+<span id="cb17-6"><a></a><span class="fu">spark_write_parquet</span>(ma_table_spark, <span class="st">"hdfs:///resultats/ma_table.parquet"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="télécharger-des-données-en-local" class="slide level2 smaller">
@@ -1011,40 +1155,415 @@
 <p><img data-src="images/hdfs_browse.png" class="fragment" width="1000" height="700"></p>
 <p><img data-src="./images/hdfs_dowload.PNG" class="fragment"></p>
 </div>
+</section>
+<section id="et-ensuite" class="slide level2 smaller">
+<h2>Et ensuite ?</h2>
+<p>Spark est un outil de traitement de données volumineuses. Il n’est pas toujours adapté :</p>
+<ul>
+<li><p>pour de toutes petites tables : il ne va pas engendrer de gain de temps</p></li>
+<li><p>pour faire de l’économétrie poussée : tous les packages R ne sont pas traduits en spark</p></li>
+<li><p>pour ouvrir sa table : on perd les avantages de spark si on collecte toute la table en mémoire RAM</p></li>
+</ul>
+<p>Conseils :</p>
+<ol type="1">
+<li><p>Créer sa table d’étude en appariant les tables de MiDAS avec le cluster spark</p></li>
+<li><p>L’exporter sous HDFS</p></li>
+<li><p>La télécharger en local</p></li>
+<li><p>La charger en R classique pour faire de l’économétrie</p></li>
+</ol>
 </section></section>
 <section>
 <section id="optimiser-le-code-non-mais-optimiser-la-mémoire" class="title-slide slide level1 center">
 <h1>Optimiser le code : non ! Mais optimiser la mémoire…</h1>
 
 </section>
-<section id="pas-besoin-doptimiser-son-code" class="slide level2">
+<section id="comment-fonctionne-spark" class="slide level2 smaller">
+<h2>Comment fonctionne spark ?</h2>
+<ul>
+<li><p>Apache Spark : <strong>librairie open source</strong> développée dans le langage <code>scala</code></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a></a>val TopHorrorsIGN2022 <span class="ot">=</span> <span class="fu">Seq</span>(</span>
+<span id="cb18-2"><a></a>  (<span class="dv">9</span>, <span class="st">"Pearl"</span>),</span>
+<span id="cb18-3"><a></a>  (<span class="dv">6</span>, <span class="st">"The Sadness"</span>),</span>
+<span id="cb18-4"><a></a>  (<span class="dv">6</span>, <span class="st">"Offseason"</span>),</span>
+<span id="cb18-5"><a></a>  (<span class="dv">7</span>, <span class="st">"Hatching"</span>),</span>
+<span id="cb18-6"><a></a>  (<span class="dv">8</span>, <span class="st">"x"</span>)</span>
+<span id="cb18-7"><a></a>)<span class="fu">.toDF</span>(<span class="st">"IMDB Rating"</span>, <span class="st">"IGN Movie Picks"</span>)</span>
+<span id="cb18-8"><a></a></span>
+<span id="cb18-9"><a></a>import org.apache.spark.sql.functions.col</span>
+<span id="cb18-10"><a></a></span>
+<span id="cb18-11"><a></a>val cols <span class="ot">=</span> <span class="fu">List</span>(<span class="fu">col</span>(<span class="st">"IGN Movie Picks"</span>), <span class="fu">col</span>(<span class="st">"AVC Movie Picks"</span>))</span>
+<span id="cb18-12"><a></a></span>
+<span id="cb18-13"><a></a>val query <span class="ot">=</span> <span class="fu">TopHorrorsIGN2022</span>(</span>
+<span id="cb18-14"><a></a>  <span class="st">"IGN Movie Picks"</span></span>
+<span id="cb18-15"><a></a>) <span class="sc">==</span><span class="er">=</span> <span class="fu">TopHorrorsTheAVClub2022</span>(<span class="st">"AVC Movie Picks"</span>)</span>
+<span id="cb18-16"><a></a></span>
+<span id="cb18-17"><a></a>val outerJoin <span class="ot">=</span> TopHorrorsIGN2022</span>
+<span id="cb18-18"><a></a>  <span class="fu">.join</span>(TopHorrorsTheAVClub2022, query, <span class="st">"outer"</span>)</span>
+<span id="cb18-19"><a></a>  <span class="fu">.select</span>(cols<span class="sc">:</span> _<span class="sc">*</span>)</span>
+<span id="cb18-20"><a></a></span>
+<span id="cb18-21"><a></a><span class="fu">outerJoin.show</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div></li>
+<li><p><code>scala</code> adapté pour maîtriser toutes les fonctionnalités de <code>spark</code> et optimiser au maximum les traitements en <code>spark</code></p></li>
+<li><p><code>spark</code> est <strong>compatible avec les langages</strong> <code>scala</code>, <code>R</code>, <code>python</code>, <code>java</code>, et peut interpréter des commandes <strong>SQL.</strong></p></li>
+</ul>
+</section>
+<section id="le-driver-en-sparklyr" class="slide level2 smaller">
+<h2>Le driver en sparklyr</h2>
+
+<img data-src="./images/schema_cluster.drawio.png" class="quarto-figure quarto-figure-center r-stretch" width="400"><ul>
+<li><p>Le programme R est traduit en scala grâce au package <code>sparklyr</code></p></li>
+<li><p>Le driver évalue le programme, il lit le code <code>scala</code> mais n’exécute rien du tout</p></li>
+<li><p>S’il remarque une erreur, l’erreur est envoyée directement à l’utilisateur en session R avant l’exécution du programme : c’est la force de la lazy evaluation.</p></li>
+</ul>
+</section>
+<section id="pas-besoin-doptimiser-son-code" class="slide level2 smaller">
 <h2>Pas besoin d’optimiser son code !</h2>
+
+<img data-src="images/catalyst.jpg" class="r-stretch"><p>source : documentation CASD disponible à <a href="https://casd-eu.gitbook.io/data-science/">Documentation Data Science</a></p>
+</section>
+<section id="catalyst-optimise-le-code-pour-nous" class="slide level2 smaller">
+<h2>Catalyst optimise le code pour nous</h2>
+<p>Le driver contient un programme nommé Catalyst qui optimise le code <code>scala</code> automatiquement.</p>
+<p>Spark optimise automatiquement les programmes soumis :</p>
+<ol type="1">
+<li><p>Compilation des transformations pour soulever les éventuelles erreurs</p></li>
+<li><p>Intégration dans un <strong>plan d’exécution</strong> contenant les étapes nécessaires pour parvenir au résultat demandé par le programme</p></li>
+<li><p>Optimisation du plan logique par le module <strong>Catalyst</strong> (driver Spark)</p></li>
+</ol>
+<div class="callout callout-warning callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Les erreurs en sparklyr</strong></p>
+</div>
+<div class="callout-content">
+<p>Petite précision sur les erreurs :</p>
+<ul>
+<li><p>sparklyr traduit le code R en scala</p></li>
+<li><p>mais également les messages envoyés par spark en R</p></li>
+<li><p>les erreurs affichées en R ne sont pas toujours bien interprétables</p></li>
+</ul>
+</div>
+</div>
+</div>
+</section>
+<section id="catalyst-optimise-le-code-pour-nous-1" class="slide level2 smaller scrollable">
+<h2>Catalyst optimise le code pour nous</h2>
+
+<img data-src="images/dag.webp" class="quarto-figure quarto-figure-center r-stretch"></section>
+<section id="catalyst-optimise-le-code-pour-nous-2" class="slide level2">
+<h2>Catalyst optimise le code pour nous</h2>
+<p>Par exemple si j’écris le programme :</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a></a>non_optimal <span class="ot">&lt;-</span> table_1 <span class="sc">%&gt;%</span>   </span>
+<span id="cb19-2"><a></a>    <span class="fu">mutate</span>(<span class="at">duree_contrat =</span> <span class="fu">DATEDIFF</span>(fin_contrat, debut_contrat)) <span class="sc">%&gt;%</span>   </span>
+<span id="cb19-3"><a></a>    <span class="fu">filter</span>(debut_contrat <span class="sc">&gt;=</span> <span class="fu">as.Date</span>(<span class="st">"2023-01-01"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><br></p>
+<p>Catalyst réécrit :</p>
+<p><br></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a></a>optimal <span class="ot">&lt;-</span> table_1 <span class="sc">%&gt;%</span>   </span>
+<span id="cb20-2"><a></a>    <span class="fu">filter</span>(debut_contrat <span class="sc">&gt;=</span> <span class="fu">as.Date</span>(<span class="st">"2023-01-01"</span>)) <span class="sc">%&gt;%</span>   </span>
+<span id="cb20-3"><a></a>    <span class="fu">mutate</span>(<span class="at">duree_contrat =</span> <span class="fu">DATEDIFF</span>(fin_contrat, debut_contrat))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Cette optimisation est réalisée sur toutes les transformations compilée avant qu’une action déclenche l’exécution.</p>
+</section>
+<section id="catalyst-optimise-le-code-pour-nous-laissons-le-travailler" class="slide level2 smaller">
+<h2>Catalyst optimise le code pour nous : laissons-le travailler !</h2>
+<p><strong>Déclencher le moins d’actions possibles</strong> dans son programme permet de tirer pleinement parti de Catalyst et de gagner un temps certain.</p>
+<p>Pour profiter des avantages de spark, la manière de programmer recommandée est différente de celle prédominante en R classique. On évite quoi ?</p>
+<div class="fragment">
+<p>On évite :</p>
+<ul>
+<li><p>de mettre des <code>collect()</code>sur chaque table intermédiaire</p></li>
+<li><p>de <code>collect()</code> une table entière</p></li>
+<li><p>de <code>print()</code> à chaque étape</p></li>
+</ul>
+</div>
+<div class="fragment">
+<p>Sinon Catalyst n’a pas assez de code pour optimiser !</p>
+</div>
+</section>
+<section id="catalyst-optimise-le-code-pour-nous-laissons-le-travailler-1" class="slide level2">
+<h2>Catalyst optimise le code pour nous : laissons-le travailler !</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a></a>non_optimal <span class="ot">&lt;-</span> table_1 <span class="sc">%&gt;%</span> </span>
+<span id="cb21-2"><a></a>    <span class="fu">collect</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb21-3"><a></a>    <span class="fu">mutate</span>(<span class="at">duree_contrat =</span> <span class="fu">DATEDIFF</span>(fin_contrat, debut_contrat)) <span class="sc">%&gt;%</span>   </span>
+<span id="cb21-4"><a></a>    <span class="fu">filter</span>(debut_contrat <span class="sc">&gt;=</span> <span class="fu">as.Date</span>(<span class="st">"2023-01-01"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="fragment">
+<p>versus</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a></a>non_optimal <span class="ot">&lt;-</span> table_1 <span class="sc">%&gt;%</span> </span>
+<span id="cb22-2"><a></a>    <span class="fu">collect</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb22-3"><a></a>    <span class="fu">mutate</span>(<span class="at">duree_contrat =</span> <span class="fu">DATEDIFF</span>(fin_contrat, debut_contrat)) <span class="sc">%&gt;%</span>   </span>
+<span id="cb22-4"><a></a>    <span class="fu">filter</span>(debut_contrat <span class="sc">&gt;=</span> <span class="fu">as.Date</span>(<span class="st">"2023-01-01"</span>)) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+</section>
+<section id="jointures-un-cas-particulier" class="slide level2">
+<h2>Jointures : un cas particulier</h2>
+<p>Pour effectuer ce type de jointure avec deux tables de volumétries différentes : A est petite, B est très volumineuse</p>
+
+<img data-src="images/join.png" class="r-stretch"><p>Solution rapide :</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a></a>table_finale <span class="ot">&lt;-</span> table_volumineuse_comme_PJC <span class="sc">%&gt;%</span></span>
+<span id="cb23-2"><a></a>  <span class="fu">right_join</span>(petite_table_mon_champ)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Solution lente :</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a></a>table_finale <span class="ot">&lt;-</span> petite_table_mon_champ <span class="sc">%&gt;%</span></span>
+<span id="cb24-2"><a></a>  <span class="fu">left_join</span>(table_volumineuse_comme_PJC)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="calcul-distribué-et-récupération-des-résultats" class="slide level2 smaller">
+<h2>Calcul distribué et récupération des résultats</h2>
+
+<img data-src="images/schema_cluster.drawio.png" class="quarto-figure quarto-figure-center r-stretch" width="400"><div class="callout callout-important callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Le réseau</strong></p>
+</div>
+<div class="callout-content">
+<ul>
+<li><p>Les workers communiquent avec le driver de la bulle MiDARES en réseau</p></li>
+<li><p>Les workers communiquent entre eux en réseau pour s’échanger des données</p></li>
+<li><p>Le réseau est un mode de communication lent</p></li>
+</ul>
+</div>
+</div>
+</div>
+<aside class="notes">
+<p>Mtn un peu de théorie pour comprendre le calcul distribué et mieux l’utiliser</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="le-stockage-distribué-avec-hdfs" class="slide level2 smaller">
+<h2>Le stockage distribué avec HDFS</h2>
+
+<img data-src="images/stockage_distribue.drawio.png" class="quarto-figure quarto-figure-center r-stretch"></section>
+<section id="le-stockage-distribué-avec-hdfs-1" class="slide level2 smaller">
+<h2>Le stockage distribué avec HDFS</h2>
+<p>Hadoop Distributed File System (HDFS)</p>
+<ul>
+<li><p><strong>stockage sur différentes machines :</strong> les différents ordinateurs workers du cluster</p></li>
+<li><p>données divisées <strong>en blocs</strong> plus petits de taille fixe et répartis sur les machines : aucune table de MiDAS n’existe en entier sur le cluster</p></li>
+<li><p>chaque bloc est <strong>répliqué trois fois</strong> : il existe trois fois les 10 premières lignes de la table FNA sur trois ordinateurs différents du cluster (résilience)</p></li>
+<li><p>un <strong>NameNode</strong> supervise les <strong>métadonnées</strong> et gère la structure du système de fichiers : il sait où sont quels fichiers</p></li>
+<li><p>les <strong>DataNodes</strong> stockent effectivement les blocs de données : les datanodes sont en fait les disques durs des workers du cluster, chaque ordinateur du cluster dispose d’un disque avec une partie des données MiDAS</p></li>
+<li><p>le <strong>système HDFS</strong> est relié à la bulle Midares : possible de charger des données en clique-bouton de la bulle vers HDFS de manière très rapide et de télécharger des tables de HDFS pour les récupérer en local</p></li>
+</ul>
+</section>
+<section id="le-rôle-du-cluster-manager" class="slide level2 smaller">
+<h2>Le rôle du cluster manager</h2>
+
+<img data-src="images/calcul_distribue.drawio.png" class="quarto-figure quarto-figure-center r-stretch"><p>Le cluster manager distribue les traitements physiques aux ordinateurs du cluster :</p>
+<ul>
+<li><p>il connaît le meilleur plan physique fourni par Catalyst ;</p></li>
+<li><p>il connaît les ressources disponibles et occupées par toutes les machines du cluster ;</p></li>
+<li><p>il affecte les ressources disponibles à la session spark.</p></li>
+</ul>
+</section>
+<section id="le-rôle-du-worker" class="slide level2 smaller">
+<h2>Le rôle du worker</h2>
+
+<img data-src="images/calcul_distribue.drawio.png" class="quarto-figure quarto-figure-center r-stretch"><p>Le worker effectue le morceau de programme qu’on lui affecte :</p>
+<ul>
+<li><p>il ne connaît que les tâches qu’on lui a affectées ;</p></li>
+<li><p>il peut communiquer avec le driver en réseau pour renvoyer un résultat ;</p></li>
+<li><p>il peut communiquer avec les autres workers en réseau pour partager des données ou des résultats intermédiaires : c’est un shuffle.</p></li>
+</ul>
 </section>
 <section id="la-mémoire-du-driver" class="slide level2">
 <h2>La mémoire du driver</h2>
+
+<img data-src="images/collect.drawio.png" class="quarto-figure quarto-figure-center r-stretch"></section>
+<section id="lutilisation-de-la-mémoire-du-driver" class="slide level2 smaller scrollable">
+<h2>L’utilisation de la mémoire du driver</h2>
+<p>Lorsqu’il est nécessaire de collecter une table volumineuse, il faut donc prévoir assez de mémoire RAM pour le driver : tous les résultats sont rappatriés vers le driver.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb25" data-code-line-numbers="2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a></a>conf <span class="ot">&lt;-</span> <span class="fu">spark_config</span>()</span>
+<span id="cb25-2"><a></a>conf[<span class="st">"spark.driver.memory"</span>] <span class="ot">&lt;-</span> <span class="st">"20Go"</span></span>
+<span id="cb25-3"><a></a>conf[<span class="st">"spark.executor.memory"</span>] <span class="ot">&lt;-</span> <span class="st">"80Go"</span></span>
+<span id="cb25-4"><a></a>conf[<span class="st">"spark.executor.cores"</span>] <span class="ot">&lt;-</span> <span class="dv">5</span></span>
+<span id="cb25-5"><a></a>conf[<span class="st">"spark.executor.instances"</span>] <span class="ot">&lt;-</span> <span class="dv">2</span></span>
+<span id="cb25-6"><a></a>cont[<span class="st">"spark.yarn.queue"</span>] <span class="ot">&lt;-</span> <span class="st">"prod"</span></span>
+<span id="cb25-7"><a></a>conf[<span class="st">"spark.driver.maxResultSize"</span>] <span class="ot">&lt;-</span> <span class="dv">0</span></span>
+<span id="cb25-8"><a></a>conf[<span class="st">"spark.sql.shuffle.partitions"</span>] <span class="ot">&lt;-</span> <span class="dv">200</span></span>
+<span id="cb25-9"><a></a></span>
+<span id="cb25-10"><a></a>sc <span class="ot">&lt;-</span> <span class="fu">spark_connect</span>(<span class="at">master =</span> <span class="st">"yarn"</span>, <span class="at">config =</span> conf)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="callout callout-caution callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Bonne pratique de partage des ressources</strong></p>
+</div>
+<div class="callout-content">
+<p>Le driver est dans la bulle Midares, qui a vocation à être réduite suite à la généralisation du cluster.</p>
+<ul>
+<li><p>La bulle Midares a besoin de RAM pour fonctionner, 100% des ressources ne sont donc pas disponibles pour <code>sparklyr</code>.</p></li>
+<li><p>Pour permettre le <strong>travail simultané fluide de 10 utilisateurs</strong>, la mémoire allouée au driver recommandée pour chaque utilisateur est de <strong>20 Go</strong>.</p></li>
+<li><p>Il existe des alternatives pour ne pas collecter des résultats trop volumineux dans le driver.</p></li>
+</ul>
+</div>
+</div>
+</div>
 </section>
-<section id="programmer-sans-collecter" class="slide level2">
+<section id="programmer-sans-collecter" class="slide level2 smaller">
 <h2>Programmer sans collecter</h2>
+<p>La programmation en spark doit être adaptée aux contraintes de volumétrie des données : test de chaque étape, puis ne forcer le calcul qu’à la fin pour que Catalyst optimise l’ensemble du programme</p>
+<p>La principale différence avec la programmation en R classique est que <strong>la visualisation de tables complètes volumineuses n’est pas toujours possible et n’est pas recommandée</strong> :</p>
+<ul>
+<li><p><strong>goulets d’étranglement</strong> même avec spark, car toutes les données sont rapatriées vers le driver puis vers la session R : erreurs Out of Memory</p></li>
+<li><p><strong>longue :</strong> échange entre tous les noeuds impliqués dans le calcul et le driver, puis un échange driver-session R en réseau = lent ;</p></li>
+<li><p><strong>beaucoup moins efficace que l’export direct en parquet</strong> du résultat (qui fonctionne toujours) : charger ensuite sa table finale en data frame R classique pour effectuer l’étude.</p></li>
+</ul>
+<p>S’il est nécessaire de collecter, il faut prévoir <strong>beaucoup de RAM pour le driver avec le paramètre</strong> <code>spark.driver.memory</code>, ce qui empêche les autres utilisateurs de travailler.</p>
 </section>
-<section id="cacher-une-table" class="slide level2">
-<h2>Cacher une table</h2>
+<section id="programmer-sans-collecter-1" class="slide level2 smaller">
+<h2>Programmer sans collecter</h2>
+<p>Les résultats qu’il est recommandé de récupérer en mémoire vive en session R sont de la forme suivante :</p>
+<ul>
+<li><p><strong>une table filtrée</strong> avec les variables nécessaires à l’étude uniquement : sous MiDAS, toutes les jointures, les calculs de variable et les filtres peuvent être effectués de manière efficiente sous la forme de spark_data_frame, sans jamais collecter les données MiDAS ;</p></li>
+<li><p>des <strong>statistiques descriptives synthétiques ;</strong></p></li>
+<li><p>les <strong>premières lignes</strong> de la table pour vérifier que le programme retourne bien le résultat attendu ;</p></li>
+<li><p>une <strong>table agrégée</strong> pour un graphique par exemple, à l’aide de la fonction <code>summarise()</code>.</p></li>
+</ul>
+</section>
+<section id="programmer-sans-collecter-2" class="slide level2 smaller">
+<h2>Programmer sans collecter</h2>
+<p>Je sais que la création de ma table donne le résultat souhaitée (car j’ai regardé ce dont elle a l’air avvec <code>head()</code>), maintenant je vais l’appeler une dizaine de fois pour collecter uniquement des statistiques descriptives.</p>
+<p>Que se passe-t-il à chaque fois que je collecte une statistique descriptive ?</p>
+<div class="fragment">
+<p>La création de la table va être exécutée à nouveau : très long ?</p>
+<p>Comment faire ?</p>
+<div class="panel-tabset">
+<ul id="tabset-5" class="panel-tabset-tabby"><li><a data-tabby-default="" href="#tabset-5-1">Cache</a></li><li><a href="#tabset-5-2">Persist</a></li></ul>
+<div class="tab-content">
+<div id="tabset-5-1">
+<p>La création de la table est exécutée une seule fois, le résultat est conservé en mémoire vive</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a></a>ma_table_spark <span class="ot">&lt;-</span> MMO_2017 <span class="sc">%&gt;%</span></span>
+<span id="cb26-2"><a></a>  <span class="fu">filter</span>(DebutCTT <span class="sc">&gt;</span> <span class="fu">as.Date</span>(<span class="st">"2017-06-01"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb26-3"><a></a>  <span class="fu">mutate</span>(<span class="at">duree_CTT =</span> <span class="fu">DATEDIFF</span>(FinCTT,DebutCTT) <span class="sc">+</span> <span class="dv">1</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb26-4"><a></a>  <span class="fu">sdf_register</span>(<span class="at">name =</span> <span class="st">"ma_table_spark"</span>)</span>
+<span id="cb26-5"><a></a></span>
+<span id="cb26-6"><a></a><span class="fu">tbl_cache</span>(<span class="st">"ma_table_spark"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+<div id="tabset-5-2">
+<p>La création de la table est exécutée une seule fois, le résultat est conservé sur le disque</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a></a>ma_table_spark <span class="ot">&lt;-</span> MMO_2017 <span class="sc">%&gt;%</span></span>
+<span id="cb27-2"><a></a>  <span class="fu">filter</span>(DebutCTT <span class="sc">&gt;</span> <span class="fu">as.Date</span>(<span class="st">"2017-06-01"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb27-3"><a></a>  <span class="fu">mutate</span>(<span class="at">duree_CTT =</span> <span class="fu">DATEDIFF</span>(FinCTT,DebutCTT) <span class="sc">+</span> <span class="dv">1</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb27-4"><a></a>  <span class="fu">sdf_persist</span>(<span class="at">storage.level =</span> <span class="st">"DISK_ONLY"</span>)</span>
+<span id="cb27-5"><a></a></span>
+<span id="cb27-6"><a></a><span class="fu">tbl_cache</span>(<span class="st">"ma_table_spark"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+</div>
+</div>
+<aside class="notes">
+<p>Réponse attendue : c’est une action donc ca déclenche la création de la table Indice : création de table contient uniquement des transformations</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="optimiser-la-mémoire-conclusion" class="slide level2">
+<h2>Optimiser la mémoire : conclusion</h2>
+<p>Pour programmer en spark sans aucune erreur :</p>
+<ol type="1">
+<li><p>Déclencher une action avec plusieurs transformations pour laisser Catalyst optimiser</p></li>
+<li><p>Ne pas collecter tout une table</p></li>
+<li><p>Persister ou cacher une table qu’on va appeler plusieurs fois pour ne collecter que des statistiques descriptives</p></li>
+<li><p>Ne pas persister trop de tables : occupe de la mémoire RAM</p></li>
+<li><p>Consulter le programme exemple sur la bulle CASD si besoin</p></li>
+</ol>
 </section></section>
 <section>
 <section id="les-bonnes-pratiques" class="title-slide slide level1 center">
 <h1>Les bonnes pratiques</h1>
 
 </section>
-<section id="spark-local-non" class="slide level2">
-<h2>Spark local : non</h2>
+<section id="mode-local-schéma" class="slide level2 smaller">
+<h2>Mode local : schéma</h2>
+
+<img data-src="images/mode_local.PNG" class="r-stretch"></section>
+<section id="mode-local-à-éviter" class="slide level2 smaller">
+<h2>Mode local : à éviter</h2>
+<p>En mode local :</p>
+<ul>
+<li><p>les ressources utilisées sont celles de la bulle uniquement : bloque les autres utilisateurs</p></li>
+<li><p>il faut allouer suffisamment de coeurs à la JVM pour paralléliser</p></li>
+<li><p>même si l’utilisateur choisit des ressources faibles, les ressources réelles utilisées dans une session spark peuvent être plus élevées : mauvaise gestion de l’allocation des ressources entre utilisateurs</p></li>
+<li><p>accélération sensible par rapport à un mode de programmation classique séquentiel sur un unique coeur si beaucoup de ressources</p></li>
+<li><p>Sur la bulle CASD, mauvaise gestion de la répartition des ressources en spark local : l’utilisation simultanée de spark par plusieurs membres de la bulle entraînent des ralentissements considérables</p>
+<p>▶️mode local à éviter absolument</p></li>
+</ul>
 </section>
-<section id="inutile-de-prendre-toutes-les-ressources" class="slide level2">
+<section id="traitement-map-distribué" class="slide level2">
+<h2>Traitement MAP distribué</h2>
+
+<img data-src="images/map_distribue.drawio.png" class="quarto-figure quarto-figure-center r-stretch"></section>
+<section id="traitement-reduce-distribué" class="slide level2">
+<h2>Traitement REDUCE distribué</h2>
+
+<img data-src="images/reduce_distribue.drawio.png" class="quarto-figure quarto-figure-center r-stretch"></section>
+<section id="inutile-de-prendre-toutes-les-ressources" class="slide level2 smaller">
 <h2>Inutile de prendre toutes les ressources</h2>
+
+<img data-src="images/reduce_distribue.drawio.png" class="quarto-figure quarto-figure-center r-stretch"><p>Comme nous l’avons vu, les traitements REDUCE ne se prêtent pas très bien au calcul distribué :</p>
+<ul>
+<li><p>augmenter le nombre de workers augmente la probabilité de devoir effectuer des shuffles</p></li>
+<li><p>il est recommandé de se limiter à deux workers comme dans la configuration proposée</p></li>
+<li><p>réserver d’autres ressources n’est souvent pas efficient et monopolise les ressources pour les autres utilisateurs.</p></li>
+</ul>
 </section>
-<section id="fermer-sa-session" class="slide level2">
+<section id="fermer-sa-session" class="slide level2 smaller">
 <h2>Fermer sa session</h2>
+<ul>
+<li><p>Une fois les ressources réservées, tant que la session R est ouverte, les ressources restent réservées à l’utilisateur : personne ne peut les prendre</p></li>
+<li><p>Si on ne ferme pas sa session, on bloque les autres</p></li>
+<li><p>Si une session reste ouverte trop longtemps et bloque les autres, le CASD pourra la ferme à distance : bien enregistrer ses résultats avant de partir !</p></li>
+</ul>
 </section>
-<section id="mutualiser-les-expériences" class="slide level2">
+<section id="mutualiser-les-expériences" class="slide level2 smaller">
 <h2>Mutualiser les expériences</h2>
+<ul>
+<li><p>Sessions de passage d’un code sur le cluster</p></li>
+<li><p>Contributions à la documentation MiDAS</p></li>
+<li><p>Appeler un collègue si erreur en sparklyr</p></li>
+</ul>
 </section></section>
 <section>
 <section id="pour-aller-plus-loin" class="title-slide slide level1 center">
@@ -1056,19 +1575,51 @@
 <p>Le format <code>.parquet</code> (avec <code>arrow</code>) et le framework <code>spark</code> permettent de gérer le partitionnement des données.</p>
 <p>Si les opérations sont souvent effectuées par régions par exemple, il est utile de forcer le stockage des données d’une même région au même endroit physique et accélère drastiquement le temps de calcul :</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a></a><span class="fu">spark_write_parquet</span>(ma_table, <span class="st">"hdfs:///resultats/ma_table.parquet"</span>, <span class="at">partition_by =</span> <span class="fu">c</span>(<span class="st">"region"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a></a><span class="fu">spark_write_parquet</span>(ma_table, <span class="st">"hdfs:///resultats/ma_table.parquet"</span>, <span class="at">partition_by =</span> <span class="fu">c</span>(<span class="st">"region"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="sparkui" class="slide level2">
+<section id="sparkui" class="slide level2 smaller scrollable">
 <h2>SparkUI</h2>
+<p>Spark UI permet de consulter le plan logique et physique du traitement demandé. Trois outils permettent d’optimiser les traitements :</p>
+<div class="panel-tabset">
+<ul id="tabset-6" class="panel-tabset-tabby"><li><a data-tabby-default="" href="#tabset-6-1">DAG</a></li><li><a href="#tabset-6-2">GC</a></li><li><a href="#tabset-6-3">Mémoire</a></li></ul>
+<div class="tab-content">
+<div id="tabset-6-1">
+<p><img data-src="images/dag.webp"></p>
+</div>
+<div id="tabset-6-2">
+<p>Vérifier que le <code>gc time</code> est inférieur à 10% du temps pour exécuter la tâche ✅</p>
+<p><img data-src="images/gc.png"></p>
+</div>
+<div id="tabset-6-3">
+<p>Vérifier que la <code>storage memory</code> ne sature pas la mémoire ✅</p>
+<p><img data-src="images/gc.png"></p>
+</div>
+</div>
+</div>
 </section>
-<section id="yarn" class="slide level2">
+<section id="yarn" class="slide level2 smaller scrollable">
 <h2>Yarn</h2>
+<ul>
+<li><p><strong>yarn</strong> : disponibilité des ressources</p>
+<p><img data-src="images/yarn_scheduler.PNG"></p></li>
+<li><p><strong>Sparkhistory</strong> pour des traitements de sessions fermées</p></li>
+</ul>
+<p>Le sparkhistory entraîne l’enregistrement de logs assez lourdes, il est donc désactivé par défaut. Pour l’activer sur un programme :</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a></a>conf <span class="ot">&lt;-</span> <span class="fu">spark_config</span>()</span>
+<span id="cb29-2"><a></a>conf[<span class="st">"spark.eventLog.enabled"</span>] <span class="ot">&lt;-</span> <span class="st">"true"</span></span>
+<span id="cb29-3"><a></a>conf[<span class="st">"spark.eventLog.dir"</span>] <span class="ot">&lt;-</span> <span class="st">"hdfs://midares-deb11-nn-01.midares.local:9000/spark-logs"</span></span>
+<span id="cb29-4"><a></a>conf[<span class="st">"appName"</span>] <span class="ot">&lt;-</span> <span class="st">"un_nom_de_traitement"</span></span>
+<span id="cb29-5"><a></a></span>
+<span id="cb29-6"><a></a>sc <span class="ot">&lt;-</span> <span class="fu">spark_connect</span>(<span class="at">master =</span> <span class="st">"yarn"</span>, <span class="at">config =</span> conf)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 </section>
 <section id="pyspark" class="slide level2">
 <h2>Pyspark</h2>
 
-<div class="quarto-auto-generated-content">
+
+<img data-src="images/pyspark.drawio.png" class="quarto-figure quarto-figure-center r-stretch"><div class="quarto-auto-generated-content">
 <div class="footer footer-default">
 
 </div>
