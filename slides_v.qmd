@@ -287,9 +287,15 @@ Le cluster a son propre explorateur de fichiers à mettre en favori dans son nav
 ![](/images/hdfs_midas.png){.fragment fig-align="center" width="900" height="500"}
 :::
 
-## Et mes bases sur la bulle ?
+## Et mes bases sur la bulle ? {.smaller}
 
-Ajouter capture d'écran pour upload
+Il est possible de charger des bases enregistrées n'importe où sur la bulle sur HDFS : depuis vos documents personnels, depuis l'espace commun...
+
+::: r-stack
+![](/images/hdfs_upload_1.png){.fragment fig-align="center" width="1100" height="450"}
+
+![](/images/hdfs_upload_2.png){.fragment fig-align="center" width="1100" height="450"}
+:::
 
 ## Un cluster de calcul
 
@@ -331,9 +337,9 @@ library(dbplyr)
 
 conf <- spark_config()
 conf["spark.driver.memory"] <- "20Go"
-conf["spark.executor.memory"] <- "140Go"
-conf["spark.executor.cores"] <- 8
-conf["spark.executor.instances"] <- 2
+conf["spark.executor.memory"] <- "60Go"
+conf["spark.executor.cores"] <- 4
+conf["spark.executor.instances"] <- 3
 cont["spark.yarn.queue"] <- "prod"
 conf["spark.driver.maxResultSize"] <- 0
 
@@ -341,9 +347,31 @@ sc <- spark_connect(master = "yarn", config = conf)
 ```
 :::
 
-## Quizz : traitement nomal ou traitement très lourd
+::: callout-important
+## Temps de connexion
 
-Liste de cas d'usage
+Pour se connecter au cluster, il faut environ 5 minutes, à chaque connexion. Spark cluster n'est pas du tout adapté à des traitements légers (moins de 10 minutes).
+:::
+
+## Quizz : traitement nomal ou traitement très lourd {.smaller}
+
+-   Appariement de 2 bases mensuelles de la CNAF entre elles (4 millions de lignes par base)
+
+. . .
+
+-   Repérage de la situation en emploi (MMO) d'un champ de bénéficiaires RSA un mois donné (2 millions de lignes)
+
+. . .
+
+-   Calcul de la durée d'inscription (FHS, table DE), de la durée d'indemnisation (FNA, table PJC) et du retour à l'emploi d'un champ de 2 millions de demandeurs d'emploi
+
+. . .
+
+-   Calcul de la durée d'indemnisation (FNA, table PJC) d'un champ de 20 millions de demandeurs d'emploi
+
+. . .
+
+-   Calcul du retour à l'emploi d'un champ de demandeur d'emploi en fin d'un mois donné (5 millions de DEFM)
 
 ## Chargement des données en spark
 
@@ -373,13 +401,18 @@ mon_data_frame_spark <- copy_to(sc, "mon_data_frame")
 
 Ensuite, vous pouvez programmer avec `dplyr` !
 
+<br>
+
 ```{r}
 #| eval: false
 #| echo: true
 
 mmo_17_df_spark <- mmo_17_df_spark %>%
+  
   rename(debut_contrat = DebutCTT) %>%
+  
   filter(debut_contrat >= as.Date("2017-01-01") & debut_contrat < as.Date("2017-02-01")) %>%
+  
   mutate(mois_debut_contrat = substr(debut_contrat,6,7))
 
 
@@ -430,11 +463,7 @@ nb_debut_contrat_fev_17 <- mmo_17_df_spark_mois %>%
 En réalité, lorsqu'on appuie ysur le bouton `run`, il ne se passe pas "rien". Le code est compilé par spark : les erreurs sont repérées avant même que le code soit exécuté !
 :::
 
-INSERER EXEMPLE ERREUR REPEREE A LA COMPILATION
-
-## Les erreurs spark
-
-Exemples d'erreur pour rassurer
+![](images/erreur_variable_inexistante.PNG){width="300"}
 
 ## Récupérer un résultat
 
@@ -447,6 +476,32 @@ Les principales actions sont :
 -   ⚠️ `collect()` pour de petites tables : ne fonctionne pas sur des grosses tables
 
 -   `tbl_cache()` (écrire un `spark_data_frame` en mémoire pour le réutiliser)
+
+## Les erreurs spark {.smaller}
+
+Les erreurs de **programmation** sont soulevées avant que les calculs commencent.
+
+Des erreurs peuvent survenir pendant l'exécution du code, quelques minutes après l'appel d'une action par exemple.
+
+::: callout-warning
+## Collecter des données trop volumineuses
+
+Une source fréquente d'erreur pendant l'exécution est l'appel d'un `collect()` sur des données trop volumineuses pour être collectées. La première étape du débuggage consiste à limiter les `collect()`.
+:::
+
+::: r-stack
+![](images/erreur_1.png){.fragment width="1000" height="100"}
+
+![](/images/erreur_2.PNG){.fragment width="1000" height="100"}
+
+![](/images/erreur_2_bis.PNG){.fragment width="1000" height="120"}
+:::
+
+::: callout-caution
+## Les erreurs sparklyr
+
+Les erreurs envoyées par spark sont "traduites" par sparklyr pour être affichées dans la console de R. Elles ne sont pas toujours très lisibles, ou très précises sur la nature de l'erreur/sa source.
+:::
 
 ## ... presque tout comme dplyr {.smaller .scrollable}
 
@@ -668,7 +723,9 @@ une_partie_de_ma_table <- ma_table %>%
 
 ## Exporter des données sur disque {.smaller}
 
-Le soir en partant du travail, sur la pause déjeuner
+Sur la pause déjeuner par exemple 😉
+
+Pourquoi ❓ Pour des données qui ne peuvent pas être collectées en mémoire vive
 
 Export des spark data frames directement sous HDFS : à aucun moment on n'ouvre la table : on peut traiter des données beaucoup plus volumnieuses que la mémoire RAM !
 
@@ -676,9 +733,13 @@ Export des spark data frames directement sous HDFS : à aucun moment on n'ouvre 
 #| eval: false
 #| echo: true
 
-ma_table <- data.frame(c("Anne", "Paul"), c(25,30))
-
-ma_table_spark <- copy_to(sc, ma_table)
+ma_table_spark <- MMO %>%
+  
+  right_join(mon_champ_individuel, by = c("id_midas")) %>%
+  
+  mutate(fin_ctt_bis = ifelse(is.na(FinCTT), as.Date("2023-12-31"), FinCTT)) %>%
+  
+  mutate(duree_inscription = DATEDIFF(FinCTT, DebutCTT) + 1)
 
 spark_write_parquet(ma_table_spark, "hdfs:///resultats/ma_table.parquet")
 
@@ -722,9 +783,23 @@ ma_table_spark <- copy_to(sc, ma_table) %>%
 spark_write_parquet(ma_table_spark, "hdfs:///resultats/ma_table.parquet")
 ```
 
-## Fermer sa session
+## Fermer sa session {.smaller}
 
-Schéma et avertissement
+Il faut impérativement fermer sa session spark après une session de travail. Deux moyens pour ça :
+
+-   fermer R Studio
+
+-   si on ne ferme pas RStudio, utiliser la fonction `spark_disconnect_all()` dans son code
+
+Si on souhaite lancer un code le soir en partant, on n'oublie pas le `spark_disconnect_all()` à la fin du code.
+
+::: callout-warning
+## Partage des ressources
+
+Les ressources réservés par un utilisateur ne sont libérées pour les autres que lorsqu'il se déconnecte. Ne pas se déconnecter, c'est bloquer les ressources. Si j'ai réservé deux ordinateurs du cluster sur 15, personne d'autres ne peut les réserver tant que je n'ai pas déconnecter ma session spark.
+
+Nous fermerons les sessions ouvertes trop longtemps (départ de congés sans déconnexion) si des utilisateurs présents en ont besoin : risque de perte du travail non enregistré.
+:::
 
 ## Télécharger des données en local {.smaller}
 
@@ -754,25 +829,51 @@ Conseils :
 
 4.  La charger en R classique pour faire de l'économétrie
 
-## Quizz : spark ou pas spark ?
+## Quizz : spark ou pas spark ? {.smaller}
 
-# Les bonnes pratiques
+-   faire des statistiques descriptives sur une unique table de 1 million d'individus et 30 variables déjà créée
+
+. . .
+
+-   créer une table de 5 millions demandeurs d'emploi avec leur situation au regard de l'emploi (MMO), leur durée d'inscription (DE du FHS)
+
+. . .
+
+-   apparier 4 tables mensuelles de la CNAF pour repérer la liste des `id_midas` bénéficiaires de minima sociaux 4 mois donnés (4 millions chaque mois)
+
+. . .
+
+-   faire de l'économétrie sur une unique table déjà créée
+
+. . .
+
+::: callout-tip
+## Econométrie et Machine Learning avec Spark
+
+Il existe des outils pour faire de l'économétrie avec spark, la librairie Apache Spark **MLlib**. Elle relève d'une utilisation plus avancée de spark que nous ne traitons pas ici. Elle ne contient pas autant de modèles que le CRAN R pour la recherche en économétrie.
+
+Il vous est conseillé de créer une unique table d'étude puis de la traiter en R classique pour l'économétrie.
+:::
+
+# Les bonnes pratiques 🤝
 
 ## Mode local : schéma {.smaller}
 
 ![](images/mode_local.PNG)
 
-## Mode local : inadapté {.smaller}
+## Mode local : inadapté et mauvaise pratique {.smaller}
+
+<br>
 
 Spark et le mode local :
 
--   un seul ordinateur alors que spark est fait pour plusieurs ordinateurs distincts
+-   un seul ordinateur alors que spark est fait pour **plusieurs ordinateurs** distincts
 
--   beaucoup moins de ressources disponibles sur la bulle que sur le cluster
+-   beaucoup **moins de ressources** disponibles sur la bulle que sur le cluster
 
--   mauvaise gestion de l'allocation des ressources entre utilisateurs : pas faite pour plusieurs utilisateurs
+-   mauvaise gestion de l'allocation des ressources entre utilisateurs : **pas faite pour plusieurs utilisateurs**
 
--   ralentissements considérables et bugs : bloque les autres utilisateurs
+-   ralentissements considérables et bugs : **bloque les autres utilisateurs**
 
     ▶️spark n'est adapté que pour le cluster de calcul, la bulle pour faire du R sans spark sur des données peu volumineuses
 
@@ -780,17 +881,17 @@ Spark et le mode local :
 
 ![](images/reduce_distribue.drawio.png){fig-align="center"}
 
-Les ordinateurs du cluster ont besoin de s'envoyer des données par le réseau : c'est la partie la plus lente d'un programme spark !
+Les ordinateurs du cluster ont besoin de **s'envoyer des données par le réseau** : c'est la partie la plus lente d'un programme spark !
 
 Si j'augmente les ressources : par exemple, je réserve 3 ordinateurs du cluster plutôt que 2
 
-1.  Effet réduction du temps de calcul : plus de ressources pour faire les calculs
+1.  **Effet puissance de calcul** : plus de ressources pour faire les calculs = réduction du temps de calcul
 
-2.  Effet augmentation des échanges réseau (shuffles) : augmentation du temps de calcul
+2.  **Effet augmentation des échanges réseau (shuffles)** : augmentation du temps de calcul
 
-3.  Gêne des autre utilisateurs
+3.  **Gêne des autre utilisateurs**
 
-## Ne pas collecter
+## Ne pas collecter {.smaller}
 
 ::: callout-note
 ## Collecter, c'est quoi ?
@@ -799,16 +900,16 @@ Collecter c'est utiliser l'instruction `collect()`. Elle permet de rapatrier l'e
 
 `Collect()` :
 
-1.  est une action : elle déclencher tous les calculs
+1.  est une **action** : elle déclencher tous les calculs
 
-2.  implique des échanges réseau très importants : entre ordinateurs du cluster et du cluster vers la bulle : c'est extrêmement long, moins efficient que l'enregistrement sur disque directement depuis spark
+2.  implique des **échanges réseau** très importants : entre ordinateurs du cluster et du cluster vers la bulle : c'est extrêmement long, moins efficient que l'enregistrement sur disque directement depuis spark
 
-3.  rappatrie les résultats (une table) dans la mémoire vive de R, qui est sur la bulle : si le résultat est volumineux, cela bloque les autres utilisateurs
+3.  rappatrie les résultats (une table) dans la mémoire vive de R, qui est sur la bulle : si le résultat est volumineux, cela **bloque les autres utilisateurs**
 :::
 
 Recommandations :
 
--   Ne pas collecter des tables de plus de 15 Go --\> exporter sur le disque HDFS puis charger en R
+-   Ne pas collecter des tables de plus de 15 Go
 
 -   Utiliser les autres méthodes proposées pour ne pas bloquer les utilisateurs qui ont besoin de R en mode classique
 
@@ -816,27 +917,33 @@ Recommandations :
 
 ## Fermer sa session {.smaller}
 
--   Une fois les ressources réservées, tant que la session R est ouverte, les ressources restent réservées à l'utilisateur : personne ne peut les prendre
+<br>
 
--   Si on ne ferme pas sa session, on bloque les autres
+<br>
 
--   Si une session reste ouverte trop longtemps et bloque les autres, le CASD pourra la ferme à distance : bien enregistrer ses résultats avant de partir !
+<br>
+
+Pour ne pas bloquer les collègues 👨‍💻
 
 ## Yarn {.smaller}
 
-Lien vers yarn
+Yarn permet de consulter la réservation des ressources par les utilisateurs.
 
-Vérifier que notre session est fermée et qu'on ne prend pas trop de ressources : **yarn** 
+On peut y accéder en copiant le lien suivant dans Google chrome sur la bulle (mettre en favori) : midares-deb11-nn-01.midares.local:8088/cluster
 
-    ![](images/yarn_scheduler.PNG)
+Vérifier que notre session est fermée et qu'on ne prend pas trop de ressources : **yarn**
+
+![](images/yarn_scheduler.PNG)
 
 ## Mutualiser les expériences {.smaller}
 
--   Sessions de passage d'un code sur le cluster
+-   Aide au passage d'un code sur le cluster
 
--   Contributions à la documentation MiDAS
+-   Programmer entre collègues
 
--   Appeler un collègue si erreur en sparklyr
+-   Contributions à la documentation MiDAS : section fiches, à l'aide de pull requests sur github
+
+![](images/documentation_midas_fiches.PNG){fig-align="center"}
 
 # Optimiser le code : non ! Mais optimiser la mémoire...
 
@@ -904,15 +1011,9 @@ Spark optimise automatiquement les programmes soumis :
 3.  Optimisation du plan logique par le module **Catalyst** (driver Spark)
 
 ::: callout-warning
-## Les erreurs en sparklyr
+## Le bouton stop
 
-Petite précision sur les erreurs :
-
--   sparklyr traduit le code R en scala
-
--   mais également les messages envoyés par spark en R
-
--   les erreurs affichées en R ne sont pas toujours bien interprétables
+Il est recommandé de ne pas utiliser ce bouton en programmant en sparklyr : il rend la session spark inutilisable par la suite, il faut fermer RStudio et rouvrir ensuite.
 :::
 
 ## Catalyst optimise le code pour nous {.smaller .scrollable}
@@ -1024,7 +1125,6 @@ table_finale <- petite_table_mon_champ %>%
   left_join(table_volumineuse_comme_PJC)
 ```
 
-
 ## Le rôle du cluster manager {.smaller}
 
 ![](images/calcul_distribue.drawio.png){fig-align="center"}
@@ -1048,7 +1148,6 @@ Le worker effectue le morceau de programme qu'on lui affecte :
 -   il peut communiquer avec le driver en réseau pour renvoyer un résultat ;
 
 -   il peut communiquer avec les autres workers en réseau pour partager des données ou des résultats intermédiaires : c'est un shuffle.
-
 
 ## Calcul distribué et récupération des résultats {.smaller}
 
@@ -1075,10 +1174,6 @@ Mtn un peu de théorie pour comprendre le calcul distribué et mieux l'utiliser
 ## Traitement REDUCE distribué
 
 ![](images/reduce_distribue.drawio.png){fig-align="center"}
-
-## Les configurations proposées
-
-Configurations ont été testées avec des traitements métier : elles sont adaptées. Ne pas prendre plus de ressources car inefficient
 
 ## Le stockage distribué avec HDFS {.smaller}
 
@@ -1174,22 +1269,6 @@ ma_table_spark <- MMO_2017 %>%
 
 tbl_cache("ma_table_spark")
 ```
-
-## Persist
-
-La création de la table est exécutée une seule fois, le résultat est conservé sur le disque
-
-```{r}
-#| eval: false
-#| echo: true
-
-ma_table_spark <- MMO_2017 %>%
-  filter(DebutCTT > as.Date("2017-06-01")) %>%
-  mutate(duree_CTT = DATEDIFF(FinCTT,DebutCTT) + 1) %>%
-  sdf_persist(storage.level = "DISK_ONLY")
-
-tbl_cache("ma_table_spark")
-```
 :::
 
 ::: notes
@@ -1216,8 +1295,7 @@ Pour programmer en spark sans aucune erreur :
 
 Le format `.parquet` (avec `arrow`) et le framework `spark` permettent de gérer le partitionnement des données.
 
-Si les opérations sont souvent effectuées par régions par exemple, il est utile de forcer le stockage des données
-d'une même région au même endroit physique et accélère drastiquement le temps de calcul :
+Si les opérations sont souvent effectuées par régions par exemple, il est utile de forcer le stockage des données d'une même région au même endroit physique et accélère drastiquement le temps de calcul :
 
 ```{r}
 #| eval: false
@@ -1227,14 +1305,11 @@ spark_write_parquet(ma_table, "hdfs:///resultats/ma_table.parquet", partition_by
 
 ```
 
+## Éviter le problème des exécuteurs inactifs {.smaller}
 
-## Éviter le problème des exécuteurs inactifs
+Supposons que le jeu de données ait 8 partitions, un exécuteur (avec seulement 1 core) ne peut exécuter qu'une tâche(task) à la fois, et une partition = une tâche.
 
-Supposons que le jeu de données ait 8 partitions, un exécuteur (avec seulement 1 core) ne peut exécuter
-qu'une tâche(task) à la fois, et une partition = une tâche.
-
-Cas 1 : 6 exécuteurs, au dernier tour, il ne reste que 2 tâches, 4 exécuteurs seront inactifs.
-Cas 2 : 4 exécuteurs, 2*4, aucun exécuteur inactif.
+Cas 1 : 6 exécuteurs, au dernier tour, il ne reste que 2 tâches, 4 exécuteurs seront inactifs. Cas 2 : 4 exécuteurs, 2\*4, aucun exécuteur inactif.
 
 ```{r}
 #| eval: false
@@ -1248,66 +1323,81 @@ print(num_partitions)
 df_repartitioned <- sdf_repartition(df, partitions = 10)
 ```
 
-- Le nombre de partitions doit être divisible par le nombre d'exécuteurs.
-- Le nombre de partitions doit être supérieur au nombre d'exécuteurs.
+-   Le nombre de partitions doit être divisible par le nombre d'exécuteurs.
+-   Le nombre de partitions doit être supérieur au nombre d'exécuteurs.
 
-
-
-## Éviter trop de partitions
+## Éviter trop de partitions {.smaller}
 
 La création de tâches entraîne des surcharges, qui doivent toujours être inférieures à 50 % du temps total d'exécution de la tâche.
 
 ![](images/stage_eventtimeline.png)
 
-```{r}
-#| eval: false
-#| echo: true
+-   <div>
 
-# Repartition the DataFrame to a specific number of partitions
-df_repartitioned <- sdf_repartition(df, partitions = 10)
+    ```{r}
+    #| eval: false
+    #| echo: true
 
-# Repartition the DataFrame by a specific column, e.g., "commune_code".
-# The partition number will be the distinct value number
-df_repartitioned <- sdf_repartition(df, partition_by = "commune_code")
-```
+    # Repartition the DataFrame to a specific number of partitions
+    df_repartitioned <- sdf_repartition(df, partitions = 10)
 
-- La répartition est une opération très coûteuse, utilisez-la judicieusement.
-- En général, la taille recommandée des partitions est d'environ 128 à 512 Mo.
+    # Repartition the DataFrame by a specific column, e.g., "commune_code".
+    # The partition number will be the distinct value number
+    df_repartitioned <- sdf_repartition(df, partition_by = "commune_code")
+    ```
 
-## Optimiser la configuration des exécuteurs
+    </div>
+
+-   La répartition est une opération très coûteuse, utilisez-la judicieusement.
+
+-   En général, la taille recommandée des partitions est d'environ 128 à 512 Mo.
+
+## Optimiser la configuration des exécuteurs {.smaller}
 
 Configuration recommandée :
-- Un exécuteur devrait avoir entre 3 et 5 cores.
-- Pour chaque core, il faut réserver entre 4 et 8 Go de mémoire.
+
+-   Un exécuteur devrait avoir entre 3 et 5 cores.
+-   Pour chaque core, il faut réserver entre 4 et 8 Go de mémoire.
 
 En mode cluster, chaque exécuteur fonctionne dans une JVM (la JVM nécessite une mémoire supplémentaire et du CPU pour exécuter le GC).
 
-- Évitez 1 core par exécuteur.
-- Évitez trop de cores dans un seul exécuteur, cela peut causer des problèmes de contention de threads ou la surcharge du garbage collector.
+-   Évitez 1 core par exécuteur.
+-   Évitez trop de cores dans un seul exécuteur, cela peut causer des problèmes de contention de threads ou la surcharge du garbage collector.
 
-## Tâches Maximales en parallèles
+## Tâches Maximales en parallèles {.smaller}
 
-**Max_Parallel_Tasks=Number_of_Executors*Cores_per_Executor**
+<br>
+
+::: callout-tip
+## Parallélisation
+
+**Max_Parallel_Tasks = Number_of_Executors \* Cores_per_Executor**
+:::
+
+<br>
 
 Par exemple, une session Spark dispose de la configuration suivante :
 
 ```{r}
+#| eval: false
+#| echo: true
+#| 
 conf["spark.executor.memory"] <- "32Go"
 conf["spark.executor.cores"] <- 4
 conf["spark.executor.instances"] <- 5
 ```
 
-5 executor * 4 core = 20 tâches en parallèle. Pour un jeu de données de 200 partitions, il faut 10 tournes pour
-terminer tous les calculs.
+5 executor \* 4 core = 20 tâches en parallèle. Pour un jeu de données de 200 partitions, il faut 10 tours pour terminer tous les calculs.
 
-- Il n'existe pas de configuration universelle optimale pour tous, seulement la meilleure configuration pour vos tâches.
+<br>
 
-## SparkUI  {.smaller .scrollable}
+▶️Il n'existe pas de configuration universelle optimale pour tous, seulement la meilleure configuration pour vos tâches.
+
+## SparkUI {.smaller .scrollable}
 
 Spark UI permet de consulter le plan logique et physique du traitement demandé. Trois outils permettent d'optimiser les traitements :
 
 ::: panel-tabset
-
 ## DAG
 
 ![](images/dag.webp)
@@ -1347,6 +1437,8 @@ sc <- spark_connect(master = "yarn", config = conf)
 
 ## Pyspark
 
+<br>
+
 ![](images/pyspark.drawio.png){fig-align="center"}
 
 # Annexe
@@ -1366,4 +1458,3 @@ Hadoop Distributed File System (HDFS)
 -   les **DataNodes** stockent effectivement les blocs de données : les datanodes sont en fait les disques durs des workers du cluster, chaque ordinateur du cluster dispose d'un disque avec une partie des données MiDAS
 
 -   le **système HDFS** est relié à la bulle Midares : possible de charger des données en clique-bouton de la bulle vers HDFS de manière très rapide et de télécharger des tables de HDFS pour les récupérer en local
-
