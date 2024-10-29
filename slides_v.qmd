@@ -1124,7 +1124,8 @@ Comme nous l'avons vu, les traitements REDUCE ne se prêtent pas très bien au c
 
 Le format `.parquet` (avec `arrow`) et le framework `spark` permettent de gérer le partitionnement des données.
 
-Si les opérations sont souvent effectuées par régions par exemple, il est utile de forcer le stockage des données d'une même région au même endroit physique et accélère drastiquement le temps de calcul :
+Si les opérations sont souvent effectuées par régions par exemple, il est utile de forcer le stockage des données
+d'une même région au même endroit physique et accélère drastiquement le temps de calcul :
 
 ```{r}
 #| eval: false
@@ -1134,11 +1135,86 @@ spark_write_parquet(ma_table, "hdfs:///resultats/ma_table.parquet", partition_by
 
 ```
 
+## Éviter le problème des exécuteurs inactifs
+
+Supposons que le jeu de données ait 8 partitions, un exécuteur (avec seulement 1 core) ne peut exécuter
+qu'une tâche(task) à la fois, et une partition = une tâche.
+
+Cas 1 : 6 exécuteurs, au dernier tour, il ne reste que 2 tâches, 4 exécuteurs seront inactifs.
+Cas 2 : 4 exécuteurs, 2*4, aucun exécuteur inactif.
+
+```{r}
+#| eval: false
+#| echo: true
+
+# Get the number of partitions
+num_partitions <- sdf_num_partitions(df)
+print(num_partitions)
+
+# Repartition the DataFrame to a specific number of partitions
+df_repartitioned <- sdf_repartition(df, partitions = 10)
+```
+
+- Le nombre de partitions doit être divisible par le nombre d'exécuteurs.
+- Le nombre de partitions doit être supérieur au nombre d'exécuteurs.
+
+
+
+## Éviter trop de partitions
+
+La création de tâches entraîne des surcharges, qui doivent toujours être inférieures à 50 % du temps total d'exécution de la tâche.
+
+![](images/stage_eventtimeline.png)
+
+```{r}
+#| eval: false
+#| echo: true
+
+# Repartition the DataFrame to a specific number of partitions
+df_repartitioned <- sdf_repartition(df, partitions = 10)
+
+# Repartition the DataFrame by a specific column, e.g., "commune_code".
+# The partition number will be the distinct value number
+df_repartitioned <- sdf_repartition(df, partition_by = "commune_code")
+```
+
+- La répartition est une opération très coûteuse, utilisez-la judicieusement.
+- En général, la taille recommandée des partitions est d'environ 128 à 512 Mo.
+
+## Optimiser la configuration des exécuteurs
+
+Configuration recommandée :
+- Un exécuteur devrait avoir entre 3 et 5 cores.
+- Pour chaque core, il faut réserver entre 4 et 8 Go de mémoire.
+
+En mode cluster, chaque exécuteur fonctionne dans une JVM (la JVM nécessite une mémoire supplémentaire et du CPU pour exécuter le GC).
+
+- Évitez 1 core par exécuteur.
+- Évitez trop de cores dans un seul exécuteur, cela peut causer des problèmes de contention de threads ou la surcharge du garbage collector.
+
+## Tâches Maximales en parallèles
+
+**Max_Parallel_Tasks=Number_of_Executors*Cores_per_Executor**
+
+Par exemple, une session Spark dispose de la configuration suivante :
+
+```{r}
+conf["spark.executor.memory"] <- "32Go"
+conf["spark.executor.cores"] <- 4
+conf["spark.executor.instances"] <- 5
+```
+
+5 executor * 4 core = 20 tâches en parallèle. Pour un jeu de données de 200 partitions, il faut 10 tournes pour
+terminer tous les calculs.
+
+- Il n'existe pas de configuration universelle optimale pour tous, seulement la meilleure configuration pour vos tâches.
+
 ## SparkUI  {.smaller .scrollable}
 
 Spark UI permet de consulter le plan logique et physique du traitement demandé. Trois outils permettent d'optimiser les traitements :
 
 ::: panel-tabset
+
 ## DAG
 
 ![](images/dag.webp)
