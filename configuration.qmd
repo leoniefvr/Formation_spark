@@ -4,7 +4,7 @@ title: "Configuration"
 
 # Sur le cluster
 
-Il est nécessaire de configurer la session spark pour établir une connexion entre la session R et un cluster spark. Les paramètres à définir sont :
+Il est nécessaire de configurer la session spark pour établir une connexion entre la session R et un cluster spark (appelée spark connection). Les paramètres à définir sont :
 
 -   Les ressources physiques utilisées :
 
@@ -16,9 +16,9 @@ Il est nécessaire de configurer la session spark pour établir une connexion en
 
     4.  La file sur laquelle on travaille avec **spark.yarn.queue**
 
--   le nombre de partitions de chaque spark_data_frame avec **spark.sql.shuffle.partitions**
+-   la limite de taille des résulats qui peuvent être collectés par le driver avec **spark.driver.maxResultSize. 0 correspond à l'absence de limite.**
 
--   la limite de taille des résulats qui peuvent être collectés par le driver avec **spark.driver.maxResultSize**
+## Traitement normal en spark
 
 ```{r}
 #| eval: false
@@ -26,16 +26,40 @@ Il est nécessaire de configurer la session spark pour établir une connexion en
 
 conf <- spark_config()
 conf["spark.driver.memory"] <- "40Go"
-conf["spark.executor.memory"] <- "80Go"
-conf["spark.executor.cores"] <- 5
+conf["spark.executor.memory"] <- "60Go"
+conf["spark.executor.cores"] <- 4
 conf["spark.executor.instances"] <- 2
 cont["spark.yarn.queue"] <- "prod"
 conf["spark.driver.maxResultSize"] <- 0
-conf["spark.sql.shuffle.partitions"] <- 200
 
 sc <- spark_connect(master = "yarn", config = conf)
 ```
 
-# Les files du cluster spark Midares
 
-# 
+## Traitement très lourd
+
+```{r}
+#| eval: false
+#| echo: true
+
+library(sparklyr)
+library(dplyr)
+library(dbplyr)
+
+conf <- spark_config()
+conf["spark.driver.memory"] <- "20Go"
+conf["spark.executor.memory"] <- "60Go"
+conf["spark.executor.cores"] <- 4
+conf["spark.executor.instances"] <- 3
+cont["spark.yarn.queue"] <- "prod"
+conf["spark.driver.maxResultSize"] <- 0
+
+sc <- spark_connect(master = "yarn", config = conf)
+```
+
+
+::: callout-important
+## Temps de connexion
+
+Pour se connecter au cluster, il faut environ 5 minutes, à chaque connexion. Spark cluster n'est pas du tout adapté à des traitements légers (moins de 10 minutes).
+:::

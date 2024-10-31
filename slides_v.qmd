@@ -301,7 +301,7 @@ Il est possible de charger des bases enregistrées n'importe où sur la bulle su
 
 ![](/images/schema_cluster.drawio.png){fig-align="center"}
 
-## Connexion
+## Connexion {.smaller}
 
 ::: panel-tabset
 ## Traitement normal
@@ -373,7 +373,7 @@ Pour se connecter au cluster, il faut environ 5 minutes, à chaque connexion. Sp
 
 -   Calcul du retour à l'emploi d'un champ de demandeur d'emploi en fin d'un mois donné (5 millions de DEFM)
 
-## Chargement des données en spark
+## Chargement des données en spark {.smaller}
 
 <br>
 
@@ -391,9 +391,13 @@ mon_data_frame <- data.frame(c("Anna", "Paul"), c(15, 20))
 mon_data_frame_spark <- copy_to(sc, "mon_data_frame")
 ```
 
-<br>
-
 ▶️ chargement en mémoire vive couteux en temps : par défaut, `memory = FALSE`
+
+::: callout-tip
+## Spark data frames
+
+`mmo_17_df_spark` est un spark data frame (sdf) : il ne peut pas être ouvert comme un data frame R classique, il n'est pas dans la session R.
+:::
 
 ## Sparklyr, c'est comme dplyr
 

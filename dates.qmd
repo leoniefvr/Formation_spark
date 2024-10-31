@@ -6,7 +6,7 @@ title: "Les dates avec sparklyr"
 
 Les fonctions de `lubridate()`ne sont pas adaptées aux spark_data_frames.
 
--   Convertir une chaîne de caractère de la forme AAAA-MM-DD en Date
+-   Convertir une chaîne de caractère de la forme AAAA-MM-DD en Date : même fonction qu'en R base
 
     ```{r}
     #| eval: false
@@ -16,7 +16,7 @@ Les fonctions de `lubridate()`ne sont pas adaptées aux spark_data_frames.
 
     ```
 
--   Calculer une durée entre deux dates
+-   Calculer une durée entre deux dates : fonction `datediff()`
 
     ```{r}
     #| eval: false
@@ -34,7 +34,7 @@ Les fonctions de `lubridate()`ne sont pas adaptées aux spark_data_frames.
 
     ```
 
--   Ajouter ou soustraire des jours ou des mois à une date
+-   Ajouter ou soustraire des jours ou des mois à une date : `date_add()`, `date_sub()` et `add_months()`.
 
     ```{r}
     #| eval: false
@@ -52,7 +52,7 @@ Les fonctions de `lubridate()`ne sont pas adaptées aux spark_data_frames.
 ::: callout-tip
 ## Format
 
-Le int() est important car ces fonctions Hive n'accepte que les entiers pour l'ajout de jours : taper uniquement 5 est considéré comme un flottant dans R.
+Le `int()` est important car ces fonctions Hive n'acceptent que les entiers pour l'ajout de jours : taper uniquement 5 est considéré comme un flottant dans R.
 :::
 
 ::: callout-note
@@ -60,3 +60,5 @@ Le int() est important car ces fonctions Hive n'accepte que les entiers pour l'a
 
 Si la date en entrée est le dernier jour d'un mois, la date retournée avec `add_months(date_entree, int(1))` sera le dernier jour calendaire du mois suivant.
 :::
+
+Si tu as besoin d'autres fonctions de dates, tu peux consulter le site [fonctions dates spark hive](https://sparkbyexamples.com/apache-hive/hive-date-and-timestamp-functions-examples/)

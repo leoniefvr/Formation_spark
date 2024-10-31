@@ -6,17 +6,19 @@ title: "Out of memory"
 
 ## Collecter le moins possible 🤏
 
--   L'export direct d'un spark data frame en parquet est quasiment instantanné : tu peux ensuite charger la table parquet en data frame R si tu souhaites la traiter en mémoire vive.
+-   L'export direct d'un spark data frame en parquet sur HDFS est une meilleure alternative : tu peux ensuite charger la table parquet en data frame R si tu souhaites la traiter en mémoire vive. 
+
+-   Contrairement au `collect()`, quelle que soit la taille de la table, exporter sous HDFS ne renverra jamais d'erreur, tandis que le `collect()`ne fonctionne pas pour les tables volumineuses.
 
 -   Cet export direct n'est pas fonctionnel en spark local : encore une raison de passer sur le cluster Spark !
 
--   Si le `collect()`est inévitable, il faut que la mémoire RAM allouée au driver soit assez importante pour récupérer le résultat : elle est paramétrable avec l'option `spark.driver.memory` de la configuration spark. Lorsque tu utilises une session sparklyr, le driver est dans la bulle Midares, donc théoriquement la limite physique de RAM que tu peux allouer au driver correspond à la taille de bulle (mais d'autres collègues auront aussi besoin de ces ressources).
+-   Si tu souhaites voir ta table, tu peux collecter les premières lignes de celle-ci en combinant les fonctions `head()`et `collect()`.
 
-## Eviter les fonctions spécifiques à sparklyr ⚠️
+## Eviter les fonctions arrow ⚠️
 
 -   Si tu as utilisé des fonctions telles que `compute()` dans ton programme, elles peuvent être à l'origine d'une erreur `Out of memory` : ces commandes ne sont pas bien adaptées à Spark et les résultats temporaires stockés en mémoire vive ne sont pas visibles dans l'espace dédié sur SparkUI onglet Storage, il semblerait que ces résultats temporaires soient stockés "au mauvais endroit" et occupent de l'espace sans que l'utilisateur y ait accès.
 
--   Privilégier les fonctions `tbl_cache()` pour forcer l'exécution du programme.
+-   Privilégier les fonctions `tbl_cache()` avec `sdf_register()`pour forcer l'exécution du programme.
 
 ## Laisser Spark travailler pour nous 💻
 
@@ -24,16 +26,7 @@ title: "Out of memory"
 
 -   Tester son programme sur une toute petite partie des tables, étape par étape, en forçant l'exécution (appel d'une action telle que `print()` ou `collect()` ) à chaque étape pour la phase de débuggage, puis supprimer toutes les actions intermédiaires non nécessaires du programme pour que Spark optimise tout le programme.
 
-## Optimiser le chargement en cache des données 💿
 
--   Si une table est chargée avec la fonction `spark_read_parquet(sc, path = "mon_chemin_vers_la_table", memory = FALSE)` et l'option `memory=FALSE` , les données ne seront chargées du disque à la mémoire cache qu'en cas de nécessité, c'est-à-dire si une action déclenche des transformations qui utilisent une partie de ces données.
-
--   Charger une table en cache avec `memory = TRUE` force la mise en cache de toutes les partitions de cette table, ce qui immobilise des ressources et peut favoriser la survenue d'erreurs `Ouf of memory`. Si cette table n'est pas utilisée en totalité plusieurs fois dans le programme, ce chargement n'est pas optimal.
-
--   S'il s'avère optimal de charger les données en cache, alors il faut donner à chaque exécuteur une quantité de mémoire vive suffisante pour laisser des ressources pour l'exécution.
-
--   Pour consulter la taille des données chargées en cache, utiliser **SparkUI, onglet Storage.**
-
-## Si tout ceci ne fonctionne pas : augmenter les ressources dans la configuration
+## Si tout ceci ne fonctionne pas : passer à la configuration traitement très lourd
 
 Par souci de parcimonie et pour faciliter le travail de nos collègues sur des ressources partagées, cette option doit rester l'ultime recours pour éviter l'erreur `Out of memory` 🤝

@@ -1,0 +1,14 @@
+{
+  "hash": "a298faa6992baf96211baf9ccee487b0",
+  "result": {
+    "markdown": "---\ntitle: \"Configuration\"\n---\n\n\n# Sur le cluster\n\nIl est nécessaire de configurer la session spark pour établir une connexion entre la session R et un cluster spark (appelée spark connection). Les paramètres à définir sont :\n\n-   Les ressources physiques utilisées :\n\n    1.  par le driver : avec **spark.driver.memory**\n\n    2.  par chaque worker avec **spark.executor.memory** et **spark.executor.cores**\n\n    3.  le nombre de worker avec **spark.executor.instances**\n\n    4.  La file sur laquelle on travaille avec **spark.yarn.queue**\n\n-   la limite de taille des résulats qui peuvent être collectés par le driver avec **spark.driver.maxResultSize. 0 correspond à l'absence de limite.**\n\n## Traitement normal en spark\n\n\n::: {.cell}\n\n```{.r .cell-code}\nconf <- spark_config()\nconf[\"spark.driver.memory\"] <- \"40Go\"\nconf[\"spark.executor.memory\"] <- \"60Go\"\nconf[\"spark.executor.cores\"] <- 4\nconf[\"spark.executor.instances\"] <- 2\ncont[\"spark.yarn.queue\"] <- \"prod\"\nconf[\"spark.driver.maxResultSize\"] <- 0\n\nsc <- spark_connect(master = \"yarn\", config = conf)\n```\n:::\n\n\n\n## Traitement très lourd\n\n\n::: {.cell}\n\n```{.r .cell-code}\nlibrary(sparklyr)\nlibrary(dplyr)\nlibrary(dbplyr)\n\nconf <- spark_config()\nconf[\"spark.driver.memory\"] <- \"20Go\"\nconf[\"spark.executor.memory\"] <- \"60Go\"\nconf[\"spark.executor.cores\"] <- 4\nconf[\"spark.executor.instances\"] <- 3\ncont[\"spark.yarn.queue\"] <- \"prod\"\nconf[\"spark.driver.maxResultSize\"] <- 0\n\nsc <- spark_connect(master = \"yarn\", config = conf)\n```\n:::\n\n\n\n::: callout-important\n## Temps de connexion\n\nPour se connecter au cluster, il faut environ 5 minutes, à chaque connexion. Spark cluster n'est pas du tout adapté à des traitements légers (moins de 10 minutes).\n:::",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

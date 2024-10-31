@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Formation sparklyr - Atelier d’initiation à spark avec R en mode cluster</title>
+<title>Formation sparklyr - Bonnes pratiques</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -68,7 +68,7 @@ ul.task-list li input[type="checkbox"] {
   <header id="quarto-header" class="headroom fixed-top">
   <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
     <div class="container-fluid d-flex justify-content-between">
-      <h1 class="quarto-secondary-nav-title">Atelier d’initiation à spark avec R en mode cluster</h1>
+      <h1 class="quarto-secondary-nav-title">Bonnes pratiques</h1>
       <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
         <i class="bi bi-chevron-right"></i>
       </button>
@@ -93,7 +93,7 @@ ul.task-list li input[type="checkbox"] {
     <ul class="list-unstyled mt-1">
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./index.html" class="sidebar-item-text sidebar-link active">Introduction</a>
+  <a href="./index.html" class="sidebar-item-text sidebar-link">Introduction</a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -128,7 +128,7 @@ ul.task-list li input[type="checkbox"] {
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./bonnes_pratiques.html" class="sidebar-item-text sidebar-link">Bonnes pratiques</a>
+  <a href="./bonnes_pratiques.html" class="sidebar-item-text sidebar-link active">Bonnes pratiques</a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -145,7 +145,15 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#bienvenue" id="toc-bienvenue" class="nav-link active" data-scroll-target="#bienvenue">Bienvenue ! 👋</a></li>
+  <li><a href="#les-bonnes-pratiques" id="toc-les-bonnes-pratiques" class="nav-link active" data-scroll-target="#les-bonnes-pratiques">Les bonnes pratiques 🤝</a>
+  <ul class="collapse">
+  <li><a href="#mode-local-inadapté-et-mauvaise-pratique" id="toc-mode-local-inadapté-et-mauvaise-pratique" class="nav-link" data-scroll-target="#mode-local-inadapté-et-mauvaise-pratique">Mode local : inadapté et mauvaise pratique</a></li>
+  <li><a href="#utiliser-les-configuratoins-recommandées" id="toc-utiliser-les-configuratoins-recommandées" class="nav-link" data-scroll-target="#utiliser-les-configuratoins-recommandées">Utiliser les configuratoins recommandées</a></li>
+  <li><a href="#ne-pas-collecter" id="toc-ne-pas-collecter" class="nav-link" data-scroll-target="#ne-pas-collecter">Ne pas collecter</a></li>
+  <li><a href="#fermer-sa-session" id="toc-fermer-sa-session" class="nav-link" data-scroll-target="#fermer-sa-session">Fermer sa session</a></li>
+  <li><a href="#yarn" id="toc-yarn" class="nav-link" data-scroll-target="#yarn">Yarn</a></li>
+  <li><a href="#mutualiser-les-expériences" id="toc-mutualiser-les-expériences" class="nav-link" data-scroll-target="#mutualiser-les-expériences">Mutualiser les expériences</a></li>
+  </ul></li>
   </ul>
 </nav>
     </div>
@@ -154,7 +162,7 @@ ul.task-list li input[type="checkbox"] {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title d-none d-lg-block">Atelier d’initiation à spark avec R en mode cluster</h1>
+<h1 class="title d-none d-lg-block">Bonnes pratiques</h1>
 </div>
 
 
@@ -169,19 +177,110 @@ ul.task-list li input[type="checkbox"] {
 
 </header>
 
-<section id="bienvenue" class="level1">
-<h1>Bienvenue ! 👋</h1>
-<p>Ce site est une aide à l’utilisation de spark avec R sur un cluster de calcul Spark à destination de débutants en R ne connaissant pas du tout le fonctionnement et la programmation en spark.</p>
-<p>Tu vas apprendre ici (je l’espère 🙂) :</p>
+<section id="les-bonnes-pratiques" class="level1">
+<h1>Les bonnes pratiques 🤝</h1>
+<section id="mode-local-inadapté-et-mauvaise-pratique" class="level2 smaller">
+<h2 class="smaller anchored" data-anchor-id="mode-local-inadapté-et-mauvaise-pratique">Mode local : inadapté et mauvaise pratique</h2>
+<p><img src="images/mode_local.PNG" class="img-fluid"></p>
+<p><br></p>
+<p>Spark et le mode local :</p>
 <ul>
-<li><p><strong>l’intérêt d’utiliser Spark</strong> pour manipuler des <strong>données volumineuses</strong> telles que l’appariement MiDAS ⏳</p></li>
-<li><p>le fonctionnement de <strong>Spark</strong> sur un <strong>cluster</strong> de calcul 🔢</p></li>
-<li><p>l’utilisation de Spark sous R avec le package <strong>sparklyr</strong>, très facile si tu connais <strong>dplyr</strong> 👨‍💻</p></li>
-<li><p>quelques pistes d’optimisation d’un programme avec Spark 💡</p></li>
+<li><p>un seul ordinateur alors que spark est fait pour <strong>plusieurs ordinateurs</strong> distincts</p></li>
+<li><p>beaucoup <strong>moins de ressources</strong> disponibles sur la bulle que sur le cluster</p></li>
+<li><p>mauvaise gestion de l’allocation des ressources entre utilisateurs : <strong>pas faite pour plusieurs utilisateurs</strong></p></li>
+<li><p>ralentissements considérables et bugs : <strong>bloque les autres utilisateurs</strong></p>
+<p>▶️spark n’est adapté que pour le cluster de calcul, la bulle pour faire du R sans spark sur des données peu volumineuses</p></li>
 </ul>
-<p>De quoi profiter ensuite du temps gagné grâce au calcul distribué ! 🚀</p>
+</section>
+<section id="utiliser-les-configuratoins-recommandées" class="level2 smaller">
+<h2 class="smaller anchored" data-anchor-id="utiliser-les-configuratoins-recommandées">Utiliser les configuratoins recommandées</h2>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/reduce_distribue.drawio.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+<p>Les ordinateurs du cluster ont besoin de <strong>s’envoyer des données par le réseau</strong> : c’est la partie la plus lente d’un programme spark !</p>
+<p>Si j’augmente les ressources : par exemple, je réserve 3 ordinateurs du cluster plutôt que 2</p>
+<ol type="1">
+<li><p><strong>Effet puissance de calcul</strong> : plus de ressources pour faire les calculs = réduction du temps de calcul</p></li>
+<li><p><strong>Effet augmentation des échanges réseau (shuffles)</strong> : augmentation du temps de calcul</p></li>
+<li><p><strong>Gêne des autre utilisateurs</strong></p></li>
+</ol>
+</section>
+<section id="ne-pas-collecter" class="level2 smaller">
+<h2 class="smaller anchored" data-anchor-id="ne-pas-collecter">Ne pas collecter</h2>
+<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Collecter, c’est quoi ?
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Collecter c’est utiliser l’instruction <code>collect()</code>. Elle permet de rapatrier l’ensemble des résultats du cluster vers la bulle et la session R de l’utilisateur en format R, par exemple des <code>data.frames</code>.</p>
+<p><code>Collect()</code> :</p>
+<ol type="1">
+<li><p>est une <strong>action</strong> : elle déclencher tous les calculs</p></li>
+<li><p>implique des <strong>échanges réseau</strong> très importants : entre ordinateurs du cluster et du cluster vers la bulle : c’est extrêmement long, moins efficient que l’enregistrement sur disque directement depuis spark</p></li>
+<li><p>rappatrie les résultats (une table) dans la mémoire vive de R, qui est sur la bulle : si le résultat est volumineux, cela <strong>bloque les autres utilisateurs</strong></p></li>
+</ol>
+</div>
+</div>
+<p>Recommandations :</p>
+<ul>
+<li><p>Ne pas collecter des tables de plus de 15 Go</p></li>
+<li><p>Utiliser les autres méthodes proposées pour ne pas bloquer les utilisateurs qui ont besoin de R en mode classique</p></li>
+<li><p>Ne pas changer les configurations</p></li>
+</ul>
+</section>
+<section id="fermer-sa-session" class="level2 smaller">
+<h2 class="smaller anchored" data-anchor-id="fermer-sa-session">Fermer sa session</h2>
+<p>Il faut impérativement fermer sa session spark après une session de travail. Deux moyens pour ça :</p>
+<ul>
+<li><p>fermer R Studio</p></li>
+<li><p>si on ne ferme pas RStudio, utiliser la fonction <code>spark_disconnect_all()</code> dans son code</p></li>
+</ul>
+<p>Si on souhaite lancer un code le soir en partant, on n’oublie pas le <code>spark_disconnect_all()</code> à la fin du code.</p>
+<div class="callout-warning callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Partage des ressources
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Les ressources réservés par un utilisateur ne sont libérées pour les autres que lorsqu’il se déconnecte. Ne pas se déconnecter, c’est bloquer les ressources. Si j’ai réservé deux ordinateurs du cluster sur 15, personne d’autres ne peut les réserver tant que je n’ai pas déconnecter ma session spark.</p>
+<p>Nous fermerons les sessions ouvertes trop longtemps (départ de congés sans déconnexion) si des utilisateurs présents en ont besoin : risque de perte du travail non enregistré.</p>
+</div>
+</div>
+<p>Pour ne pas bloquer les collègues 👨‍💻</p>
+</section>
+<section id="yarn" class="level2 smaller">
+<h2 class="smaller anchored" data-anchor-id="yarn">Yarn</h2>
+<p>Yarn permet de consulter la réservation des ressources par les utilisateurs.</p>
+<p>On peut y accéder en copiant le lien suivant dans Google chrome sur la bulle (mettre en favori) : midares-deb11-nn-01.midares.local:8088/cluster</p>
+<p>Vérifier que notre session est fermée et qu’on ne prend pas trop de ressources : <strong>yarn</strong></p>
+<p><img src="images/yarn_scheduler.PNG" class="img-fluid"></p>
+</section>
+<section id="mutualiser-les-expériences" class="level2 smaller">
+<h2 class="smaller anchored" data-anchor-id="mutualiser-les-expériences">Mutualiser les expériences</h2>
+<ul>
+<li><p>Aide au passage d’un code sur le cluster</p></li>
+<li><p>Programmer entre collègues</p></li>
+<li><p>Contributions à la documentation MiDAS : section fiches, à l’aide de pull requests sur github</p></li>
+</ul>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/documentation_midas_fiches.PNG" class="img-fluid figure-img"></p>
+</figure>
+</div>
 
 
+</section>
 </section>
 
 </main> <!-- /main -->

@@ -6,14 +6,12 @@ title: "Ressources"
 
 -   Documentation CASD : [Documentation Data Science](https://casd-eu.gitbook.io/data-science/)
 
--   Documentation MiDAS : [Lien vers le site](https://documentationmidas.github.io/Documentation_MiDAS/)
+-   Documentation MiDAS : [Documentation en ligne MiDAS](https://documentationmidas.github.io/Documentation_MiDAS/)
 
 -   Documentation du package sparklyr : [Package sparklyr](https://cran.r-project.org/web/packages/sparklyr/sparklyr.pdf)
 
-# Tips 💡
+-   Manipulation des dates : [fonctions dates spark hive](https://sparkbyexamples.com/apache-hive/hive-date-and-timestamp-functions-examples/)
 
-## Listes imbriquées avec spark
+# Exemple de traitement
 
-Liste imbriquées Lucie
-
-append des bases reduce union -\> récupérer le programme
+Sur la bulle, tu trouveras dans C:\\Users\\Public\\Docuemnts\\TUTORIEL_CLUSTER un document quarto avec un exemple de traitement minimal de MiDAS en spark sur le cluster.

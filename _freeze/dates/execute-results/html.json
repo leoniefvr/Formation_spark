@@ -1,0 +1,14 @@
+{
+  "hash": "c12bcdd3a092f95efab5d7583b40df82",
+  "result": {
+    "markdown": "---\ntitle: \"Les dates avec sparklyr\"\n---\n\n\n## Dates\n\nLes fonctions de `lubridate()`ne sont pas adaptées aux spark_data_frames.\n\n-   Convertir une chaîne de caractère de la forme AAAA-MM-DD en Date : même fonction qu'en R base\n\n\n    ::: {.cell}\n    \n    ```{.r .cell-code}\n    date_1 <- as.Date(\"2024-05-26\")\n    ```\n    :::\n\n\n-   Calculer une durée entre deux dates : fonction `datediff()`\n\n\n    ::: {.cell}\n    \n    ```{.r .cell-code}\n    PJC_spark <- spark_read_parquet(sc,\n                                    path = \"hdfs:///dataset/MiDAS_v4/pjc.parquet\",\n                                    memory = FALSE)\n    \n    duree_pjc_df <- PJC_spark %>%\n      rename(date_fin_pjc = as.Date(KDFPJ),\n             date_deb_pjc = as.Date(KDDPJ)) %>%\n      mutate(duree_pjc = datediff(date_fin_pjc, date_deb_pjc) + 1) %>%\n      head(5)\n    ```\n    :::\n\n\n-   Ajouter ou soustraire des jours ou des mois à une date : `date_add()`, `date_sub()` et `add_months()`.\n\n\n    ::: {.cell}\n    \n    ```{.r .cell-code}\n    duree_pjc_bis_df <- duree_pjc_df %>%\n      mutate(duree_pjc_plus_5 = date_add(duree_pjc, int(5)),\n             duree_pjc_moins_5 = date_sub(duree_pjc, int(5)),\n             duree_pjc_plus_1_mois = add_months(duree_pjc, int(1))) %>%\n      head(5)\n    ```\n    :::\n\n\n::: callout-tip\n## Format\n\nLe `int()` est important car ces fonctions Hive n'acceptent que les entiers pour l'ajout de jours : taper uniquement 5 est considéré comme un flottant dans R.\n:::\n\n::: callout-note\n## Add months\n\nSi la date en entrée est le dernier jour d'un mois, la date retournée avec `add_months(date_entree, int(1))` sera le dernier jour calendaire du mois suivant.\n:::\n\nSi tu as besoin d'autres fonctions de dates, tu peux consulter le site [fonctions dates spark hive](https://sparkbyexamples.com/apache-hive/hive-date-and-timestamp-functions-examples/)\n",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

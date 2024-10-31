@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Formation sparklyr - Atelier d’initiation à spark avec R en mode cluster</title>
+<title>Formation sparklyr - Out of memory</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -68,7 +68,7 @@ ul.task-list li input[type="checkbox"] {
   <header id="quarto-header" class="headroom fixed-top">
   <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
     <div class="container-fluid d-flex justify-content-between">
-      <h1 class="quarto-secondary-nav-title">Atelier d’initiation à spark avec R en mode cluster</h1>
+      <h1 class="quarto-secondary-nav-title">Out of memory</h1>
       <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
         <i class="bi bi-chevron-right"></i>
       </button>
@@ -93,7 +93,7 @@ ul.task-list li input[type="checkbox"] {
     <ul class="list-unstyled mt-1">
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./index.html" class="sidebar-item-text sidebar-link active">Introduction</a>
+  <a href="./index.html" class="sidebar-item-text sidebar-link">Introduction</a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -118,7 +118,7 @@ ul.task-list li input[type="checkbox"] {
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./oom.html" class="sidebar-item-text sidebar-link">Out of memory : help !</a>
+  <a href="./oom.html" class="sidebar-item-text sidebar-link active">Out of memory : help !</a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -145,7 +145,13 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#bienvenue" id="toc-bienvenue" class="nav-link active" data-scroll-target="#bienvenue">Bienvenue ! 👋</a></li>
+  <li><a href="#comment-économiser-de-la-mémoire-ram-et-du-temps" id="toc-comment-économiser-de-la-mémoire-ram-et-du-temps" class="nav-link active" data-scroll-target="#comment-économiser-de-la-mémoire-ram-et-du-temps">Comment économiser de la mémoire RAM (et du temps) ?</a>
+  <ul class="collapse">
+  <li><a href="#collecter-le-moins-possible" id="toc-collecter-le-moins-possible" class="nav-link" data-scroll-target="#collecter-le-moins-possible">Collecter le moins possible 🤏</a></li>
+  <li><a href="#eviter-les-fonctions-arrow" id="toc-eviter-les-fonctions-arrow" class="nav-link" data-scroll-target="#eviter-les-fonctions-arrow">Eviter les fonctions arrow ⚠️</a></li>
+  <li><a href="#laisser-spark-travailler-pour-nous" id="toc-laisser-spark-travailler-pour-nous" class="nav-link" data-scroll-target="#laisser-spark-travailler-pour-nous">Laisser Spark travailler pour nous 💻</a></li>
+  <li><a href="#si-tout-ceci-ne-fonctionne-pas-passer-à-la-configuration-traitement-très-lourd" id="toc-si-tout-ceci-ne-fonctionne-pas-passer-à-la-configuration-traitement-très-lourd" class="nav-link" data-scroll-target="#si-tout-ceci-ne-fonctionne-pas-passer-à-la-configuration-traitement-très-lourd">Si tout ceci ne fonctionne pas : passer à la configuration traitement très lourd</a></li>
+  </ul></li>
   </ul>
 </nav>
     </div>
@@ -154,7 +160,7 @@ ul.task-list li input[type="checkbox"] {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title d-none d-lg-block">Atelier d’initiation à spark avec R en mode cluster</h1>
+<h1 class="title d-none d-lg-block">Out of memory</h1>
 </div>
 
 
@@ -169,19 +175,37 @@ ul.task-list li input[type="checkbox"] {
 
 </header>
 
-<section id="bienvenue" class="level1">
-<h1>Bienvenue ! 👋</h1>
-<p>Ce site est une aide à l’utilisation de spark avec R sur un cluster de calcul Spark à destination de débutants en R ne connaissant pas du tout le fonctionnement et la programmation en spark.</p>
-<p>Tu vas apprendre ici (je l’espère 🙂) :</p>
+<section id="comment-économiser-de-la-mémoire-ram-et-du-temps" class="level1">
+<h1>Comment économiser de la mémoire RAM (et du temps) ?</h1>
+<section id="collecter-le-moins-possible" class="level2">
+<h2 class="anchored" data-anchor-id="collecter-le-moins-possible">Collecter le moins possible 🤏</h2>
 <ul>
-<li><p><strong>l’intérêt d’utiliser Spark</strong> pour manipuler des <strong>données volumineuses</strong> telles que l’appariement MiDAS ⏳</p></li>
-<li><p>le fonctionnement de <strong>Spark</strong> sur un <strong>cluster</strong> de calcul 🔢</p></li>
-<li><p>l’utilisation de Spark sous R avec le package <strong>sparklyr</strong>, très facile si tu connais <strong>dplyr</strong> 👨‍💻</p></li>
-<li><p>quelques pistes d’optimisation d’un programme avec Spark 💡</p></li>
+<li><p>L’export direct d’un spark data frame en parquet sur HDFS est une meilleure alternative : tu peux ensuite charger la table parquet en data frame R si tu souhaites la traiter en mémoire vive.</p></li>
+<li><p>Contrairement au <code>collect()</code>, quelle que soit la taille de la table, exporter sous HDFS ne renverra jamais d’erreur, tandis que le <code>collect()</code>ne fonctionne pas pour les tables volumineuses.</p></li>
+<li><p>Cet export direct n’est pas fonctionnel en spark local : encore une raison de passer sur le cluster Spark !</p></li>
+<li><p>Si tu souhaites voir ta table, tu peux collecter les premières lignes de celle-ci en combinant les fonctions <code>head()</code>et <code>collect()</code>.</p></li>
 </ul>
-<p>De quoi profiter ensuite du temps gagné grâce au calcul distribué ! 🚀</p>
+</section>
+<section id="eviter-les-fonctions-arrow" class="level2">
+<h2 class="anchored" data-anchor-id="eviter-les-fonctions-arrow">Eviter les fonctions arrow ⚠️</h2>
+<ul>
+<li><p>Si tu as utilisé des fonctions telles que <code>compute()</code> dans ton programme, elles peuvent être à l’origine d’une erreur <code>Out of memory</code> : ces commandes ne sont pas bien adaptées à Spark et les résultats temporaires stockés en mémoire vive ne sont pas visibles dans l’espace dédié sur SparkUI onglet Storage, il semblerait que ces résultats temporaires soient stockés “au mauvais endroit” et occupent de l’espace sans que l’utilisateur y ait accès.</p></li>
+<li><p>Privilégier les fonctions <code>tbl_cache()</code> avec <code>sdf_register()</code>pour forcer l’exécution du programme.</p></li>
+</ul>
+</section>
+<section id="laisser-spark-travailler-pour-nous" class="level2">
+<h2 class="anchored" data-anchor-id="laisser-spark-travailler-pour-nous">Laisser Spark travailler pour nous 💻</h2>
+<ul>
+<li><p>Forcer l’exécution du programme le plus tard possible pour permettre à Spark d’optimiser tout le programme et d’utiiliser les ressources de la manière la plus parcimonieuse possible.</p></li>
+<li><p>Tester son programme sur une toute petite partie des tables, étape par étape, en forçant l’exécution (appel d’une action telle que <code>print()</code> ou <code>collect()</code> ) à chaque étape pour la phase de débuggage, puis supprimer toutes les actions intermédiaires non nécessaires du programme pour que Spark optimise tout le programme.</p></li>
+</ul>
+</section>
+<section id="si-tout-ceci-ne-fonctionne-pas-passer-à-la-configuration-traitement-très-lourd" class="level2">
+<h2 class="anchored" data-anchor-id="si-tout-ceci-ne-fonctionne-pas-passer-à-la-configuration-traitement-très-lourd">Si tout ceci ne fonctionne pas : passer à la configuration traitement très lourd</h2>
+<p>Par souci de parcimonie et pour faciliter le travail de nos collègues sur des ressources partagées, cette option doit rester l’ultime recours pour éviter l’erreur <code>Out of memory</code> 🤝</p>
 
 
+</section>
 </section>
 
 </main> <!-- /main -->
