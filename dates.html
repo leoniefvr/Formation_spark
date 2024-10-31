@@ -158,6 +158,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="./fonctions_specifiques.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Fonctions spécifiques à sparklyr</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="./dates.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text">Les dates avec sparklyr</span></a>
   </div>
@@ -226,11 +232,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="dates">Dates</h2>
 <p>Les fonctions de <code>lubridate()</code>ne sont pas adaptées aux spark_data_frames.</p>
 <ul>
-<li><p>Convertir une chaîne de caractère de la forme AAAA-MM-DD en Date</p>
+<li><p>Convertir une chaîne de caractère de la forme AAAA-MM-DD en Date : même fonction qu’en R base</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>date_1 <span class="ot">&lt;-</span> <span class="fu">as.Date</span>(<span class="st">"2024-05-26"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div></li>
-<li><p>Calculer une durée entre deux dates</p>
+<li><p>Calculer une durée entre deux dates : fonction <code>datediff()</code></p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>PJC_spark <span class="ot">&lt;-</span> <span class="fu">spark_read_parquet</span>(sc,</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>                                <span class="at">path =</span> <span class="st">"hdfs:///dataset/MiDAS_v4/pjc.parquet"</span>,</span>
@@ -242,7 +248,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">duree_pjc =</span> <span class="fu">datediff</span>(date_fin_pjc, date_deb_pjc) <span class="sc">+</span> <span class="dv">1</span>) <span class="sc">%&gt;%</span></span>
 <span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>(<span class="dv">5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div></li>
-<li><p>Ajouter ou soustraire des jours ou des mois à une date</p>
+<li><p>Ajouter ou soustraire des jours ou des mois à une date : <code>date_add()</code>, <code>date_sub()</code> et <code>add_months()</code>.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>duree_pjc_bis_df <span class="ot">&lt;-</span> duree_pjc_df <span class="sc">%&gt;%</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">duree_pjc_plus_5 =</span> <span class="fu">date_add</span>(duree_pjc, <span class="fu">int</span>(<span class="dv">5</span>)),</span>
@@ -261,7 +267,7 @@ Format
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Le int() est important car ces fonctions Hive n’accepte que les entiers pour l’ajout de jours : taper uniquement 5 est considéré comme un flottant dans R.</p>
+<p>Le <code>int()</code> est important car ces fonctions Hive n’acceptent que les entiers pour l’ajout de jours : taper uniquement 5 est considéré comme un flottant dans R.</p>
 </div>
 </div>
 <div class="callout callout-style-default callout-note callout-titled">
@@ -277,6 +283,7 @@ Add months
 <p>Si la date en entrée est le dernier jour d’un mois, la date retournée avec <code>add_months(date_entree, int(1))</code> sera le dernier jour calendaire du mois suivant.</p>
 </div>
 </div>
+<p>Si tu as besoin d’autres fonctions de dates, tu peux consulter le site <a href="https://sparkbyexamples.com/apache-hive/hive-date-and-timestamp-functions-examples/">fonctions dates spark hive</a></p>
 
 
 </section>

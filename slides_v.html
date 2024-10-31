@@ -813,7 +813,7 @@
 <h2>Un cluster de calcul</h2>
 
 <img data-src="./images/schema_cluster.drawio.png" class="quarto-figure quarto-figure-center r-stretch"></section>
-<section id="connexion" class="slide level2">
+<section id="connexion" class="slide level2 smaller">
 <h2>Connexion</h2>
 <div class="panel-tabset">
 <ul id="tabset-3" class="panel-tabset-tabby"><li><a data-tabby-default="" href="#tabset-3-1">Traitement normal</a></li><li><a href="#tabset-3-2">Traitement très lourd</a></li></ul>
@@ -894,7 +894,7 @@
 </ul>
 </div>
 </section>
-<section id="chargement-des-données-en-spark" class="slide level2">
+<section id="chargement-des-données-en-spark" class="slide level2 smaller">
 <h2>Chargement des données en spark</h2>
 <p><br></p>
 <div class="cell">
@@ -907,8 +907,20 @@
 <span id="cb5-7"><a></a>mon_data_frame <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="fu">c</span>(<span class="st">"Anna"</span>, <span class="st">"Paul"</span>), <span class="fu">c</span>(<span class="dv">15</span>, <span class="dv">20</span>))</span>
 <span id="cb5-8"><a></a>mon_data_frame_spark <span class="ot">&lt;-</span> <span class="fu">copy_to</span>(sc, <span class="st">"mon_data_frame"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p><br></p>
 <p>▶️ chargement en mémoire vive couteux en temps : par défaut, <code>memory = FALSE</code></p>
+<div class="callout callout-tip callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Spark data frames</strong></p>
+</div>
+<div class="callout-content">
+<p><code>mmo_17_df_spark</code> est un spark data frame (sdf) : il ne peut pas être ouvert comme un data frame R classique, il n’est pas dans la session R.</p>
+</div>
+</div>
+</div>
 </section>
 <section id="sparklyr-cest-comme-dplyr" class="slide level2">
 <h2>Sparklyr, c’est comme dplyr</h2>

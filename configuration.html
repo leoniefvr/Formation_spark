@@ -158,6 +158,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="./fonctions_specifiques.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Fonctions spécifiques à sparklyr</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="./dates.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Les dates avec sparklyr</span></a>
   </div>
@@ -196,9 +202,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#sur-le-cluster" id="toc-sur-le-cluster" class="nav-link active" data-scroll-target="#sur-le-cluster">Sur le cluster</a></li>
-  <li><a href="#les-files-du-cluster-spark-midares" id="toc-les-files-du-cluster-spark-midares" class="nav-link" data-scroll-target="#les-files-du-cluster-spark-midares">Les files du cluster spark Midares</a></li>
-  <li><a href="#section" id="toc-section" class="nav-link" data-scroll-target="#section"></a></li>
+  <li><a href="#sur-le-cluster" id="toc-sur-le-cluster" class="nav-link active" data-scroll-target="#sur-le-cluster">Sur le cluster</a>
+  <ul class="collapse">
+  <li><a href="#traitement-normal-en-spark" id="toc-traitement-normal-en-spark" class="nav-link" data-scroll-target="#traitement-normal-en-spark">Traitement normal en spark</a></li>
+  <li><a href="#traitement-très-lourd" id="toc-traitement-très-lourd" class="nav-link" data-scroll-target="#traitement-très-lourd">Traitement très lourd</a></li>
+  </ul></li>
   </ul>
 </nav>
     </div>
@@ -226,7 +234,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <section id="sur-le-cluster" class="level1">
 <h1>Sur le cluster</h1>
-<p>Il est nécessaire de configurer la session spark pour établir une connexion entre la session R et un cluster spark. Les paramètres à définir sont :</p>
+<p>Il est nécessaire de configurer la session spark pour établir une connexion entre la session R et un cluster spark (appelée spark connection). Les paramètres à définir sont :</p>
 <ul>
 <li><p>Les ressources physiques utilisées :</p>
 <ol type="1">
@@ -235,29 +243,55 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><p>le nombre de worker avec <strong>spark.executor.instances</strong></p></li>
 <li><p>La file sur laquelle on travaille avec <strong>spark.yarn.queue</strong></p></li>
 </ol></li>
-<li><p>le nombre de partitions de chaque spark_data_frame avec <strong>spark.sql.shuffle.partitions</strong></p></li>
-<li><p>la limite de taille des résulats qui peuvent être collectés par le driver avec <strong>spark.driver.maxResultSize</strong></p></li>
+<li><p>la limite de taille des résulats qui peuvent être collectés par le driver avec <strong>spark.driver.maxResultSize. 0 correspond à l’absence de limite.</strong></p></li>
 </ul>
+<section id="traitement-normal-en-spark" class="level2">
+<h2 class="anchored" data-anchor-id="traitement-normal-en-spark">Traitement normal en spark</h2>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>conf <span class="ot">&lt;-</span> <span class="fu">spark_config</span>()</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>conf[<span class="st">"spark.driver.memory"</span>] <span class="ot">&lt;-</span> <span class="st">"40Go"</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>conf[<span class="st">"spark.executor.memory"</span>] <span class="ot">&lt;-</span> <span class="st">"80Go"</span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>conf[<span class="st">"spark.executor.cores"</span>] <span class="ot">&lt;-</span> <span class="dv">5</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>conf[<span class="st">"spark.executor.memory"</span>] <span class="ot">&lt;-</span> <span class="st">"60Go"</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>conf[<span class="st">"spark.executor.cores"</span>] <span class="ot">&lt;-</span> <span class="dv">4</span></span>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>conf[<span class="st">"spark.executor.instances"</span>] <span class="ot">&lt;-</span> <span class="dv">2</span></span>
 <span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>cont[<span class="st">"spark.yarn.queue"</span>] <span class="ot">&lt;-</span> <span class="st">"prod"</span></span>
 <span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>conf[<span class="st">"spark.driver.maxResultSize"</span>] <span class="ot">&lt;-</span> <span class="dv">0</span></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>conf[<span class="st">"spark.sql.shuffle.partitions"</span>] <span class="ot">&lt;-</span> <span class="dv">200</span></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>sc <span class="ot">&lt;-</span> <span class="fu">spark_connect</span>(<span class="at">master =</span> <span class="st">"yarn"</span>, <span class="at">config =</span> conf)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>sc <span class="ot">&lt;-</span> <span class="fu">spark_connect</span>(<span class="at">master =</span> <span class="st">"yarn"</span>, <span class="at">config =</span> conf)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="les-files-du-cluster-spark-midares" class="level1">
-<h1>Les files du cluster spark Midares</h1>
+<section id="traitement-très-lourd" class="level2">
+<h2 class="anchored" data-anchor-id="traitement-très-lourd">Traitement très lourd</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(sparklyr)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dbplyr)</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>conf <span class="ot">&lt;-</span> <span class="fu">spark_config</span>()</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>conf[<span class="st">"spark.driver.memory"</span>] <span class="ot">&lt;-</span> <span class="st">"20Go"</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>conf[<span class="st">"spark.executor.memory"</span>] <span class="ot">&lt;-</span> <span class="st">"60Go"</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>conf[<span class="st">"spark.executor.cores"</span>] <span class="ot">&lt;-</span> <span class="dv">4</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>conf[<span class="st">"spark.executor.instances"</span>] <span class="ot">&lt;-</span> <span class="dv">3</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>cont[<span class="st">"spark.yarn.queue"</span>] <span class="ot">&lt;-</span> <span class="st">"prod"</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>conf[<span class="st">"spark.driver.maxResultSize"</span>] <span class="ot">&lt;-</span> <span class="dv">0</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>sc <span class="ot">&lt;-</span> <span class="fu">spark_connect</span>(<span class="at">master =</span> <span class="st">"yarn"</span>, <span class="at">config =</span> conf)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Temps de connexion
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Pour se connecter au cluster, il faut environ 5 minutes, à chaque connexion. Spark cluster n’est pas du tout adapté à des traitements légers (moins de 10 minutes).</p>
+</div>
+</div>
+
+
 </section>
-<section id="section" class="level1">
-<h1></h1>
-
-
 </section>
 
 </main> <!-- /main -->

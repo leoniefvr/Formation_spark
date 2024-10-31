@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Bonnes pratiques – Formation sparklyr</title>
+<title>Fonctions spécifiques – Formation sparklyr</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -19,6 +19,40 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -79,7 +113,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./bonnes_pratiques.html">Bonnes pratiques</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./fonctions_specifiques.html">Fonctions spécifiques à sparklyr</a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -124,7 +158,7 @@ ul.task-list li input[type="checkbox"] {
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./fonctions_specifiques.html" class="sidebar-item-text sidebar-link">
+  <a href="./fonctions_specifiques.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text">Fonctions spécifiques à sparklyr</span></a>
   </div>
 </li>
@@ -148,7 +182,7 @@ ul.task-list li input[type="checkbox"] {
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./bonnes_pratiques.html" class="sidebar-item-text sidebar-link active">
+  <a href="./bonnes_pratiques.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Bonnes pratiques</span></a>
   </div>
 </li>
@@ -168,15 +202,8 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#les-bonnes-pratiques" id="toc-les-bonnes-pratiques" class="nav-link active" data-scroll-target="#les-bonnes-pratiques">Les bonnes pratiques 🤝</a>
-  <ul class="collapse">
-  <li><a href="#mode-local-inadapté-et-mauvaise-pratique" id="toc-mode-local-inadapté-et-mauvaise-pratique" class="nav-link" data-scroll-target="#mode-local-inadapté-et-mauvaise-pratique">Mode local : inadapté et mauvaise pratique</a></li>
-  <li><a href="#utiliser-les-configuratoins-recommandées" id="toc-utiliser-les-configuratoins-recommandées" class="nav-link" data-scroll-target="#utiliser-les-configuratoins-recommandées">Utiliser les configuratoins recommandées</a></li>
-  <li><a href="#ne-pas-collecter" id="toc-ne-pas-collecter" class="nav-link" data-scroll-target="#ne-pas-collecter">Ne pas collecter</a></li>
-  <li><a href="#fermer-sa-session" id="toc-fermer-sa-session" class="nav-link" data-scroll-target="#fermer-sa-session">Fermer sa session</a></li>
-  <li><a href="#yarn" id="toc-yarn" class="nav-link" data-scroll-target="#yarn">Yarn</a></li>
-  <li><a href="#mutualiser-les-expériences" id="toc-mutualiser-les-expériences" class="nav-link" data-scroll-target="#mutualiser-les-expériences">Mutualiser les expériences</a></li>
-  </ul></li>
+  <li><a href="#tableau" id="toc-tableau" class="nav-link active" data-scroll-target="#tableau">Tableau</a></li>
+  <li><a href="#statistiques" id="toc-statistiques" class="nav-link" data-scroll-target="#statistiques">Statistiques</a></li>
   </ul>
 </nav>
     </div>
@@ -185,7 +212,7 @@ ul.task-list li input[type="checkbox"] {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Bonnes pratiques</h1>
+<h1 class="title">Fonctions spécifiques</h1>
 </div>
 
 
@@ -202,110 +229,119 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<section id="les-bonnes-pratiques" class="level1">
-<h1>Les bonnes pratiques 🤝</h1>
-<section id="mode-local-inadapté-et-mauvaise-pratique" class="level2 smaller">
-<h2 class="smaller anchored" data-anchor-id="mode-local-inadapté-et-mauvaise-pratique">Mode local : inadapté et mauvaise pratique</h2>
-<p><img src="images/mode_local.PNG" class="img-fluid"></p>
-<p><br></p>
-<p>Spark et le mode local :</p>
+<p>La majorité des commandes <code>dplyr</code> fonctionnent sur un spark_data_frame avec le package <code>sparklyr</code>. Les divergences principales sont les suivantes :</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 39%">
+<col style="width: 19%">
+<col style="width: 41%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Fonctionnalité</th>
+<th>tidyverse</th>
+<th>sparklyr</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>import d’un fichier <code>.parquet</code></td>
+<td><code>read_parquet</code></td>
+<td><code>spark_read_parquet()</code></td>
+</tr>
+<tr class="even">
+<td>tri d’un tableau</td>
+<td><code>arrange()</code></td>
+<td><code>window_order()</code> ou <code>sdf_sort()</code></td>
+</tr>
+<tr class="odd">
+<td>opérations sur les dates</td>
+<td><code>lubridate</code></td>
+<td>fonctions Hive</td>
+</tr>
+<tr class="even">
+<td>empiler des tableaux</td>
+<td><code>bind_rows()</code></td>
+<td><code>sdf_bind_rows()</code></td>
+</tr>
+<tr class="odd">
+<td>nombre de lignes d’un tableau</td>
+<td><code>nrow()</code></td>
+<td><code>sdf_nrow()</code></td>
+</tr>
+<tr class="even">
+<td>faire pivoter un tableau</td>
+<td><code>tidyr</code></td>
+<td><code>sdf_pivot()</code></td>
+</tr>
+<tr class="odd">
+<td>export d’un <code>spark_data_frame</code></td>
+<td></td>
+<td><code>spark_write_parquet()</code></td>
+</tr>
+</tbody>
+</table>
+<section id="tableau" class="level2">
+<h2 class="anchored" data-anchor-id="tableau">Tableau</h2>
 <ul>
-<li><p>un seul ordinateur alors que spark est fait pour <strong>plusieurs ordinateurs</strong> distincts</p></li>
-<li><p>beaucoup <strong>moins de ressources</strong> disponibles sur la bulle que sur le cluster</p></li>
-<li><p>mauvaise gestion de l’allocation des ressources entre utilisateurs : <strong>pas faite pour plusieurs utilisateurs</strong></p></li>
-<li><p>ralentissements considérables et bugs : <strong>bloque les autres utilisateurs</strong></p>
-<p>▶️spark n’est adapté que pour le cluster de calcul, la bulle pour faire du R sans spark sur des données peu volumineuses</p></li>
+<li><p>Tri dans un groupe pour effectuer un calcul séquentiel</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>ODD_spark <span class="ot">&lt;-</span> <span class="fu">spark_read_parquet</span>(sc,</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>                                <span class="at">path =</span> <span class="st">"hdfs:///dataset/MiDAS_v4/odd.parquet"</span>,</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>                                <span class="at">memory =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>ODD_premier <span class="ot">&lt;-</span> ODD_spark <span class="sc">%&gt;%</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(id_midas) <span class="sc">%&gt;%</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">window_order</span>(id_midas, KDPOD) <span class="sc">%&gt;%</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">date_premier_droit =</span> <span class="fu">first</span>(KDPOD)) <span class="sc">%&gt;%</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">distinct</span>(id_midas, KROD3, date_premier_droit) <span class="sc">%&gt;%</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>(<span class="dv">5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div></li>
+<li><p>Tri pour une sortie : <code>sdf_sort()</code> , <code>arrange()</code> ne fonctionne pas</p></li>
+<li><p>Concaténer les lignes (ou les colonnes <code>sdf_bind_cols()</code>)</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>ODD_1 <span class="ot">&lt;-</span> ODD_spark <span class="sc">%&gt;%</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(KDPOD <span class="sc">&lt;=</span> <span class="fu">as.Date</span>(<span class="st">"2017-12-31"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">groupe =</span> <span class="st">"temoins"</span>)</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>ODD_2 <span class="ot">&lt;-</span> ODD_spark <span class="sc">%&gt;%</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(KDPOD <span class="sc">&gt;=</span> <span class="fu">as.Date</span>(<span class="st">"2021-12-31"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">groupe =</span> <span class="st">"traites"</span>)</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>ODD_evaluation <span class="ot">&lt;-</span> <span class="fu">sdf_bind_rows</span>(ODD_1, ODD_2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div></li>
+<li><p>Dédoublonner une table</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>droits_dans_PJC <span class="ot">&lt;-</span> PJC_spark <span class="sc">%&gt;%</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sdf_distinct</span>(id_midas, KROD3)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">head</span>(droits_dans_PJC, <span class="dv">5</span>))</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>PJC_dedoublonnee <span class="ot">&lt;-</span> PJC_spark <span class="sc">%&gt;%</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sdf_drop_duplicates</span>()</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">head</span>(PJC_dedoublonnee, <span class="dv">5</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div></li>
+<li><p>Pivot : les fonctions du packag <code>tidyr</code> ne fonctionnent pas sur données spark</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>ODD_sjr_moyen <span class="ot">&lt;-</span> ODD_spark <span class="sc">%&gt;%</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">groupe =</span> <span class="fu">ifelse</span>(KDPOD <span class="sc">&lt;=</span> <span class="fu">as.Date</span>(<span class="st">"2020-12-31"</span>), <span class="st">"controles"</span>, <span class="st">"traites"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sdf_pivot</span>(groupe <span class="sc">~</span> KCRGC,</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">fun.aggregate =</span> <span class="fu">list</span>(<span class="at">KQCSJP =</span> <span class="st">"mean"</span>)</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div></li>
 </ul>
 </section>
-<section id="utiliser-les-configuratoins-recommandées" class="level2 smaller">
-<h2 class="smaller anchored" data-anchor-id="utiliser-les-configuratoins-recommandées">Utiliser les configuratoins recommandées</h2>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="images/reduce_distribue.drawio.png" class="img-fluid quarto-figure quarto-figure-center figure-img"></p>
-</figure>
-</div>
-<p>Les ordinateurs du cluster ont besoin de <strong>s’envoyer des données par le réseau</strong> : c’est la partie la plus lente d’un programme spark !</p>
-<p>Si j’augmente les ressources : par exemple, je réserve 3 ordinateurs du cluster plutôt que 2</p>
-<ol type="1">
-<li><p><strong>Effet puissance de calcul</strong> : plus de ressources pour faire les calculs = réduction du temps de calcul</p></li>
-<li><p><strong>Effet augmentation des échanges réseau (shuffles)</strong> : augmentation du temps de calcul</p></li>
-<li><p><strong>Gêne des autre utilisateurs</strong></p></li>
-</ol>
-</section>
-<section id="ne-pas-collecter" class="level2 smaller">
-<h2 class="smaller anchored" data-anchor-id="ne-pas-collecter">Ne pas collecter</h2>
-<div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Collecter, c’est quoi ?
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>Collecter c’est utiliser l’instruction <code>collect()</code>. Elle permet de rapatrier l’ensemble des résultats du cluster vers la bulle et la session R de l’utilisateur en format R, par exemple des <code>data.frames</code>.</p>
-<p><code>Collect()</code> :</p>
-<ol type="1">
-<li><p>est une <strong>action</strong> : elle déclencher tous les calculs</p></li>
-<li><p>implique des <strong>échanges réseau</strong> très importants : entre ordinateurs du cluster et du cluster vers la bulle : c’est extrêmement long, moins efficient que l’enregistrement sur disque directement depuis spark</p></li>
-<li><p>rappatrie les résultats (une table) dans la mémoire vive de R, qui est sur la bulle : si le résultat est volumineux, cela <strong>bloque les autres utilisateurs</strong></p></li>
-</ol>
-</div>
-</div>
-<p>Recommandations :</p>
+<section id="statistiques" class="level2">
+<h2 class="anchored" data-anchor-id="statistiques">Statistiques</h2>
 <ul>
-<li><p>Ne pas collecter des tables de plus de 15 Go</p></li>
-<li><p>Utiliser les autres méthodes proposées pour ne pas bloquer les utilisateurs qui ont besoin de R en mode classique</p></li>
-<li><p>Ne pas changer les configurations</p></li>
+<li><p>Résumé statistique : <code>sdf_describe()</code> , <code>summary()</code>ne fonctionne pas.</p></li>
+<li><p>Dimension : <code>sdf_dim</code>, la fonction <code>nrow()</code>ne fonctionne pas.</p></li>
+<li><p>Quantiles approximatifs : le calcul des quantiles sur données distirbuées renvoie une approximation car toutes les données ne peuvent pas être rappatriées sur la même machine physique du fait de la volumétrie, <code>sdf_quantile()</code></p></li>
 </ul>
-</section>
-<section id="fermer-sa-session" class="level2 smaller">
-<h2 class="smaller anchored" data-anchor-id="fermer-sa-session">Fermer sa session</h2>
-<p>Il faut impérativement fermer sa session spark après une session de travail. Deux moyens pour ça :</p>
-<ul>
-<li><p>fermer R Studio</p></li>
-<li><p>si on ne ferme pas RStudio, utiliser la fonction <code>spark_disconnect_all()</code> dans son code</p></li>
-</ul>
-<p>Si on souhaite lancer un code le soir en partant, on n’oublie pas le <code>spark_disconnect_all()</code> à la fin du code.</p>
-<div class="callout callout-style-default callout-warning callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Partage des ressources
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>Les ressources réservés par un utilisateur ne sont libérées pour les autres que lorsqu’il se déconnecte. Ne pas se déconnecter, c’est bloquer les ressources. Si j’ai réservé deux ordinateurs du cluster sur 15, personne d’autres ne peut les réserver tant que je n’ai pas déconnecter ma session spark.</p>
-<p>Nous fermerons les sessions ouvertes trop longtemps (départ de congés sans déconnexion) si des utilisateurs présents en ont besoin : risque de perte du travail non enregistré.</p>
-</div>
-</div>
-<p>Pour ne pas bloquer les collègues 👨‍💻</p>
-</section>
-<section id="yarn" class="level2 smaller">
-<h2 class="smaller anchored" data-anchor-id="yarn">Yarn</h2>
-<p>Yarn permet de consulter la réservation des ressources par les utilisateurs.</p>
-<p>On peut y accéder en copiant le lien suivant dans Google chrome sur la bulle (mettre en favori) : midares-deb11-nn-01.midares.local:8088/cluster</p>
-<p>Vérifier que notre session est fermée et qu’on ne prend pas trop de ressources : <strong>yarn</strong></p>
-<p><img src="images/yarn_scheduler.PNG" class="img-fluid"></p>
-</section>
-<section id="mutualiser-les-expériences" class="level2 smaller">
-<h2 class="smaller anchored" data-anchor-id="mutualiser-les-expériences">Mutualiser les expériences</h2>
-<ul>
-<li><p>Aide au passage d’un code sur le cluster</p></li>
-<li><p>Programmer entre collègues</p></li>
-<li><p>Contributions à la documentation MiDAS : section fiches, à l’aide de pull requests sur github</p></li>
-</ul>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="images/documentation_midas_fiches.PNG" class="img-fluid quarto-figure quarto-figure-center figure-img"></p>
-</figure>
-</div>
 
 
-</section>
 </section>
 
 </main> <!-- /main -->
