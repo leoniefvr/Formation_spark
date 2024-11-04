@@ -1299,13 +1299,22 @@ Pour programmer en spark sans aucune erreur :
 
 Le format `.parquet` (avec `arrow`) et le framework `spark` permettent de gérer le partitionnement des données.
 
-Si les opérations sont souvent effectuées par régions par exemple, il est utile de forcer le stockage des données d'une même région au même endroit physique et accélère drastiquement le temps de calcul :
+Le partitionnement a un impact sur la manière dont les données sont organisées physiquement sur le système de fichiers.
+
+![](images/partitioned_parquet_file_archi.png)
+
+| Partitions                             | 2        | 5         | 1000     |
+|----------------------------------------|----------|-----------|----------|
+| Colonne qui a servi au partitionnement | 74,50%	 | 46,30%	| 16,66%   |
+| Vers une autre colonne	             | 89,51%	 | 191,01%	| 556,99%  |
+| Select distinct(*)	                 | 136,79%   | 163,68%	| 1194,88% |
+
 
 ```{r}
 #| eval: false
 #| echo: true
 
-spark_write_parquet(ma_table, "hdfs:///resultats/ma_table.parquet", partition_by = c("region"))
+spark_write_parquet(ma_table, "hdfs:///resultats/ma_table.parquet", partition_by = c("age","sex"))
 
 ```
 
