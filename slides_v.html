@@ -1794,9 +1794,46 @@
 <section id="partitionnement" class="slide level2">
 <h2>Partitionnement</h2>
 <p>Le format <code>.parquet</code> (avec <code>arrow</code>) et le framework <code>spark</code> permettent de gérer le partitionnement des données.</p>
-<p>Si les opérations sont souvent effectuées par régions par exemple, il est utile de forcer le stockage des données d’une même région au même endroit physique et accélère drastiquement le temps de calcul :</p>
+<p>Le partitionnement a un impact sur la manière dont les données sont organisées physiquement sur le système de fichiers.</p>
+
+<img data-src="images/partitioned_parquet_file_archi.png" class="r-stretch"><table class="caption-top">
+<colgroup>
+<col style="width: 56%">
+<col style="width: 14%">
+<col style="width: 15%">
+<col style="width: 14%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Partitions</th>
+<th>2</th>
+<th>5</th>
+<th>1000</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Colonne qui a servi au partitionnement</td>
+<td>74,50%</td>
+<td>46,30%</td>
+<td>16,66%</td>
+</tr>
+<tr class="even">
+<td>Vers une autre colonne</td>
+<td>89,51%</td>
+<td>191,01%</td>
+<td>556,99%</td>
+</tr>
+<tr class="odd">
+<td>Select distinct(*)</td>
+<td>136,79%</td>
+<td>163,68%</td>
+<td>1194,88%</td>
+</tr>
+</tbody>
+</table>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a></a><span class="fu">spark_write_parquet</span>(ma_table, <span class="st">"hdfs:///resultats/ma_table.parquet"</span>, <span class="at">partition_by =</span> <span class="fu">c</span>(<span class="st">"region"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a></a><span class="fu">spark_write_parquet</span>(ma_table, <span class="st">"hdfs:///resultats/ma_table.parquet"</span>, <span class="at">partition_by =</span> <span class="fu">c</span>(<span class="st">"age"</span>,<span class="st">"sex"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="éviter-le-problème-des-exécuteurs-inactifs" class="slide level2 smaller">

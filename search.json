@@ -1145,7 +1145,7 @@
     "href": "slides_v.html#partitionnement",
     "title": "Initiation à Spark avec R en mode cluster",
     "section": "Partitionnement",
-    "text": "Partitionnement\nLe format .parquet (avec arrow) et le framework spark permettent de gérer le partitionnement des données.\nSi les opérations sont souvent effectuées par régions par exemple, il est utile de forcer le stockage des données d’une même région au même endroit physique et accélère drastiquement le temps de calcul :\n\nspark_write_parquet(ma_table, \"hdfs:///resultats/ma_table.parquet\", partition_by = c(\"region\"))",
+    "text": "Partitionnement\nLe format .parquet (avec arrow) et le framework spark permettent de gérer le partitionnement des données.\nLe partitionnement a un impact sur la manière dont les données sont organisées physiquement sur le système de fichiers.\n\n\n\n\n\n\n\n\n\n\nPartitions\n2\n5\n1000\n\n\n\n\nColonne qui a servi au partitionnement\n74,50%\n46,30%\n16,66%\n\n\nVers une autre colonne\n89,51%\n191,01%\n556,99%\n\n\nSelect distinct(*)\n136,79%\n163,68%\n1194,88%\n\n\n\n\nspark_write_parquet(ma_table, \"hdfs:///resultats/ma_table.parquet\", partition_by = c(\"age\",\"sex\"))",
     "crumbs": [
       "Slides"
     ]
