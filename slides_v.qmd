@@ -5,21 +5,25 @@ format: revealjs
 
 ## Au programme
 
-1.  MiDAS : une base de données volumineuse
+1.  MiDAS : une base de données volumineuse 📚
 
-2.  Utiliser MiDAS avec R : un défi
+2.  Utiliser MiDAS avec R : un défi 💭
 
-3.  Sparklyr : l'outil ergonomique de spark en R
+3.  Sparklyr : l'outil ergonomique de spark en R 👨‍💻
 
-4.  Les bonnes pratiques sur une infrastructure partagée
+4.  Les bonnes pratiques sur une infrastructure partagée 🖥️
 
-5.  Optimiser la mémoire : pourquoi et comment
+5.  Optimiser la mémoire : pourquoi et comment ⏳
 
-6.  Pour aller plus loin
+6.  Pour aller plus loin 💡
 
 # Un rapide tour de table 💬
 
-# MiDAS : une base de données volumineuses
+::: notes
+Poste, usages de R, connaissance spark
+:::
+
+# MiDAS : une base de données volumineuse 📚
 
 ## Qu'est-ce que MiDAS ?
 
@@ -33,7 +37,7 @@ format: revealjs
 
 Les administrations dont les données sont comparables à MiDAS utilisent un cluster Spark : Insee, Drees, Acoss, UNEDIC, Cnaf
 
-▶️Le cluster spark est une solution la très efficiente pour traiter des données de cette ampleur.
+▶️Le cluster spark est une solution très efficiente pour traiter des données de cette ampleur.
 
 ## Concrètement, qu'est-ce que MiDAS ? {.smaller}
 
@@ -79,7 +83,7 @@ Au format **parquet** :
 
 -   Exemples d'implémentation en R
 
--   Conseils quallité des variables
+-   Conseils qualité des variables
 :::
 
 ::: {.column width="65%"}
@@ -87,7 +91,15 @@ Au format **parquet** :
 :::
 :::
 
+::: notes
+Contribuer avec github, montrer le github, dire que sur le read me conseils pour contribuer et mettre des codes, espace de partage de codes à venir
+:::
+
 # Et vous, quels sont vos usages de MiDAS ? 👁️‍🗨️
+
+::: notes
+Utilisation midas, études
+:::
 
 # Traiter MiDAS en R : un défi 👨‍💻
 
@@ -275,6 +287,10 @@ Mais alors, pourquoi le cluster ? 🤔
 
 # Et vous, quels sont vos problématiques et vos solutions ? ⚠️
 
+::: notes
+opérations impossibles ? bugs erreurs insolubles ? Déjà utilisé spark ?
+:::
+
 # Comment on fait du spark cluster avec R version courte ? ⏲️
 
 ## Où est Midas, 2ème édition {.smaller}
@@ -285,6 +301,10 @@ Le cluster a son propre explorateur de fichiers à mettre en favori dans son nav
 ![](/images/hdfs_browse.png){.fragment fig-align="center" width="900" height="500"}
 
 ![](/images/hdfs_midas.png){.fragment fig-align="center" width="900" height="500"}
+:::
+
+::: notes
+Sorte de disque du cluster
 :::
 
 ## Et mes bases sur la bulle ? {.smaller}
@@ -300,6 +320,10 @@ Il est possible de charger des bases enregistrées n'importe où sur la bulle su
 ## Un cluster de calcul
 
 ![](/images/schema_cluster.drawio.png){fig-align="center"}
+
+::: notes
+Plusieurs ordinateurs, noter le voc au tableau noeud = worker = ordinateur = datanode = executeur = instance Session dans la bulle donc charger grosses données en session = limité par la taille de la bulle
+:::
 
 ## Connexion {.smaller}
 
@@ -399,6 +423,40 @@ mon_data_frame_spark <- copy_to(sc, "mon_data_frame")
 `mmo_17_df_spark` est un spark data frame (sdf) : il ne peut pas être ouvert comme un data frame R classique, il n'est pas dans la session R.
 :::
 
+::: notes
+spark est lazy, paresseux, il ne fait rien tant qu'on ne le force pas
+:::
+
+## Comment voir ma table ?
+
+Récupérer une partie de la table : pas plus de 500 lignes
+
+```{r}
+#| eval: false
+#| echo: true
+
+une_partie_de_ma_table <- ma_table %>% 
+  head(100) %>%
+  collect()
+
+
+une_partie_de_ma_table <- ma_table %>% 
+  filter(id_midas %in% ma_liste_id_midas) %>%
+  collect()
+
+# une_partie_de_ma_table est ici un data.frame R classique que vous pouvez ouvrir!
+```
+
+::: callout-tip
+## Spark data frames
+
+`une_partie_de_ma_table` est un data frame R : il peut pas être ouvert, il est dans la session R. Cela signifie qu'il se situe sur la bulle
+:::
+
+## Un cluster de calcul
+
+![](/images/schema_cluster.drawio.png){fig-align="center"}
+
 ## Sparklyr, c'est comme dplyr
 
 <br>
@@ -464,12 +522,12 @@ nb_debut_contrat_fev_17 <- mmo_17_df_spark_mois %>%
 ::: callout-tip
 ## La gestion des erreurs
 
-En réalité, lorsqu'on appuie ysur le bouton `run`, il ne se passe pas "rien". Le code est compilé par spark : les erreurs sont repérées avant même que le code soit exécuté !
+En réalité, lorsqu'on appuie sur le bouton `run`, il ne se passe pas "rien". Le code est compilé par spark : les erreurs sont repérées avant même que le code soit exécuté !
 :::
 
 ![](images/erreur_variable_inexistante.PNG){width="300"}
 
-## Récupérer un résultat
+## Récupérer un résultat {.smaller}
 
 Les principales actions sont :
 
@@ -480,6 +538,12 @@ Les principales actions sont :
 -   ⚠️ `collect()` pour de petites tables : ne fonctionne pas sur des grosses tables
 
 -   `tbl_cache()` (écrire un `spark_data_frame` en mémoire pour le réutiliser)
+
+::: callout-warning
+## Le bouton stop
+
+Il est recommandé de ne pas utiliser ce bouton en programmant en sparklyr : il rend la session spark inutilisable par la suite, il faut fermer RStudio et rouvrir ensuite.
+:::
 
 ## Les erreurs spark {.smaller}
 
@@ -743,7 +807,7 @@ ma_table_spark <- MMO %>%
   
   mutate(fin_ctt_bis = ifelse(is.na(FinCTT), as.Date("2023-12-31"), FinCTT)) %>%
   
-  mutate(duree_inscription = DATEDIFF(FinCTT, DebutCTT) + 1)
+  mutate(duree_ctt = DATEDIFF(FinCTT, DebutCTT) + 1)
 
 spark_write_parquet(ma_table_spark, "hdfs:///resultats/ma_table.parquet")
 
@@ -817,13 +881,13 @@ Nous fermerons les sessions ouvertes trop longtemps (départ de congés sans dé
 
 Spark est un outil de traitement de données volumineuses. Il n'est pas toujours adapté :
 
--   pour de petites tables : il ne va pas engendrer de gain de temps, voire augmenter le temps
+-   **pour de petites tables** : il ne va pas engendrer de gain de temps, voire augmenter le temps
 
--   pour faire de l'économétrie poussée : tous les packages R ne sont pas traduits en spark
+-   **pour faire de l'économétrie poussée** : tous les packages R ne sont pas traduits en spark
 
--   pour ouvrir sa table : on perd les avantages de spark si on collecte toute la table en mémoire RAM
+-   **pour ouvrir sa table** : on perd les avantages de spark si on collecte toute la table en mémoire RAM
 
-Conseils :
+**Conseils :**
 
 1.  Créer sa table d'étude en appariant les tables de MiDAS avec le cluster spark
 
@@ -882,8 +946,6 @@ Spark et le mode local :
     ▶️spark n'est adapté que pour le cluster de calcul, la bulle pour faire du R sans spark sur des données peu volumineuses
 
 ## Inefficient de prendre beaucoup de ressources {.smaller}
-
-![](images/reduce_distribue.drawio.png){fig-align="center"}
 
 Les ordinateurs du cluster ont besoin de **s'envoyer des données par le réseau** : c'est la partie la plus lente d'un programme spark !
 
@@ -1013,12 +1075,6 @@ Spark optimise automatiquement les programmes soumis :
 2.  Intégration dans un **plan d'exécution** contenant les étapes nécessaires pour parvenir au résultat demandé par le programme
 
 3.  Optimisation du plan logique par le module **Catalyst** (driver Spark)
-
-::: callout-warning
-## Le bouton stop
-
-Il est recommandé de ne pas utiliser ce bouton en programmant en sparklyr : il rend la session spark inutilisable par la suite, il faut fermer RStudio et rouvrir ensuite.
-:::
 
 ## Catalyst optimise le code pour nous {.smaller .scrollable}
 
@@ -1295,20 +1351,29 @@ Pour programmer en spark sans aucune erreur :
 
 # Pour aller plus loin
 
-## Partitionnement
+## Partitionnement {.smaller}
 
 Le format `.parquet` (avec `arrow`) et le framework `spark` permettent de gérer le partitionnement des données.
 
 Le partitionnement a un impact sur la manière dont les données sont organisées physiquement sur le système de fichiers.
 
-![](images/partitioned_parquet_file_archi.png)
+![](images/partitioned_parquet_file_archi.png){fig-align="center" width="1000"}
 
-| Partitions                             | 2        | 5         | 1000     |
-|----------------------------------------|----------|-----------|----------|
-| Colonne qui a servi au partitionnement | 74,50%	 | 46,30%	| 16,66%   |
-| Vers une autre colonne	             | 89,51%	 | 191,01%	| 556,99%  |
-| Select distinct(*)	                 | 136,79%   | 163,68%	| 1194,88% |
+## Partitionnement {.smaller}
 
+<br>
+
++----------------------------------------+-----------+-----------+-----------+
+| Partitions                             | 2         | 5         | 1000      |
++========================================+===========+===========+===========+
+| Colonne qui a servi au partitionnement | 74,50%    | 46,30%    | 16,66%    |
++----------------------------------------+-----------+-----------+-----------+
+| Vers une autre colonne                 | 89,51%    | 191,01%   | 556,99%   |
++----------------------------------------+-----------+-----------+-----------+
+| Select distinct(\*)                    | 136,79%   | 163,68%   | 1194,88%  |
++----------------------------------------+-----------+-----------+-----------+
+
+<br>
 
 ```{r}
 #| eval: false

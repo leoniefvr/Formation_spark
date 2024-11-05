@@ -605,7 +605,7 @@
     "href": "slides_v.html#au-programme",
     "title": "Initiation à Spark avec R en mode cluster",
     "section": "Au programme",
-    "text": "Au programme\n\nMiDAS : une base de données volumineuse\nUtiliser MiDAS avec R : un défi\nSparklyr : l’outil ergonomique de spark en R\nLes bonnes pratiques sur une infrastructure partagée\nOptimiser la mémoire : pourquoi et comment\nPour aller plus loin"
+    "text": "Au programme\n\nMiDAS : une base de données volumineuse 📚\nUtiliser MiDAS avec R : un défi 💭\nSparklyr : l’outil ergonomique de spark en R 👨‍💻\nLes bonnes pratiques sur une infrastructure partagée 🖥️\nOptimiser la mémoire : pourquoi et comment ⏳\nPour aller plus loin 💡"
   },
   {
     "objectID": "slides_v.html#quest-ce-que-midas",
@@ -619,7 +619,7 @@
     "href": "slides_v.html#une-des-bases-les-plus-volumineuses-du-ssp",
     "title": "Initiation à Spark avec R en mode cluster",
     "section": "Une des bases les plus volumineuses du SSP",
-    "text": "Une des bases les plus volumineuses du SSP\n\nLes administrations dont les données sont comparables à MiDAS utilisent un cluster Spark : Insee, Drees, Acoss, UNEDIC, Cnaf\n▶️Le cluster spark est une solution la très efficiente pour traiter des données de cette ampleur."
+    "text": "Une des bases les plus volumineuses du SSP\n\nLes administrations dont les données sont comparables à MiDAS utilisent un cluster Spark : Insee, Drees, Acoss, UNEDIC, Cnaf\n▶️Le cluster spark est une solution très efficiente pour traiter des données de cette ampleur."
   },
   {
     "objectID": "slides_v.html#concrètement-quest-ce-que-midas",
@@ -640,7 +640,7 @@
     "href": "slides_v.html#la-documentation-en-ligne",
     "title": "Initiation à Spark avec R en mode cluster",
     "section": "La documentation en ligne",
-    "text": "La documentation en ligne\n\n\n\nDocumentation en ligne\n\nDictionnaire des données\nFiches présentant les concepts de l’indemnisation, du retour à l’emploi\nExemples d’implémentation en R\nConseils quallité des variables"
+    "text": "La documentation en ligne\n\n\n\nDocumentation en ligne\n\nDictionnaire des données\nFiches présentant les concepts de l’indemnisation, du retour à l’emploi\nExemples d’implémentation en R\nConseils qualité des variables\n\n\n\n\n\n\n\n\n\n\nContribuer avec github, montrer le github, dire que sur le read me conseils pour contribuer et mettre des codes, espace de partage de codes à venir"
   },
   {
     "objectID": "slides_v.html#une-bulle-casd",
@@ -710,14 +710,14 @@
     "href": "slides_v.html#où-est-midas-2ème-édition",
     "title": "Initiation à Spark avec R en mode cluster",
     "section": "Où est Midas, 2ème édition",
-    "text": "Où est Midas, 2ème édition\nLe cluster a son propre explorateur de fichiers à mettre en favori dans son navigateur : https://midares-deb11-nn-01.midares.local:9870/"
+    "text": "Où est Midas, 2ème édition\nLe cluster a son propre explorateur de fichiers à mettre en favori dans son navigateur : https://midares-deb11-nn-01.midares.local:9870/\n\n\n\n\n\n\n\n\n\n\n\n\n\nSorte de disque du cluster"
   },
   {
     "objectID": "slides_v.html#un-cluster-de-calcul",
     "href": "slides_v.html#un-cluster-de-calcul",
     "title": "Initiation à Spark avec R en mode cluster",
     "section": "Un cluster de calcul",
-    "text": "Un cluster de calcul"
+    "text": "Un cluster de calcul\n\n\nPlusieurs ordinateurs, noter le voc au tableau noeud = worker = ordinateur = datanode = executeur = instance Session dans la bulle donc charger grosses données en session = limité par la taille de la bulle"
   },
   {
     "objectID": "slides_v.html#connexion",
@@ -752,7 +752,7 @@
     "href": "slides_v.html#chargement-des-données-en-spark",
     "title": "Initiation à Spark avec R en mode cluster",
     "section": "Chargement des données en spark",
-    "text": "Chargement des données en spark\n\n\n### Depuis HDFS\nmmo_17_df_spark <- spark_read_parquet(sc,\n                                  path = \"hdfs:///dataset/MiDAS_v4/mmo/mmo_2017.parquet\",\n                                  memory = FALSE)\n\n### Passer un dataframe R en spark\nmon_data_frame <- data.frame(c(\"Anna\", \"Paul\"), c(15, 20))\nmon_data_frame_spark <- copy_to(sc, \"mon_data_frame\")\n\n▶️ chargement en mémoire vive couteux en temps : par défaut, memory = FALSE\n\n\n\n\n\n\nSpark data frames\n\n\nmmo_17_df_spark est un spark data frame (sdf) : il ne peut pas être ouvert comme un data frame R classique, il n’est pas dans la session R."
+    "text": "Chargement des données en spark\n\n\n### Depuis HDFS\nmmo_17_df_spark <- spark_read_parquet(sc,\n                                  path = \"hdfs:///dataset/MiDAS_v4/mmo/mmo_2017.parquet\",\n                                  memory = FALSE)\n\n### Passer un dataframe R en spark\nmon_data_frame <- data.frame(c(\"Anna\", \"Paul\"), c(15, 20))\nmon_data_frame_spark <- copy_to(sc, \"mon_data_frame\")\n\n▶️ chargement en mémoire vive couteux en temps : par défaut, memory = FALSE\n\n\n\n\n\n\nSpark data frames\n\n\nmmo_17_df_spark est un spark data frame (sdf) : il ne peut pas être ouvert comme un data frame R classique, il n’est pas dans la session R.\n\n\n\n\nspark est lazy, paresseux, il ne fait rien tant qu’on ne le force pas"
   },
   {
     "objectID": "slides_v.html#la-lazy-evaluation",
@@ -766,7 +766,7 @@
     "href": "slides_v.html#récupérer-un-résultat",
     "title": "Initiation à Spark avec R en mode cluster",
     "section": "Récupérer un résultat",
-    "text": "Récupérer un résultat\nLes principales actions sont :\n\nprint()\nhead() + collect()\n⚠️ collect() pour de petites tables : ne fonctionne pas sur des grosses tables\ntbl_cache() (écrire un spark_data_frame en mémoire pour le réutiliser)"
+    "text": "Récupérer un résultat\nLes principales actions sont :\n\nprint()\nhead() + collect()\n⚠️ collect() pour de petites tables : ne fonctionne pas sur des grosses tables\ntbl_cache() (écrire un spark_data_frame en mémoire pour le réutiliser)\n\n\n\n\n\n\n\nLe bouton stop\n\n\nIl est recommandé de ne pas utiliser ce bouton en programmant en sparklyr : il rend la session spark inutilisable par la suite, il faut fermer RStudio et rouvrir ensuite."
   },
   {
     "objectID": "slides_v.html#presque-tout-comme-dplyr",
@@ -787,7 +787,7 @@
     "href": "slides_v.html#partitionnement",
     "title": "Initiation à Spark avec R en mode cluster",
     "section": "Partitionnement",
-    "text": "Partitionnement\nLe format .parquet (avec arrow) et le framework spark permettent de gérer le partitionnement des données.\nSi les opérations sont souvent effectuées par régions par exemple, il est utile de forcer le stockage des données d’une même région au même endroit physique et accélère drastiquement le temps de calcul :\n\nspark_write_parquet(ma_table, \"hdfs:///resultats/ma_table.parquet\", partition_by = c(\"region\"))"
+    "text": "Partitionnement\nLe format .parquet (avec arrow) et le framework spark permettent de gérer le partitionnement des données.\nLe partitionnement a un impact sur la manière dont les données sont organisées physiquement sur le système de fichiers."
   },
   {
     "objectID": "slides_v.html#télécharger-des-données-en-local",
@@ -962,7 +962,7 @@
     "href": "slides_v.html#la-lazy-evaluation-un-gain-de-temps-considérable",
     "title": "Initiation à Spark avec R en mode cluster",
     "section": "La lazy evaluation : un gain de temps considérable",
-    "text": "La lazy evaluation : un gain de temps considérable\n\n\n\n\n\n\n\nLa gestion des erreurs\n\n\nEn réalité, lorsqu’on appuie ysur le bouton run, il ne se passe pas “rien”. Le code est compilé par spark : les erreurs sont repérées avant même que le code soit exécuté !"
+    "text": "La lazy evaluation : un gain de temps considérable\n\n\n\n\n\n\n\nLa gestion des erreurs\n\n\nEn réalité, lorsqu’on appuie sur le bouton run, il ne se passe pas “rien”. Le code est compilé par spark : les erreurs sont repérées avant même que le code soit exécuté !"
   },
   {
     "objectID": "slides_v.html#catalyst-optimise-notre-code-pour-nous",
@@ -1067,7 +1067,7 @@
     "href": "slides_v.html#catalyst-optimise-le-code-pour-nous",
     "title": "Initiation à Spark avec R en mode cluster",
     "section": "Catalyst optimise le code pour nous",
-    "text": "Catalyst optimise le code pour nous\nLe driver contient un programme nommé Catalyst qui optimise le code scala automatiquement.\nSpark optimise automatiquement les programmes soumis :\n\nCompilation des transformations pour soulever les éventuelles erreurs\nIntégration dans un plan d’exécution contenant les étapes nécessaires pour parvenir au résultat demandé par le programme\nOptimisation du plan logique par le module Catalyst (driver Spark)\n\n\n\n\n\n\n\nLe bouton stop\n\n\nIl est recommandé de ne pas utiliser ce bouton en programmant en sparklyr : il rend la session spark inutilisable par la suite, il faut fermer RStudio et rouvrir ensuite."
+    "text": "Catalyst optimise le code pour nous\nLe driver contient un programme nommé Catalyst qui optimise le code scala automatiquement.\nSpark optimise automatiquement les programmes soumis :\n\nCompilation des transformations pour soulever les éventuelles erreurs\nIntégration dans un plan d’exécution contenant les étapes nécessaires pour parvenir au résultat demandé par le programme\nOptimisation du plan logique par le module Catalyst (driver Spark)"
   },
   {
     "objectID": "slides_v.html#catalyst-optimise-le-code-pour-nous-1",
@@ -1172,7 +1172,7 @@
     "href": "slides_v.html#exporter-des-données-sur-disque",
     "title": "Initiation à Spark avec R en mode cluster",
     "section": "Exporter des données sur disque",
-    "text": "Exporter des données sur disque\nSur la pause déjeuner par exemple 😉\nPourquoi ❓ Pour des données qui ne peuvent pas être collectées en mémoire vive\nExport des spark data frames directement sous HDFS : à aucun moment on n’ouvre la table : on peut traiter des données beaucoup plus volumnieuses que la mémoire RAM !\n\nma_table_spark <- MMO %>%\n  \n  right_join(mon_champ_individuel, by = c(\"id_midas\")) %>%\n  \n  mutate(fin_ctt_bis = ifelse(is.na(FinCTT), as.Date(\"2023-12-31\"), FinCTT)) %>%\n  \n  mutate(duree_inscription = DATEDIFF(FinCTT, DebutCTT) + 1)\n\nspark_write_parquet(ma_table_spark, \"hdfs:///resultats/ma_table.parquet\")\n\nPossibilité de récupérer ce fichier sur la bulle MiDARES = en local.\n\n\n\n\n\n\nExports simultanés\n\n\nHDFS supporte les exports simultanés, mais le temp d’export est plus long lorsque le NameNode est requêté par plusieurs personnes simultanément"
+    "text": "Exporter des données sur disque\nSur la pause déjeuner par exemple 😉\nPourquoi ❓ Pour des données qui ne peuvent pas être collectées en mémoire vive\nExport des spark data frames directement sous HDFS : à aucun moment on n’ouvre la table : on peut traiter des données beaucoup plus volumnieuses que la mémoire RAM !\n\nma_table_spark <- MMO %>%\n  \n  right_join(mon_champ_individuel, by = c(\"id_midas\")) %>%\n  \n  mutate(fin_ctt_bis = ifelse(is.na(FinCTT), as.Date(\"2023-12-31\"), FinCTT)) %>%\n  \n  mutate(duree_ctt = DATEDIFF(FinCTT, DebutCTT) + 1)\n\nspark_write_parquet(ma_table_spark, \"hdfs:///resultats/ma_table.parquet\")\n\nPossibilité de récupérer ce fichier sur la bulle MiDARES = en local.\n\n\n\n\n\n\nExports simultanés\n\n\nHDFS supporte les exports simultanés, mais le temp d’export est plus long lorsque le NameNode est requêté par plusieurs personnes simultanément"
   },
   {
     "objectID": "slides_v.html#quizz-spark-ou-pas-spark",
@@ -1200,7 +1200,7 @@
     "href": "slides_v.html#inefficient-de-prendre-beaucoup-de-ressources",
     "title": "Initiation à Spark avec R en mode cluster",
     "section": "Inefficient de prendre beaucoup de ressources",
-    "text": "Inefficient de prendre beaucoup de ressources\n\nLes ordinateurs du cluster ont besoin de s’envoyer des données par le réseau : c’est la partie la plus lente d’un programme spark !\nSi j’augmente les ressources : par exemple, je réserve 3 ordinateurs du cluster plutôt que 2\n\nEffet puissance de calcul : plus de ressources pour faire les calculs = réduction du temps de calcul\nEffet augmentation des échanges réseau (shuffles) : augmentation du temps de calcul\nGêne des autre utilisateurs"
+    "text": "Inefficient de prendre beaucoup de ressources\nLes ordinateurs du cluster ont besoin de s’envoyer des données par le réseau : c’est la partie la plus lente d’un programme spark !\nSi j’augmente les ressources : par exemple, je réserve 3 ordinateurs du cluster plutôt que 2\n\nEffet puissance de calcul : plus de ressources pour faire les calculs = réduction du temps de calcul\nEffet augmentation des échanges réseau (shuffles) : augmentation du temps de calcul\nGêne des autre utilisateurs"
   },
   {
     "objectID": "slides_v.html#ne-pas-collecter",
@@ -1348,5 +1348,26 @@
     "title": "Initiation à Spark avec R en mode cluster",
     "section": "",
     "text": "MiDAS : une base de données volumineuse\nUtiliser MiDAS avec R : un défi\nSparklyr : l’outil ergonomique de spark en R\nLes bonnes pratiques sur une infrastructure partagée\nOptimiser la mémoire : pourquoi et comment\nPour aller plus loin"
+  },
+  {
+    "objectID": "slides_v.html#partitionnement-1",
+    "href": "slides_v.html#partitionnement-1",
+    "title": "Initiation à Spark avec R en mode cluster",
+    "section": "Partitionnement",
+    "text": "Partitionnement\n\n\n\n\n\n\n\n\n\n\nPartitions\n2\n5\n1000\n\n\n\n\nColonne qui a servi au partitionnement\n74,50%\n46,30%\n16,66%\n\n\nVers une autre colonne\n89,51%\n191,01%\n556,99%\n\n\nSelect distinct(*)\n136,79%\n163,68%\n1194,88%\n\n\n\n\n\nspark_write_parquet(ma_table, \"hdfs:///resultats/ma_table.parquet\", partition_by = c(\"age\",\"sex\"))"
+  },
+  {
+    "objectID": "slides_v.html#comment-voir-ma-table",
+    "href": "slides_v.html#comment-voir-ma-table",
+    "title": "Initiation à Spark avec R en mode cluster",
+    "section": "Comment voir ma table ?",
+    "text": "Comment voir ma table ?\nRécupérer une partie de la table : pas plus de 500 lignes\n\nune_partie_de_ma_table <- ma_table %>% \n  head(100) %>%\n  collect()\n\n\nune_partie_de_ma_table <- ma_table %>% \n  filter(id_midas %in% ma_liste_id_midas) %>%\n  collect()\n\n# une_partie_de_ma_table est ici un data.frame R classique que vous pouvez ouvrir!\n\n\n\n\n\n\n\nSpark data frames\n\n\nune_partie_de_ma_table est un data frame R : il peut pas être ouvert, il est dans la session R. Cela signifie qu’il se situe sur la bulle"
+  },
+  {
+    "objectID": "slides_v.html#un-cluster-de-calcul-1",
+    "href": "slides_v.html#un-cluster-de-calcul-1",
+    "title": "Initiation à Spark avec R en mode cluster",
+    "section": "Un cluster de calcul",
+    "text": "Un cluster de calcul"
   }
 ]
