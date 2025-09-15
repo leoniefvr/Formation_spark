@@ -4,15 +4,15 @@ title: "Fonctions spécifiques"
 
 La majorité des commandes `dplyr` fonctionnent sur un spark_data_frame avec le package `sparklyr`. Les divergences principales sont les suivantes :
 
-| Fonctionnalité                 | tidyverse      | sparklyr                         |
-|--------------------------------|----------------|----------------------------------|
-| import d'un fichier `.parquet` | `read_parquet` | `spark_read_parquet()`           |
-| tri d'un tableau               | `arrange()`    | `window_order()` ou `sdf_sort()` |
-| opérations sur les dates       | `lubridate`    | fonctions Hive                   |
-| empiler des tableaux           | `bind_rows()`  | `sdf_bind_rows()`                |
-| nombre de lignes d'un tableau  | `nrow()`       | `sdf_nrow()`                     |
-| faire pivoter un tableau       | `tidyr`        | `sdf_pivot()`                    |
-| export d'un `spark_data_frame` |                | `spark_write_parquet()`          |
+| Fonctionnalité | tidyverse | sparklyr |
+|----|----|----|
+| import d'un fichier `.parquet` | `read_parquet` | `spark_read_parquet()` |
+| tri d'un tableau | `arrange()` | `window_order()` ou `sdf_sort()` |
+| opérations sur les dates | `lubridate` | fonctions Hive |
+| empiler des tableaux | `bind_rows()` | `sdf_bind_rows()` |
+| nombre de lignes d'un tableau | `nrow()` | `sdf_nrow()` |
+| faire pivoter un tableau | `tidyr` | `sdf_pivot()` |
+| export d'un `spark_data_frame` |  | `spark_write_parquet()` |
 
 ## Tableau
 

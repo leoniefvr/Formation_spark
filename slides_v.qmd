@@ -73,7 +73,7 @@ Au format **parquet** :
 
 <br>
 
-::: columns
+::::: columns
 ::: {.column width="35%"}
 [Documentation en ligne](https://documentationmidas.github.io/Documentation_MiDAS/Presentation/pr%C3%A9sentation.html)
 
@@ -89,7 +89,7 @@ Au format **parquet** :
 ::: {.column width="65%"}
 ![](/images/documentation_midas.PNG){fig-align="center"}
 :::
-:::
+:::::
 
 ::: notes
 Contribuer avec github, montrer le github, dire que sur le read me conseils pour contribuer et mettre des codes, espace de partage de codes à venir
@@ -193,7 +193,7 @@ Données \> RAM et R fonctionne dans la mémoire vive (pour ça que plus rapide 
 
 ## Traitement léger versus coûteux {.smaller}
 
-::: panel-tabset
+::::: panel-tabset
 ## MAP = léger {.smaller}
 
 ![](/images/formation%20sparklyr-Page-1.drawio.png){fig-align="center"}
@@ -231,7 +231,7 @@ Ce traitement nécessite :
     ▶️ Exécution séquentielle sur un coeur du processeur + beaucoup de mémoire vive (données temporaires)
 
     ▶️ Erreur "out of memory".
-:::
+:::::
 
 ::: notes
 Parquet orienté colonne donc ne charge que les colonnes nécessaires en mémoire R vectorisé : opération appliquée à tout le vecteur = traitement rapide
@@ -595,26 +595,26 @@ La majorité des commandes `dplyr` fonctionnent sur un spark_data_frame avec le 
 
 ## Quelques fonctions R pas encore traduites {.smaller .scrollable}
 
-::: panel-tabset
+::::: panel-tabset
 ## Dates
 
 Les fonctions de `lubridate()`ne sont pas adaptées au `spark_data_frames`.
 
 -   Convertir une chaîne de caractère de la forme AAAA-MM-DD en Date
 
-    ```{r}
-    #| eval: false
-    #| echo: true
+```{r}
+#| eval: false
+#| echo: true
 
     date_1 <- as.Date("2024-05-26")
 
-    ```
+```
 
 -   Calculer une durée entre deux dates
 
-    ```{r}
-    #| eval: false
-    #| echo: true
+```{r}
+#| eval: false
+#| echo: true
 
     PJC_spark <- spark_read_parquet(sc,
                                     path = "hdfs:///dataset/MiDAS_v4/pjc.parquet",
@@ -626,13 +626,13 @@ Les fonctions de `lubridate()`ne sont pas adaptées au `spark_data_frames`.
       mutate(duree_pjc = datediff(date_fin_pjc, date_deb_pjc) + 1) %>%
       head(5)
 
-    ```
+```
 
 -   Ajouter ou soustraire des jours ou des mois à une date
 
-    ```{r}
-    #| eval: false
-    #| echo: true
+```{r}
+#| eval: false
+#| echo: true
 
 
     duree_pjc_bis_df <- duree_pjc_df %>%
@@ -641,7 +641,7 @@ Les fonctions de `lubridate()`ne sont pas adaptées au `spark_data_frames`.
              duree_pjc_plus_1_mois = add_months(duree_pjc, int(1))) %>%
       head(5)
 
-    ```
+```
 
 ::: callout-note
 ## Add_months
@@ -659,9 +659,9 @@ Le `int()` est important car ces fonctions Hive n'accepte que les entiers pour l
 
 -   Tri dans un groupe pour effectuer un calcul séquentiel
 
-    ```{r}
-    #| eval: false
-    #| echo: true
+```{r}
+#| eval: false
+#| echo: true
 
     ODD_spark <- spark_read_parquet(sc,
                                     path = "hdfs:///dataset/MiDAS_v4/odd.parquet",
@@ -675,7 +675,7 @@ Le `int()` est important car ces fonctions Hive n'accepte que les entiers pour l
       distinct(id_midas, KROD3, date_premier_droit) %>%
       head(5)
       
-    ```
+```
 
 -   Tri pour une sortie : `sdf_sort()` , `arrange()` ne fonctionne pas
 
@@ -699,9 +699,9 @@ Le `int()` est important car ces fonctions Hive n'accepte que les entiers pour l
 
 -   Dédoublonner une table
 
-    ```{r}
-    #| eval: false
-    #| echo: true
+```{r}
+#| eval: false
+#| echo: true
 
     droits_dans_PJC <- PJC_spark %>%
       sdf_distinct(id_midas, KROD3)
@@ -713,20 +713,20 @@ Le `int()` est important car ces fonctions Hive n'accepte que les entiers pour l
 
     print(head(PJC_dedoublonnee, 5))
 
-    ```
+```
 
 -   Pivot : les fonctions du packag `tidyr` ne fonctionnent pas sur données spark
 
-    ```{r}
-    #| eval: false
-    #| echo: true
+```{r}
+#| eval: false
+#| echo: true
 
     ODD_sjr_moyen <- ODD_spark %>%
       mutate(groupe = ifelse(KDPOD <= as.Date("2020-12-31"), "controles", "traites")) %>%
       sdf_pivot(groupe ~ KCRGC,
         fun.aggregate = list(KQCSJP = "mean")
       )
-    ```
+```
 
 ## Statistiques
 
@@ -737,7 +737,7 @@ Le `int()` est important car ces fonctions Hive n'accepte que les entiers pour l
 -   Quantiles approximatifs : le calcul des quantiles sur données distirbuées renvoie une approximation car toutes les données ne peuvent pas être rappatriées sur la même machine physique du fait de la volumétrie, `sdf_quantile()`
 
 -   Echantillonnage aléatoire : `sdf_random_split`
-:::
+:::::
 
 ## Je veux voir ma table {.smaller}
 
@@ -1159,30 +1159,35 @@ optimal <- table_1 %>%
 
 ```
 
-## Jointures : un cas particulier
+## La longueur du plan logique
 
-Pour effectuer ce type de jointure avec deux tables de volumétries différentes : A est petite, B est très volumineuse
+Fournir un plan logique très long sans déclencher d'action peut créer une erreur en spark : spark "refuse" d'optimiser un plan si long.
 
-![](images/join.png)
-
-Solution rapide :
+La bonne pratique consiste à "cacher" des résultats intermédiaires, pour déclencher l'exécution régulièrement et conserver les résultats en mémoire, tout en nettoyant la mémoire des résultat intermédiaires précédents :
 
 ```{r}
 #| eval: false
 #| echo: true
 
-table_finale <- table_volumineuse_comme_PJC %>%
-  right_join(petite_table_mon_champ)
-```
+table_1 <- mon_champ %>%
+  left_join(table_2) %>%
+  mutate(variable_1 = indicatrice_1 + indicatrice_2,
+         regroupement_variable_2 = case_when(variable_2 %in% c(1,2,3) ~ "A",
+                                             variable_2 %in% c(5,8,9) ~ "B",
+                                             TRUE ~ "C")) %>%
+  left_join(table_3) %>%
+  sdf_register("table_1")
 
-Solution lente :
+tbl_cache(sc, "table_1")
 
-```{r}
-#| eval: false
-#| echo: true
+table_4 <- table_1 %>%
+  left_join(table_5) %>%
+  mutate(variable_y = ifelse(variable_x > 50, 1, 0)) %>%
+  sdf_register("table_4")
 
-table_finale <- petite_table_mon_champ %>%
-  left_join(table_volumineuse_comme_PJC)
+tbl_cache(sc, "table_4")
+
+tbl_uncache(sc, "table_1")
 ```
 
 ## Le rôle du cluster manager {.smaller}
@@ -1238,6 +1243,197 @@ Mtn un peu de théorie pour comprendre le calcul distribué et mieux l'utiliser
 ## Le stockage distribué avec HDFS {.smaller}
 
 ![](images/stockage_distribue.drawio.png){fig-align="center"}
+
+## Calcul distribué, calcul vectoriel {.smaller}
+
+<br>
+
+Les opérations les plus coûteuses en spark sont :
+
+-   les opérations par **groupe de lignes**, qui impliquent des **shuffles**, ou échanges de données entre workers via le réseau
+
+-   les opérations d'écriture sur disque avec `spark_write_parquet()`
+
+-   les opérations 🛑**non vectorisées**🛑, qui entraînent des shuffles lourds et inutiles : boucles for, jointures volumineuses...
+
+<br>
+
+Les données MiDAS sont structurées de manière proche d'une **base de données relationnelles :** leur traitement nécessite des jointures. Une partie des données sont **mensuelles** : cette structure peut inciter à programmer en boucle for sur le mois, ce qui est long et inefficient.
+
+## Calcul distribué, calcul vectoriel : boucles for
+
+<br>
+
+Cas d'usage : je veux repérer si un groupe d'individus est au RSA un mois, deux mois, trois mois etc. après la sortie de l'assurance-chômage
+
+J'utilise :
+
+-   le FNA, dont j'extraie une table individu avec le mois de sortie de l'assurance-chômage, table `sorties`
+
+-   les tables mensuelles de la CNAF `cnaf_prestations_mois_m`
+
+## Calcul distribué, calcul vectoriel : boucles for {.smaller .scrollable}
+
+::: panel-tabset
+### Solution 1
+
+Lance 12 X tous les mois de sortie jobs spark, beaucoup de shuffles
+
+```{r}
+#| eval: false
+#| echo: true
+
+library(dplyr)
+library(sparklyr)
+
+res_all <- NULL
+
+for (mois in mois_sortie_vec) { # 1ère boucle sur les mois de sorties
+  # Sous-ensemble des sortants de ce mois
+  sorties_mois <- sorties %>%
+    filter(mois_sortie == !!mois) %>%
+    select(id, mois_sortie)
+
+  for (h in 1:12) { # 2ème boucle sur les 12 mois d'horizon
+    
+    mois_cible <- as.Date(mois) + months(h)
+    nom_tbl <- paste0("cnaf_prestations_", format(mois_cible, "%Y_%m"))
+    table_mois_cnaf <- spark_read_parquet(paste0(chemin_table, nom_tbl))
+
+    perception_RSA_mois_h <- sorties_mois %>%
+      mutate(mois_h = sql(paste0("add_months(mois_sortie, ", h, ")"))) %>%
+      inner_join(table_mois_cnaf, by = c("id" = "id", "mois_h" = "mois")) %>%
+      mutate(perception_RSA = ifelse(RSAVERS == "C" & MTRSAVER > 0, 1, 0)) %>%
+      transmute(id, mois_sortie, h = !!h, perception_RSA)
+
+    # empiler et mettre en cache le résultat
+    res_all <- if (is.null(res_all)) perception_RSA_mois_h else sdf_bind_rows(res_all, perception_RSA_mois_h) %>% sdf_register(paste0("temp", mois, h))
+  tbl_cache(sc, paste0("temp", mois, h))
+  }
+}
+
+```
+
+### Solution 2
+
+Lance 12 jobs et une action à chaque tour
+
+```{r}
+#| eval: false
+#| echo: true
+
+for (mois in liste_mois) {
+  
+  nom_tbl <- paste0("cnaf_prestations_", format(mois, "%Y_%m"))
+  table_mois_cnaf <- spark_read_parquet(paste0(chemin_table, nom_tbl))
+
+  # Jointure globale, calcul de l'horizon h 
+  perception_RSA_mois <- table_mois_cnaf %>%
+    inner_join(sorties, by = "id") %>%
+    mutate(h = sql("cast(months_between(mois, mois_sortie) as int)")) %>%
+    filter(h >= 1, h <= 12) %>%
+    select(id, mois_sortie, h, prest)
+
+  # Cache pour enregistrer le résultat en mémoire
+  perception_RSA_mois_cache <- perception_RSA_mois %>% sdf_register(paste0("temp", mois))
+  tbl_cache(sc, paste0("temp", mois))
+
+  res_stack <- if (is.null(res_stack)) joined_cached else sdf_bind_rows(res_stack, joined_cached)
+}
+```
+
+### Solution 3
+
+Meilleure solution : un seul plan logique que Catalyst peut entièrement optimsier, en limitant les shuffles, beaucoup plus rapide
+
+```{r}
+#| eval: false
+#| echo: true
+
+
+# Charger la première table CNAF
+nom_1 <- paste0("cnaf_prestations_", format(as.Date("2023-01-01"), "%Y_%m"))
+cnaf_total <- spark_read_parquet(paste0(chemin_table, nom_1))
+
+# Empiler les autres
+for (mois in liste_mois) {
+  
+  nom_tbl <- paste0("cnaf_prestations_", format(mois, "%Y_%m"))
+  table_mois_cnaf <- spark_read_parquet(paste0(chemin_table, nom_tbl))
+  
+  cnaf_total <- sdf_bind_rows(cnaf_total, table_mois_cnaf) %>%
+    sdf_register("cnaf_total")
+  tbl_cache(sc, "cnaf_total")
+}
+
+
+# Joindre UNE fois avec la table des sorties (broadcast si petit)
+sorties_b <- sdf_broadcast(sorties %>%
+  select(id, mois_sortie)
+)
+
+perception_RSA_horizon <- cnaf_total %>%
+  inner_join(sorties_b, by = "id") %>%
+  mutate(
+    h = sql("cast(months_between(mois, mois_sortie) as int)")
+  ) %>%
+  filter(h >= 1, h <= 12) %>%
+  select(id, mois_sortie, h, prest)
+
+```
+:::
+
+## Calcul distribué, calcul vectoriel : jointures {.smaller}
+
+Une **jointure** implique pour spark de rappatrier les lignes avec les mêmes valeurs de clef sur le même worker : les jointures engendrent des **shuffles**.
+
+<br>
+
+Lorsque l’on joint une **grosse table** avec une **petite table**, Spark peut optimiser le calcul en utilisant un **broadcast join** : la petite table est **diffusée en entier** sur chaque worker, ce qui évite un shuffle massif.
+
+```{r}
+#| eval: false
+#| echo: true
+
+res <- grosse_table %>%
+  inner_join(sdf_broadcast(petite_table), by = "clef")
+```
+
+<br>
+
+👉 Ici petite_table est diffusée (broadcast) sur tous les workers : chaque partition de grosse_table fait alors le join localement, sans transfert réseau coûteux.
+
+## Calcul distribué, calcul vectoriel : jointures {.smaller}
+
+**Broadcast automatique** : par défaut, Spark choisit automatiquement le broadcast join si la table à diffuser fait moins de 10 MB (paramètre configurable).
+
+Au-delà, il utilise un **shuffle join** classique (plus lent).
+
+**Astuce right_join** : dans sparklyr, la position de la table peut influencer le plan choisi par Spark :
+
+`petite_table %>% left_join(grosse_table)` → Spark n’essaie pas forcément de diffuser la petite.
+
+`grosse_table %>% right_join(petite_table)` → Spark choisit plus volontiers un broadcast join.
+
+👉 Bonne pratique : forcer avec `sdf_broadcast()` quand on sait que la table est petite, plutôt que de compter sur ce comportement implicite.
+
+## Calcule distribué, calcul vectoriel {.smaller}
+
++----------------------------------------+------------------------------------------------------+--------------------------------------------------------------------+
+| **Opération logique**                  | **Solution non vectorielle**                         | **Solution vectorielle**                                           |
++========================================+======================================================+====================================================================+
+| situation à m + 1, 2...                | Boucle for sur les mois                              | utilisation de `lag()` et `lead()`, ou auto jointure sur les dates |
++----------------------------------------+------------------------------------------------------+--------------------------------------------------------------------+
+| Répéter une fonction                   | user defined functions (UDF)                         | éviter les UDF                                                     |
++----------------------------------------+------------------------------------------------------+--------------------------------------------------------------------+
+| opération groupe de lignes             | `group_by %>% mutate %>% distinct`                   | `group_by %>% summarise`                                           |
++----------------------------------------+------------------------------------------------------+--------------------------------------------------------------------+
+| joindre petite table avec grosse table | `petite_table %>% left_join(grosse_table)`           | broadcast join                                                     |
++----------------------------------------+------------------------------------------------------+--------------------------------------------------------------------+
+| joindre deux grosses tables            | boucle for en divisant les tables en petits morceaux | unique jointure et partition par la clef de jointure               |
++----------------------------------------+------------------------------------------------------+--------------------------------------------------------------------+
+| construire un panel cylindré           | boucle for                                           | `cross_join()` de deux tables                                      |
++----------------------------------------+------------------------------------------------------+--------------------------------------------------------------------+
 
 ## La mémoire du driver
 
