@@ -6,9 +6,8 @@
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
 <link href="site_libs/quarto-html/light-border.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-html.min.css" rel="stylesheet" data-mode="light">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
-  <meta name="generator" content="quarto-1.5.57">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-dc55a5b9e770e841cd82e46aadbfb9b0.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
+  <meta name="generator" content="quarto-1.8.24">
 
   <title>Formation sparklyr – Initiation à Spark avec R en mode cluster</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -29,8 +28,9 @@
       vertical-align: middle;
     }
     /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
     pre > code.sourceCode { white-space: pre; position: relative; }
-    pre > code.sourceCode > span { line-height: 1.25; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
     pre > code.sourceCode > span:empty { height: 1.2em; }
     .sourceCode { overflow: visible; }
     code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -41,7 +41,7 @@
     }
     @media print {
     pre > code.sourceCode { white-space: pre-wrap; }
-    pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
     }
     pre.numberSource code
       { counter-reset: source-line 0; }
@@ -94,209 +94,11 @@
     code span.vs { color: #20794d; } /* VerbatimString */
     code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
   </style>
-  <link rel="stylesheet" href="site_libs/revealjs/dist/theme/quarto.css">
+  <link rel="stylesheet" href="site_libs/revealjs/dist/theme/quarto-534cd8e3a96973385dffff3f4709048d.css">
   <link href="site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
   <link href="site_libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
   <link href="site_libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
   <link href="site_libs/revealjs/plugin/quarto-support/footer.css" rel="stylesheet">
-  <style type="text/css">
-
-  .callout {
-    margin-top: 1em;
-    margin-bottom: 1em;  
-    border-radius: .25rem;
-  }
-
-  .callout.callout-style-simple { 
-    padding: 0em 0.5em;
-    border-left: solid #acacac .3rem;
-    border-right: solid 1px silver;
-    border-top: solid 1px silver;
-    border-bottom: solid 1px silver;
-    display: flex;
-  }
-
-  .callout.callout-style-default {
-    border-left: solid #acacac .3rem;
-    border-right: solid 1px silver;
-    border-top: solid 1px silver;
-    border-bottom: solid 1px silver;
-  }
-
-  .callout .callout-body-container {
-    flex-grow: 1;
-  }
-
-  .callout.callout-style-simple .callout-body {
-    font-size: 1rem;
-    font-weight: 400;
-  }
-
-  .callout.callout-style-default .callout-body {
-    font-size: 0.9rem;
-    font-weight: 400;
-  }
-
-  .callout.callout-titled.callout-style-simple .callout-body {
-    margin-top: 0.2em;
-  }
-
-  .callout:not(.callout-titled) .callout-body {
-      display: flex;
-  }
-
-  .callout:not(.no-icon).callout-titled.callout-style-simple .callout-content {
-    padding-left: 1.6em;
-  }
-
-  .callout.callout-titled .callout-header {
-    padding-top: 0.2em;
-    margin-bottom: -0.2em;
-  }
-
-  .callout.callout-titled .callout-title  p {
-    margin-top: 0.5em;
-    margin-bottom: 0.5em;
-  }
-    
-  .callout.callout-titled.callout-style-simple .callout-content  p {
-    margin-top: 0;
-  }
-
-  .callout.callout-titled.callout-style-default .callout-content  p {
-    margin-top: 0.7em;
-  }
-
-  .callout.callout-style-simple div.callout-title {
-    border-bottom: none;
-    font-size: .9rem;
-    font-weight: 600;
-    opacity: 75%;
-  }
-
-  .callout.callout-style-default  div.callout-title {
-    border-bottom: none;
-    font-weight: 600;
-    opacity: 85%;
-    font-size: 0.9rem;
-    padding-left: 0.5em;
-    padding-right: 0.5em;
-  }
-
-  .callout.callout-style-default div.callout-content {
-    padding-left: 0.5em;
-    padding-right: 0.5em;
-  }
-
-  .callout.callout-style-simple .callout-icon::before {
-    height: 1rem;
-    width: 1rem;
-    display: inline-block;
-    content: "";
-    background-repeat: no-repeat;
-    background-size: 1rem 1rem;
-  }
-
-  .callout.callout-style-default .callout-icon::before {
-    height: 0.9rem;
-    width: 0.9rem;
-    display: inline-block;
-    content: "";
-    background-repeat: no-repeat;
-    background-size: 0.9rem 0.9rem;
-  }
-
-  .callout-title {
-    display: flex
-  }
-    
-  .callout-icon::before {
-    margin-top: 1rem;
-    padding-right: .5rem;
-  }
-
-  .callout.no-icon::before {
-    display: none !important;
-  }
-
-  .callout.callout-titled .callout-body > .callout-content > :last-child {
-    padding-bottom: 0.5rem;
-    margin-bottom: 0;
-  }
-
-  .callout.callout-titled .callout-icon::before {
-    margin-top: .5rem;
-    padding-right: .5rem;
-  }
-
-  .callout:not(.callout-titled) .callout-icon::before {
-    margin-top: 1rem;
-    padding-right: .5rem;
-  }
-
-  /* Callout Types */
-
-  div.callout-note {
-    border-left-color: #4582ec !important;
-  }
-
-  div.callout-note .callout-icon::before {
-    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAERlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAA6ABAAMAAAABAAEAAKACAAQAAAABAAAAIKADAAQAAAABAAAAIAAAAACshmLzAAAEU0lEQVRYCcVXTWhcVRQ+586kSUMMxkyaElstCto2SIhitS5Ek8xUKV2poatCcVHtUlFQk8mbaaziwpWgglJwVaquitBOfhQXFlqlzSJpFSpIYyXNjBNiTCck7x2/8/LeNDOZxDuEkgOXe++553zfefee+/OYLOXFk3+1LLrRdiO81yNqZ6K9cG0P3MeFaMIQjXssE8Z1JzLO9ls20MBZX7oG8w9GxB0goaPrW5aNMp1yOZIa7Wv6o2ykpLtmAPs/vrG14Z+6d4jpbSKuhdcSyq9wGMPXjonwmESXrriLzFGOdDBLB8Y6MNYBu0dRokSygMA/mrun8MGFN3behm6VVAwg4WR3i6FvYK1T7MHo9BK7ydH+1uurECoouk5MPRyVSBrBHMYwVobG2aOXM07sWrn5qgB60rc6mcwIDJtQrnrEr44kmy+UO9r0u9O5/YbkS9juQckLed3DyW2XV/qWBBB3ptvI8EUY3I9p/67OW+g967TNr3Sotn3IuVlfMLVnsBwH4fsnebJvyGm5GeIUA3jljERmrv49SizPYuq+z7c2H/jlGC+Ghhupn/hcapqmcudB9jwJ/3jvnvu6vu5lVzF1fXyZuZZ7U8nRmVzytvT+H3kilYvH09mLWrQdwFSsFEsxFVs5fK7A0g8gMZjbif4ACpKbjv7gNGaD8bUrlk8x+KRflttr22JEMRUbTUwwDQScyzPgedQHZT0xnx7ujw2jfVfExwYHwOsDTjLdJ2ebmeQIlJ7neo41s/DrsL3kl+W2lWvAga0tR3zueGr6GL78M3ifH0rGXrBC2aAR8uYcIA5gwV8zIE8onoh8u0Fca/ciF7j1uOzEnqcIm59sEXoGc0+z6+H45V1CvAvHcD7THztu669cnp+L0okAeIc6zjbM/24LgGM1gZk7jnRu1aQWoU9sfUOuhrmtaPIO3YY1KLLWZaEO5TKUbMY5zx8W9UJ6elpLwKXbsaZ4EFl7B4bMtDv0iRipKoDQT2sNQI9b1utXFdYisi+wzZ/ri/1m7QfDgEuvgUUEIJPq3DhX/5DWNqIXDOweC2wvIR90Oq3lDpdMIgD2r0dXvGdsEW5H6x6HLRJYU7C69VefO1x8Gde1ZFSJLfWS1jbCnhtOPxmpfv2LXOA2Xk2tvnwKKPFuZ/oRmwBwqRQDcKNeVQkYcOjtWVBuM/JuYw5b6isojIkYxyYAFn5K7ZBF10fea52y8QltAg6jnMqNHFBmGkQ1j+U43HMi2xMar1Nv0zGsf1s8nUsmUtPOOrbFIR8bHFDMB5zL13Gmr/kGlCkUzedTzzmzsaJXhYawnA3UmARpiYj5ooJZiUoxFRtK3X6pgNPv+IZVPcnwbOl6f+aBaO1CNvPW9n9LmCp01nuSaTRF2YxHqZ8DYQT6WsXT+RD6eUztwYLZ8rM+rcPxamv1VQzFUkzFXvkiVrySGQgJNvXHJAxiU3/NwiC03rSf05VBaPtu/Z7/B8Yn/w7eguloAAAAAElFTkSuQmCC');
-  }
-
-  div.callout-note.callout-style-default .callout-title {
-    background-color: #dae6fb
-  }
-
-  div.callout-important {
-    border-left-color: #d9534f !important;
-  }
-
-  div.callout-important .callout-icon::before {
-    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAERlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAA6ABAAMAAAABAAEAAKACAAQAAAABAAAAIKADAAQAAAABAAAAIAAAAACshmLzAAAEKklEQVRYCcVXTWhcVRS+575MJym48A+hSRFr00ySRQhURRfd2HYjk2SSTokuBCkU2o0LoSKKraKIBTcuFCoidGFD08nkBzdREbpQ1EDNIv8qSGMFUboImMSZd4/f9zJv8ibJMC8xJQfO3HPPPef7zrvvvnvviIkpC9nsw0UttFunbUhpFzFtarSd6WJkStVMw5xyVqYTvkwfzuf/5FgtkVoB0729j1rjXwThS7Vio+Mo6DNnvLfahoZ+i/o32lULuJ3NNiz7q6+pyAUkJaFF6JwaM2lUJlV0MlnQn5aTRbEu0SEqHUa0A4AdiGuB1kFXRfVyg5d87+Dg4DL6m2TLAub60ilj7A1Ec4odSAc8X95sHh7+ZRPCFo6Fnp7HfU/fBng/hi10CjCnWnJjsxvDNxWw0NfV6Rv5GgP3I3jGWXumdTD/3cbEOP2ZbOZp69yniG3FQ9z1jD7bnBu9Fc2tKGC2q+uAJOQHBDRiZX1x36o7fWBs7J9ownbtO+n0/qWkvW7UPIfc37WgT6ZGR++EOJyeQDSb9UB+DZ1G6DdLDzyS+b/kBCYGsYgJbSQHuThGKRcw5xdeQf8YdNHsc6ePXrlSYMBuSIAFTGAtQo+VuALo4BX83N190NWZWbynBjhOHsmNfFWLeL6v+ynsA58zDvvAC8j5PkbOcXCMg2PZFk3q8MjI7WAG/Dp9AwP7jdGBOOQkAvlFUB+irtm16I1Zw9YBcpGTGXYmk3kQIC/Cds55l+iMI3jqhjAuaoe+am2Jw5GT3Nbz3CkE12NavmzN5+erJW7046n/CH1RO/RVa8lBLozXk9uqykkGAyRXLWlLv5jyp4RFsG5vGVzpDLnIjTWgnRy2Rr+tDKvRc7Y8AyZq10jj8DqXdnIRNtFZb+t/ZRtXcDiVnzpqx8mPcDWxgARUqx0W1QB9MeUZiNrV4qP+Ehc+BpNgATsTX8ozYKL2NtFYAHc84fG7ndxUPr+AR/iQSns7uSUufAymwDOb2+NjK27lEFocm/EE2WpyIy/Hi66MWuMKJn8RvxIcj87IM5Vh9663ziW36kR0HNenXuxmfaD8JC7tfKbrhFr7LiZCrMjrzTeGx+PmkosrkNzW94ObzwocJ7A1HokLolY+AvkTiD/q1H0cN48c5EL8Crkttsa/AXQVDmutfyku0E7jShx49XqV3MFK8IryDhYVbj7Sj2P2eBxwcXoe8T8idsKKPRcnZw1b+slFTubwUwhktrfnAt7J++jwQtLZcm3sr9LQrjRzz6cfMv9aLvgmnAGvpoaGLxM4mAEaLV7iAzQ3oU0IvD5x9ix3yF2RAAuYAOO2f7PEFWCXZ4C9Pb2UsgDeVnFSpbFK7/IWu7TPTvBqzbGdCHOJQSxiEjt6IyZmxQyEJHv6xyQsYk//moVFsN2zP6fRImjfq7/n/wFDguUQFNEwugAAAABJRU5ErkJggg==');
-  }
-
-  div.callout-important.callout-style-default .callout-title {
-    background-color: #f7dddc
-  }
-
-  div.callout-warning {
-    border-left-color: #f0ad4e !important;
-  }
-
-  div.callout-warning .callout-icon::before {
-    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAERlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAA6ABAAMAAAABAAEAAKACAAQAAAABAAAAIKADAAQAAAABAAAAIAAAAACshmLzAAAETklEQVRYCeVWW2gcVRg+58yaTUnizqbipZeX4uWhBEniBaoUX1Ioze52t7sRq6APio9V9MEaoWlVsFasRq0gltaAPuxms8lu0gcviE/FFOstVbSIxgcv6SU7EZqmdc7v9+9mJtNks51NTUH84ed889/PP+cmxP+d5FIbMJmNbpREu4WUkiTtCicKny0l1pIKmBzovF2S+hIJHX8iEu3hZJ5lNZGqyRrGSIQpq15AzF28jgpeY6yk6GVdrfFqdrD6Iw+QlB8g0YS2g7dyQmXM/IDhBhT0UCiRf59lfqmmDvzRt6kByV/m4JjtzuaujMUM2c5Z2d6JdKrRb3K2q6mA+oYVz8JnDdKPmmNthzkAk/lN63sYPgevrguc72aZX/L9C6x09GYyxBgCX4NlvyGUHOKELlm5rXeR1kchuChJt4SSwyddZRXgvwMGvYo4QSlk3/zkHD8UHxwVJA6zjZZqP8v8kK8OWLnIZtLyCAJagYC4rTGW/9Pqj92N/c+LUaAj27movwbi19tk/whRCIE7Q9vyI6yvRpftAKVTdUjOW40X3h5OXsKCdmFcx0xlLJoSuQngnrJe7Kcjm4OMq9FlC7CMmScQANuNvjfP3PjGXDBaUQmbp296S5L4DrpbrHN1T87ZVEZVCzg1FF0Ft+dKrlLukI+/c9ENo+TvlTDbYFvuKPtQ9+l052rXrgKoWkDAFnvh0wTOmYn8R5f4k/jN/fZiCM1tQx9jQQ4ANhqG4hiL0qIFTGViG9DKB7GYzgubnpofgYRwO+DFjh0Zin2m4b/97EDkXkc+f6xYAPX0KK2I/7fUQuwzuwo/L3AkcjugPNixC8cHf0FyPjWlItmLxWw4Ou9YsQCr5fijMGoD/zpdRy95HRysyXA74MWOnscpO4j2y3HAVisw85hX5+AFBRSHt4ShfLFkIMXTqyKFc46xdzQM6XbAi702a7sy04J0+feReMFKp5q9esYLCqAZYw/k14E/xcLLsFElaornTuJB0svMuJINy8xkIYuL+xPAlWRceH6+HX7THJ0djLUom46zREu7tTkxwmf/FdOZ/sh6Q8qvEAiHpm4PJ4a/doJe0gH1t+aHRgCzOvBvJedEK5OFE5jpm4AGP2a8Dxe3gGJ/pAutug9Gp6he92CsSsWBaEcxGx0FHytmIpuqGkOpldqNYQK8cSoXvd+xLxXADw0kf6UkJNFtdo5MOgaLjiQOQHcn+A6h5NuL2s0qsC2LOM75PcF3yr5STuBSAcGG+meA14K/CI21HcS4LBT6tv0QAh8Dr5l93AhZzG5ZJ4VxAqdZUEl9z7WJ4aN+svMvwHHL21UKTd1mqvChH7/Za5xzXBBKrUcB0TQ+Ulgkfbi/H/YT5EptrGzsEK7tR1B7ln9BBwckYfMiuSqklSznIuoIIOM42MQO+QnduCoFCI0bpkzjCjddHPN/F+2Yu+sd9bKNpVwHhbS3LluK/0zgfwD0xYI5dXuzlQAAAABJRU5ErkJggg==');
-  }
-
-  div.callout-warning.callout-style-default .callout-title {
-    background-color: #fcefdc
-  }
-
-  div.callout-tip {
-    border-left-color: #02b875 !important;
-  }
-
-  div.callout-tip .callout-icon::before {
-    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAERlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAA6ABAAMAAAABAAEAAKACAAQAAAABAAAAIKADAAQAAAABAAAAIAAAAACshmLzAAADr0lEQVRYCe1XTWgTQRj9ZjZV8a9SPIkKgj8I1bMHsUWrqYLVg4Ue6v9BwZOxSYsIerFao7UiUryIqJcqgtpimhbBXoSCVxUFe9CTiogUrUp2Pt+3aUI2u5vdNh4dmMzOzHvvezuz8xNFM0mjnbXaNu1MvFWRXkXEyE6aYOYJpdW4IXuA4r0fo8qqSMDBU0v1HJUgVieAXxzCsdE/YJTdFcVIZQNMyhruOMJKXYFoLfIfIvVIMWdsrd+Rpd86ZmyzzjJmLStqRn0v8lzkb4rVIXvnpScOJuAn2ACC65FkPzEdEy4TPWRLJ2h7z4cArXzzaOdKlbOvKKX25Wl00jSnrwVxAg3o4dRxhO13RBSdNvH0xSARv3adTXbBdTf64IWO2vH0LT+cv4GR1DJt+DUItaQogeBX/chhbTBxEiZ6gftlDNXTrvT7co4ub5A6gp9HIcHvzTa46OS5fBeP87Qm0fQkr4FsYgVQ7Qg+ZayaDg9jhg1GkWj8RG6lkeSacrrHgDaxdoBiZPg+NXV/KifMuB6//JmYH4CntVEHy/keA6x4h4CU5oFy8GzrBS18cLJMXcljAKB6INjWsRcuZBWVaS3GDrqB7rdapVIeA+isQ57Eev9eCqzqOa81CY05VLd6SamW2wA2H3SiTbnbSxmzfp7WtKZkqy4mdyAlGx7ennghYf8voqp9cLSgKdqNfa6RdRsAAkPwRuJZNbpByn+RrJi1RXTwdi8RQF6ymDwGMAtZ6TVE+4uoKh+MYkcLsT0Hk8eAienbiGdjJHZTpmNjlbFJNKDVAp2fJlYju6IreQxQ08UJDNYdoLSl6AadO+fFuCQqVMB1NJwPm69T04Wv5WhfcWyfXQB+wXRs1pt+nCknRa0LVzSA/2B+a9+zQJadb7IyyV24YAxKp2Jqs3emZTuNnKxsah+uabKbMk7CbTgJx/zIgQYErIeTKRQ9yD9wxVof5YolPHqaWo7TD6tJlh7jQnK5z2n3+fGdggIOx2kaa2YI9QWarc5Ce1ipNWMKeSG4DysFF52KBmTNMmn5HqCFkwy34rDg05gDwgH3bBi+sgFhN/e8QvRn8kbamCOhgrZ9GJhFDgfcMHzFb6BAtjKpFhzTjwv1KCVuxHvCbsSiEz4CANnj84cwHdFXAbAOJ4LTSAawGWFn5tDhLMYz6nWeU2wJfIhmIJBefcd/A5FWQWGgrWzyORZ3Q6HuV+Jf0Bj+BTX69fm1zWgK7By1YTXchFDORywnfQ7GpzOo6S+qECrsx2ifVQAAAABJRU5ErkJggg==');
-  }
-
-  div.callout-tip.callout-style-default .callout-title {
-    background-color: #ccf1e3
-  }
-
-  div.callout-caution {
-    border-left-color: #fd7e14 !important;
-  }
-
-  div.callout-caution .callout-icon::before {
-    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAERlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAA6ABAAMAAAABAAEAAKACAAQAAAABAAAAIKADAAQAAAABAAAAIAAAAACshmLzAAACV0lEQVRYCdVWzWoUQRCuqp2ICBLJXgITZL1EfQDBW/bkzUMUD7klD+ATSHBEfAIfQO+iXsWDxJsHL96EHAwhgzlkg8nBg25XWb0zIb0zs9muYYWkoKeru+vn664fBqElyZNuyh167NXJ8Ut8McjbmEraKHkd7uAnAFku+VWdb3reSmRV8PKSLfZ0Gjn3a6Xlcq9YGb6tADjn+lUfTXtVmaZ1KwBIvFI11rRXlWlatwIAAv2asaa9mlB9wwygiDX26qaw1yYPzFXg2N1GgG0FMF8Oj+VIx7E/03lHx8UhvYyNZLN7BwSPgekXXLribw7w5/c8EF+DBK5idvDVYtEEwMeYefjjLAdEyQ3M9nfOkgnPTEkYU+sxMq0BxNR6jExrAI31H1rzvLEfRIdgcv1XEdj6QTQAS2wtstEALLG1yEZ3QhH6oDX7ExBSFEkFINXH98NTrme5IOaaA7kIfiu2L8A3qhH9zRbukdCqdsA98TdElyeMe5BI8Rs2xHRIsoTSSVFfCFCWGPn9XHb4cdobRIWABNf0add9jakDjQJpJ1bTXOJXnnRXHRf+dNL1ZV1MBRCXhMbaHqGI1JkKIL7+i8uffuP6wVQAzO7+qVEbF6NbS0LJureYcWXUUhH66nLR5rYmva+2tjRFtojkM2aD76HEGAD3tPtKM309FJg5j/K682ywcWJ3PASCcycH/22u+Bh7Aa0ehM2Fu4z0SAE81HF9RkB21c5bEn4Dzw+/qNOyXr3DCTQDMBOdhi4nAgiFDGCinIa2owCEChUwD8qzd03PG+qdW/4fDzjUMcE1ZpIAAAAASUVORK5CYII=');
-  }
-
-  div.callout-caution.callout-style-default .callout-title {
-    background-color: #ffe5d0
-  }
-
-  </style>
   <style type="text/css">
     .reveal div.sourceCode {
       margin: 0;
@@ -594,19 +396,19 @@
 <li>Charger les données en mémoire vive</li>
 </ol>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a></a>  path_fna <span class="ot">&lt;-</span> <span class="st">"C:/Users/Public/Documents/MiDAS_parquet/Vague 4/FNA/"</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a></a>  path_fna <span class="ot">&lt;-</span> <span class="st">"C:/Users/Public/Documents/MiDAS_parquet/Vague 4/FNA/"</span></span>
 <span id="cb1-2"><a></a>  </span>
 <span id="cb1-3"><a></a>  PJC <span class="ot">&lt;-</span> <span class="fu">read_parquet</span>(<span class="fu">paste0</span>(path_fna, <span class="st">"pjc.parquet"</span>), <span class="at">memory =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb1-4"><a></a>  ODD <span class="ot">&lt;-</span> <span class="fu">read_parquet</span>(<span class="fu">paste0</span>(path_fna, <span class="st">"odd.parquet"</span>), <span class="at">memory =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-4"><a></a>  ODD <span class="ot">&lt;-</span> <span class="fu">read_parquet</span>(<span class="fu">paste0</span>(path_fna, <span class="st">"odd.parquet"</span>), <span class="at">memory =</span> <span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <div class="fragment">
 <ol start="2" type="1">
 <li>Réaliser des opérations coûteuses en ressources</li>
 </ol>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a></a>jointure <span class="ot">&lt;-</span> PJC <span class="sc">%&gt;%</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a></a>jointure <span class="ot">&lt;-</span> PJC <span class="sc">%&gt;%</span></span>
 <span id="cb2-2"><a></a>  <span class="fu">rename</span>(<span class="at">KROD1 =</span> KROD3) <span class="sc">%&gt;%</span></span>
-<span id="cb2-3"><a></a>  <span class="fu">left_join</span>(ODD, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"id_midas"</span>, <span class="st">"KROD1"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb2-3"><a></a>  <span class="fu">left_join</span>(ODD, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"id_midas"</span>, <span class="st">"KROD1"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div>
 <div class="fragment">
@@ -895,7 +697,7 @@
 <div class="tab-content">
 <div id="tabset-3-1">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a></a><span class="fu">library</span>(sparklyr)</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a></a><span class="fu">library</span>(sparklyr)</span>
 <span id="cb3-2"><a></a><span class="fu">library</span>(dplyr)</span>
 <span id="cb3-3"><a></a><span class="fu">library</span>(dbplyr)</span>
 <span id="cb3-4"><a></a></span>
@@ -907,12 +709,12 @@
 <span id="cb3-10"><a></a>cont[<span class="st">"spark.yarn.queue"</span>] <span class="ot">&lt;-</span> <span class="st">"prod"</span></span>
 <span id="cb3-11"><a></a>conf[<span class="st">"spark.driver.maxResultSize"</span>] <span class="ot">&lt;-</span> <span class="dv">0</span></span>
 <span id="cb3-12"><a></a></span>
-<span id="cb3-13"><a></a>sc <span class="ot">&lt;-</span> <span class="fu">spark_connect</span>(<span class="at">master =</span> <span class="st">"yarn"</span>, <span class="at">config =</span> conf)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb3-13"><a></a>sc <span class="ot">&lt;-</span> <span class="fu">spark_connect</span>(<span class="at">master =</span> <span class="st">"yarn"</span>, <span class="at">config =</span> conf)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div>
 <div id="tabset-3-2">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a></a><span class="fu">library</span>(sparklyr)</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a></a><span class="fu">library</span>(sparklyr)</span>
 <span id="cb4-2"><a></a><span class="fu">library</span>(dplyr)</span>
 <span id="cb4-3"><a></a><span class="fu">library</span>(dbplyr)</span>
 <span id="cb4-4"><a></a></span>
@@ -924,7 +726,7 @@
 <span id="cb4-10"><a></a>cont[<span class="st">"spark.yarn.queue"</span>] <span class="ot">&lt;-</span> <span class="st">"prod"</span></span>
 <span id="cb4-11"><a></a>conf[<span class="st">"spark.driver.maxResultSize"</span>] <span class="ot">&lt;-</span> <span class="dv">0</span></span>
 <span id="cb4-12"><a></a></span>
-<span id="cb4-13"><a></a>sc <span class="ot">&lt;-</span> <span class="fu">spark_connect</span>(<span class="at">master =</span> <span class="st">"yarn"</span>, <span class="at">config =</span> conf)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb4-13"><a></a>sc <span class="ot">&lt;-</span> <span class="fu">spark_connect</span>(<span class="at">master =</span> <span class="st">"yarn"</span>, <span class="at">config =</span> conf)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div>
 </div>
@@ -973,14 +775,14 @@
 <h2>Chargement des données en spark</h2>
 <p><br></p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a></a><span class="do">### Depuis HDFS</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a></a><span class="do">### Depuis HDFS</span></span>
 <span id="cb5-2"><a></a>mmo_17_df_spark <span class="ot">&lt;-</span> <span class="fu">spark_read_parquet</span>(sc,</span>
 <span id="cb5-3"><a></a>                                  <span class="at">path =</span> <span class="st">"hdfs:///dataset/MiDAS_v4/mmo/mmo_2017.parquet"</span>,</span>
 <span id="cb5-4"><a></a>                                  <span class="at">memory =</span> <span class="cn">FALSE</span>)</span>
 <span id="cb5-5"><a></a></span>
 <span id="cb5-6"><a></a><span class="do">### Passer un dataframe R en spark</span></span>
 <span id="cb5-7"><a></a>mon_data_frame <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="fu">c</span>(<span class="st">"Anna"</span>, <span class="st">"Paul"</span>), <span class="fu">c</span>(<span class="dv">15</span>, <span class="dv">20</span>))</span>
-<span id="cb5-8"><a></a>mon_data_frame_spark <span class="ot">&lt;-</span> <span class="fu">copy_to</span>(sc, <span class="st">"mon_data_frame"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb5-8"><a></a>mon_data_frame_spark <span class="ot">&lt;-</span> <span class="fu">copy_to</span>(sc, <span class="st">"mon_data_frame"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>▶️ chargement en mémoire vive couteux en temps : par défaut, <code>memory = FALSE</code></p>
 <div class="callout callout-tip callout-titled callout-style-default">
@@ -1014,7 +816,7 @@
 <h2>Comment voir ma table ?</h2>
 <p>Récupérer une partie de la table : pas plus de 500 lignes</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a></a>une_partie_de_ma_table <span class="ot">&lt;-</span> ma_table <span class="sc">%&gt;%</span> </span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a></a>une_partie_de_ma_table <span class="ot">&lt;-</span> ma_table <span class="sc">%&gt;%</span> </span>
 <span id="cb6-2"><a></a>  <span class="fu">head</span>(<span class="dv">100</span>) <span class="sc">%&gt;%</span></span>
 <span id="cb6-3"><a></a>  <span class="fu">collect</span>()</span>
 <span id="cb6-4"><a></a></span>
@@ -1023,7 +825,7 @@
 <span id="cb6-7"><a></a>  <span class="fu">filter</span>(id_midas <span class="sc">%in%</span> ma_liste_id_midas) <span class="sc">%&gt;%</span></span>
 <span id="cb6-8"><a></a>  <span class="fu">collect</span>()</span>
 <span id="cb6-9"><a></a></span>
-<span id="cb6-10"><a></a><span class="co"># une_partie_de_ma_table est ici un data.frame R classique que vous pouvez ouvrir!</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb6-10"><a></a><span class="co"># une_partie_de_ma_table est ici un data.frame R classique que vous pouvez ouvrir!</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <div class="callout callout-tip callout-titled callout-style-default">
 <div class="callout-body">
@@ -1049,13 +851,13 @@
 <p>Ensuite, vous pouvez programmer avec <code>dplyr</code> !</p>
 <p><br></p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a></a>mmo_17_df_spark <span class="ot">&lt;-</span> mmo_17_df_spark <span class="sc">%&gt;%</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a></a>mmo_17_df_spark <span class="ot">&lt;-</span> mmo_17_df_spark <span class="sc">%&gt;%</span></span>
 <span id="cb7-2"><a></a>  </span>
 <span id="cb7-3"><a></a>  <span class="fu">rename</span>(<span class="at">debut_contrat =</span> DebutCTT) <span class="sc">%&gt;%</span></span>
 <span id="cb7-4"><a></a>  </span>
 <span id="cb7-5"><a></a>  <span class="fu">filter</span>(debut_contrat <span class="sc">&gt;=</span> <span class="fu">as.Date</span>(<span class="st">"2017-01-01"</span>) <span class="sc">&amp;</span> debut_contrat <span class="sc">&lt;</span> <span class="fu">as.Date</span>(<span class="st">"2017-02-01"</span>)) <span class="sc">%&gt;%</span></span>
 <span id="cb7-6"><a></a>  </span>
-<span id="cb7-7"><a></a>  <span class="fu">mutate</span>(<span class="at">mois_debut_contrat =</span> <span class="fu">substr</span>(debut_contrat,<span class="dv">6</span>,<span class="dv">7</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb7-7"><a></a>  <span class="fu">mutate</span>(<span class="at">mois_debut_contrat =</span> <span class="fu">substr</span>(debut_contrat,<span class="dv">6</span>,<span class="dv">7</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section id="la-lazy-evaluation" class="slide level2 smaller">
@@ -1066,20 +868,20 @@
 <p>Par exemple, le programme ci-dessous ne déclenche pas d’exécution :</p></li>
 </ul>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a></a>mmo_17_df_spark_mois <span class="ot">&lt;-</span> mmo_17_df_spark <span class="sc">%&gt;%</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a></a>mmo_17_df_spark_mois <span class="ot">&lt;-</span> mmo_17_df_spark <span class="sc">%&gt;%</span></span>
 <span id="cb8-2"><a></a>  <span class="fu">rename</span>(<span class="at">debut_contrat =</span> DebutCTT) <span class="sc">%&gt;%</span></span>
 <span id="cb8-3"><a></a>  <span class="fu">filter</span>(debut_contrat <span class="sc">&gt;=</span> <span class="fu">as.Date</span>(<span class="st">"2017-01-01"</span>) <span class="sc">&amp;</span> debut_contrat <span class="sc">&lt;</span> <span class="fu">as.Date</span>(<span class="st">"2017-06-01"</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb8-4"><a></a>  <span class="fu">mutate</span>(<span class="at">mois_debut_contrat =</span> <span class="fu">substr</span>(debut_contrat,<span class="dv">6</span>,<span class="dv">7</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb8-4"><a></a>  <span class="fu">mutate</span>(<span class="at">mois_debut_contrat =</span> <span class="fu">substr</span>(debut_contrat,<span class="dv">6</span>,<span class="dv">7</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <ul>
 <li><p><strong>les actions :</strong> forcent le calcul d’un résultat pour le récupérer et déclenchent l’exécution de toutes les transformations compilées jusqu’à l’appel de l’action.</p>
 <p>Par exemple, le programme ci-dessous déclenche le calcul de toute la cellule précédente :</p></li>
 </ul>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a></a>nb_debut_contrat_fev_17 <span class="ot">&lt;-</span> mmo_17_df_spark_mois <span class="sc">%&gt;%</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a></a>nb_debut_contrat_fev_17 <span class="ot">&lt;-</span> mmo_17_df_spark_mois <span class="sc">%&gt;%</span></span>
 <span id="cb9-2"><a></a>  <span class="fu">group_by</span>(mois_debut_contrat) <span class="sc">%&gt;%</span></span>
 <span id="cb9-3"><a></a>  <span class="fu">summarise</span>(<span class="at">nb_contrats =</span> <span class="fu">n</span>()) <span class="sc">%&gt;%</span></span>
-<span id="cb9-4"><a></a>  <span class="fu">print</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb9-4"><a></a>  <span class="fu">print</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section id="la-lazy-evaluation-un-gain-de-temps-considérable" class="slide level2">
@@ -1222,31 +1024,35 @@
 <div id="tabset-4-1">
 <p>Les fonctions de <code>lubridate()</code>ne sont pas adaptées au <code>spark_data_frames</code>.</p>
 <ul>
-<li><p>Convertir une chaîne de caractère de la forme AAAA-MM-DD en Date</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a></a>date_1 <span class="ot">&lt;-</span> <span class="fu">as.Date</span>(<span class="st">"2024-05-26"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div></li>
-<li><p>Calculer une durée entre deux dates</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a></a>PJC_spark <span class="ot">&lt;-</span> <span class="fu">spark_read_parquet</span>(sc,</span>
-<span id="cb11-2"><a></a>                                <span class="at">path =</span> <span class="st">"hdfs:///dataset/MiDAS_v4/pjc.parquet"</span>,</span>
-<span id="cb11-3"><a></a>                                <span class="at">memory =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb11-4"><a></a></span>
-<span id="cb11-5"><a></a>duree_pjc_df <span class="ot">&lt;-</span> PJC_spark <span class="sc">%&gt;%</span></span>
-<span id="cb11-6"><a></a>  <span class="fu">rename</span>(<span class="at">date_fin_pjc =</span> <span class="fu">as.Date</span>(KDFPJ),</span>
-<span id="cb11-7"><a></a>         <span class="at">date_deb_pjc =</span> <span class="fu">as.Date</span>(KDDPJ)) <span class="sc">%&gt;%</span></span>
-<span id="cb11-8"><a></a>  <span class="fu">mutate</span>(<span class="at">duree_pjc =</span> <span class="fu">datediff</span>(date_fin_pjc, date_deb_pjc) <span class="sc">+</span> <span class="dv">1</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb11-9"><a></a>  <span class="fu">head</span>(<span class="dv">5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div></li>
-<li><p>Ajouter ou soustraire des jours ou des mois à une date</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a></a>duree_pjc_bis_df <span class="ot">&lt;-</span> duree_pjc_df <span class="sc">%&gt;%</span></span>
-<span id="cb12-2"><a></a>  <span class="fu">mutate</span>(<span class="at">duree_pjc_plus_5 =</span> <span class="fu">date_add</span>(duree_pjc, <span class="fu">int</span>(<span class="dv">5</span>)),</span>
-<span id="cb12-3"><a></a>         <span class="at">duree_pjc_moins_5 =</span> <span class="fu">date_sub</span>(duree_pjc, <span class="fu">int</span>(<span class="dv">5</span>)),</span>
-<span id="cb12-4"><a></a>         <span class="at">duree_pjc_plus_1_mois =</span> <span class="fu">add_months</span>(duree_pjc, <span class="fu">int</span>(<span class="dv">1</span>))) <span class="sc">%&gt;%</span></span>
-<span id="cb12-5"><a></a>  <span class="fu">head</span>(<span class="dv">5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div></li>
+<li>Convertir une chaîne de caractère de la forme AAAA-MM-DD en Date</li>
 </ul>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a></a>    date_1 <span class="ot">&lt;-</span> <span class="fu">as.Date</span>(<span class="st">"2024-05-26"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<ul>
+<li>Calculer une durée entre deux dates</li>
+</ul>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a></a>    PJC_spark <span class="ot">&lt;-</span> <span class="fu">spark_read_parquet</span>(sc,</span>
+<span id="cb11-2"><a></a>                                    <span class="at">path =</span> <span class="st">"hdfs:///dataset/MiDAS_v4/pjc.parquet"</span>,</span>
+<span id="cb11-3"><a></a>                                    <span class="at">memory =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb11-4"><a></a></span>
+<span id="cb11-5"><a></a>    duree_pjc_df <span class="ot">&lt;-</span> PJC_spark <span class="sc">%&gt;%</span></span>
+<span id="cb11-6"><a></a>      <span class="fu">rename</span>(<span class="at">date_fin_pjc =</span> <span class="fu">as.Date</span>(KDFPJ),</span>
+<span id="cb11-7"><a></a>             <span class="at">date_deb_pjc =</span> <span class="fu">as.Date</span>(KDDPJ)) <span class="sc">%&gt;%</span></span>
+<span id="cb11-8"><a></a>      <span class="fu">mutate</span>(<span class="at">duree_pjc =</span> <span class="fu">datediff</span>(date_fin_pjc, date_deb_pjc) <span class="sc">+</span> <span class="dv">1</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb11-9"><a></a>      <span class="fu">head</span>(<span class="dv">5</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<ul>
+<li>Ajouter ou soustraire des jours ou des mois à une date</li>
+</ul>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a></a>    duree_pjc_bis_df <span class="ot">&lt;-</span> duree_pjc_df <span class="sc">%&gt;%</span></span>
+<span id="cb12-2"><a></a>      <span class="fu">mutate</span>(<span class="at">duree_pjc_plus_5 =</span> <span class="fu">date_add</span>(duree_pjc, <span class="fu">int</span>(<span class="dv">5</span>)),</span>
+<span id="cb12-3"><a></a>             <span class="at">duree_pjc_moins_5 =</span> <span class="fu">date_sub</span>(duree_pjc, <span class="fu">int</span>(<span class="dv">5</span>)),</span>
+<span id="cb12-4"><a></a>             <span class="at">duree_pjc_plus_1_mois =</span> <span class="fu">add_months</span>(duree_pjc, <span class="fu">int</span>(<span class="dv">1</span>))) <span class="sc">%&gt;%</span></span>
+<span id="cb12-5"><a></a>      <span class="fu">head</span>(<span class="dv">5</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
 <div class="callout callout-note callout-titled callout-style-default">
 <div class="callout-body">
 <div class="callout-title">
@@ -1276,24 +1082,26 @@
 </div>
 <div id="tabset-4-2">
 <ul>
-<li><p>Tri dans un groupe pour effectuer un calcul séquentiel</p>
+<li>Tri dans un groupe pour effectuer un calcul séquentiel</li>
+</ul>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a></a>ODD_spark <span class="ot">&lt;-</span> <span class="fu">spark_read_parquet</span>(sc,</span>
-<span id="cb13-2"><a></a>                                <span class="at">path =</span> <span class="st">"hdfs:///dataset/MiDAS_v4/odd.parquet"</span>,</span>
-<span id="cb13-3"><a></a>                                <span class="at">memory =</span> <span class="cn">FALSE</span>)</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a></a>    ODD_spark <span class="ot">&lt;-</span> <span class="fu">spark_read_parquet</span>(sc,</span>
+<span id="cb13-2"><a></a>                                    <span class="at">path =</span> <span class="st">"hdfs:///dataset/MiDAS_v4/odd.parquet"</span>,</span>
+<span id="cb13-3"><a></a>                                    <span class="at">memory =</span> <span class="cn">FALSE</span>)</span>
 <span id="cb13-4"><a></a></span>
-<span id="cb13-5"><a></a>ODD_premier <span class="ot">&lt;-</span> ODD_spark <span class="sc">%&gt;%</span></span>
-<span id="cb13-6"><a></a>  <span class="fu">group_by</span>(id_midas) <span class="sc">%&gt;%</span></span>
-<span id="cb13-7"><a></a>  <span class="fu">window_order</span>(id_midas, KDPOD) <span class="sc">%&gt;%</span></span>
-<span id="cb13-8"><a></a>  <span class="fu">mutate</span>(<span class="at">date_premier_droit =</span> <span class="fu">first</span>(KDPOD)) <span class="sc">%&gt;%</span></span>
-<span id="cb13-9"><a></a>  <span class="fu">ungroup</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb13-10"><a></a>  <span class="fu">distinct</span>(id_midas, KROD3, date_premier_droit) <span class="sc">%&gt;%</span></span>
-<span id="cb13-11"><a></a>  <span class="fu">head</span>(<span class="dv">5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div></li>
+<span id="cb13-5"><a></a>    ODD_premier <span class="ot">&lt;-</span> ODD_spark <span class="sc">%&gt;%</span></span>
+<span id="cb13-6"><a></a>      <span class="fu">group_by</span>(id_midas) <span class="sc">%&gt;%</span></span>
+<span id="cb13-7"><a></a>      <span class="fu">window_order</span>(id_midas, KDPOD) <span class="sc">%&gt;%</span></span>
+<span id="cb13-8"><a></a>      <span class="fu">mutate</span>(<span class="at">date_premier_droit =</span> <span class="fu">first</span>(KDPOD)) <span class="sc">%&gt;%</span></span>
+<span id="cb13-9"><a></a>      <span class="fu">ungroup</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb13-10"><a></a>      <span class="fu">distinct</span>(id_midas, KROD3, date_premier_droit) <span class="sc">%&gt;%</span></span>
+<span id="cb13-11"><a></a>      <span class="fu">head</span>(<span class="dv">5</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<ul>
 <li><p>Tri pour une sortie : <code>sdf_sort()</code> , <code>arrange()</code> ne fonctionne pas</p></li>
 <li><p>Concaténer les lignes (ou les colonnes <code>sdf_bind_cols()</code>)</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a></a>ODD_1 <span class="ot">&lt;-</span> ODD_spark <span class="sc">%&gt;%</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a></a>ODD_1 <span class="ot">&lt;-</span> ODD_spark <span class="sc">%&gt;%</span></span>
 <span id="cb14-2"><a></a>  <span class="fu">filter</span>(KDPOD <span class="sc">&lt;=</span> <span class="fu">as.Date</span>(<span class="st">"2017-12-31"</span>)) <span class="sc">%&gt;%</span></span>
 <span id="cb14-3"><a></a>  <span class="fu">mutate</span>(<span class="at">groupe =</span> <span class="st">"temoins"</span>)</span>
 <span id="cb14-4"><a></a></span>
@@ -1301,29 +1109,31 @@
 <span id="cb14-6"><a></a>  <span class="fu">filter</span>(KDPOD <span class="sc">&gt;=</span> <span class="fu">as.Date</span>(<span class="st">"2021-12-31"</span>)) <span class="sc">%&gt;%</span></span>
 <span id="cb14-7"><a></a>  <span class="fu">mutate</span>(<span class="at">groupe =</span> <span class="st">"traites"</span>)</span>
 <span id="cb14-8"><a></a></span>
-<span id="cb14-9"><a></a>ODD_evaluation <span class="ot">&lt;-</span> <span class="fu">sdf_bind_rows</span>(ODD_1, ODD_2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb14-9"><a></a>ODD_evaluation <span class="ot">&lt;-</span> <span class="fu">sdf_bind_rows</span>(ODD_1, ODD_2)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div></li>
-<li><p>Dédoublonner une table</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a></a>droits_dans_PJC <span class="ot">&lt;-</span> PJC_spark <span class="sc">%&gt;%</span></span>
-<span id="cb15-2"><a></a>  <span class="fu">sdf_distinct</span>(id_midas, KROD3)</span>
-<span id="cb15-3"><a></a></span>
-<span id="cb15-4"><a></a><span class="fu">print</span>(<span class="fu">head</span>(droits_dans_PJC, <span class="dv">5</span>))</span>
-<span id="cb15-5"><a></a></span>
-<span id="cb15-6"><a></a>PJC_dedoublonnee <span class="ot">&lt;-</span> PJC_spark <span class="sc">%&gt;%</span></span>
-<span id="cb15-7"><a></a>  <span class="fu">sdf_drop_duplicates</span>()</span>
-<span id="cb15-8"><a></a></span>
-<span id="cb15-9"><a></a><span class="fu">print</span>(<span class="fu">head</span>(PJC_dedoublonnee, <span class="dv">5</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div></li>
-<li><p>Pivot : les fonctions du packag <code>tidyr</code> ne fonctionnent pas sur données spark</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a></a>ODD_sjr_moyen <span class="ot">&lt;-</span> ODD_spark <span class="sc">%&gt;%</span></span>
-<span id="cb16-2"><a></a>  <span class="fu">mutate</span>(<span class="at">groupe =</span> <span class="fu">ifelse</span>(KDPOD <span class="sc">&lt;=</span> <span class="fu">as.Date</span>(<span class="st">"2020-12-31"</span>), <span class="st">"controles"</span>, <span class="st">"traites"</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb16-3"><a></a>  <span class="fu">sdf_pivot</span>(groupe <span class="sc">~</span> KCRGC,</span>
-<span id="cb16-4"><a></a>    <span class="at">fun.aggregate =</span> <span class="fu">list</span>(<span class="at">KQCSJP =</span> <span class="st">"mean"</span>)</span>
-<span id="cb16-5"><a></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div></li>
+<li><p>Dédoublonner une table</p></li>
 </ul>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a></a>    droits_dans_PJC <span class="ot">&lt;-</span> PJC_spark <span class="sc">%&gt;%</span></span>
+<span id="cb15-2"><a></a>      <span class="fu">sdf_distinct</span>(id_midas, KROD3)</span>
+<span id="cb15-3"><a></a></span>
+<span id="cb15-4"><a></a>    <span class="fu">print</span>(<span class="fu">head</span>(droits_dans_PJC, <span class="dv">5</span>))</span>
+<span id="cb15-5"><a></a></span>
+<span id="cb15-6"><a></a>    PJC_dedoublonnee <span class="ot">&lt;-</span> PJC_spark <span class="sc">%&gt;%</span></span>
+<span id="cb15-7"><a></a>      <span class="fu">sdf_drop_duplicates</span>()</span>
+<span id="cb15-8"><a></a></span>
+<span id="cb15-9"><a></a>    <span class="fu">print</span>(<span class="fu">head</span>(PJC_dedoublonnee, <span class="dv">5</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<ul>
+<li>Pivot : les fonctions du packag <code>tidyr</code> ne fonctionnent pas sur données spark</li>
+</ul>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a></a>    ODD_sjr_moyen <span class="ot">&lt;-</span> ODD_spark <span class="sc">%&gt;%</span></span>
+<span id="cb16-2"><a></a>      <span class="fu">mutate</span>(<span class="at">groupe =</span> <span class="fu">ifelse</span>(KDPOD <span class="sc">&lt;=</span> <span class="fu">as.Date</span>(<span class="st">"2020-12-31"</span>), <span class="st">"controles"</span>, <span class="st">"traites"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb16-3"><a></a>      <span class="fu">sdf_pivot</span>(groupe <span class="sc">~</span> KCRGC,</span>
+<span id="cb16-4"><a></a>        <span class="at">fun.aggregate =</span> <span class="fu">list</span>(<span class="at">KQCSJP =</span> <span class="st">"mean"</span>)</span>
+<span id="cb16-5"><a></a>      )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
 </div>
 <div id="tabset-4-3">
 <ul>
@@ -1342,20 +1152,20 @@
 <li>Vérifier le nombre de lignes sans collecter</li>
 </ol>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a></a>ma_table <span class="sc">%&gt;%</span> </span>
-<span id="cb17-2"><a></a>  <span class="fu">sdf_nrow</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a></a>ma_table <span class="sc">%&gt;%</span> </span>
+<span id="cb17-2"><a></a>  <span class="fu">sdf_nrow</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <div class="fragment">
 <ol start="2" type="1">
 <li>Vérifier la présence de doublons</li>
 </ol>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a></a>nb_doublons <span class="ot">&lt;-</span> ma_table <span class="sc">%&gt;%</span> </span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a></a>nb_doublons <span class="ot">&lt;-</span> ma_table <span class="sc">%&gt;%</span> </span>
 <span id="cb18-2"><a></a>  <span class="fu">group_by</span>(id_midas) <span class="sc">%&gt;%</span></span>
 <span id="cb18-3"><a></a>  <span class="fu">summarise</span>(<span class="at">nb_ligne_ind =</span> <span class="fu">n</span>()) <span class="sc">%&gt;%</span></span>
 <span id="cb18-4"><a></a>  <span class="fu">ungroup</span>() <span class="sc">%&gt;%</span></span>
 <span id="cb18-5"><a></a>  <span class="fu">filter</span>(nb_ligne_ind <span class="sc">&gt;</span> <span class="dv">1</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb18-6"><a></a>  <span class="fu">sdf_nrow</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb18-6"><a></a>  <span class="fu">sdf_nrow</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div>
 <div class="fragment">
@@ -1363,7 +1173,7 @@
 <li>Récupérer une partie de la table : pas plus de 500 lignes</li>
 </ol>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a></a>une_partie_de_ma_table <span class="ot">&lt;-</span> ma_table <span class="sc">%&gt;%</span> </span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a></a>une_partie_de_ma_table <span class="ot">&lt;-</span> ma_table <span class="sc">%&gt;%</span> </span>
 <span id="cb19-2"><a></a>  <span class="fu">head</span>(<span class="dv">100</span>) <span class="sc">%&gt;%</span></span>
 <span id="cb19-3"><a></a>  <span class="fu">collect</span>()</span>
 <span id="cb19-4"><a></a></span>
@@ -1372,7 +1182,7 @@
 <span id="cb19-7"><a></a>  <span class="fu">filter</span>(id_midas <span class="sc">%in%</span> ma_liste_id_midas) <span class="sc">%&gt;%</span></span>
 <span id="cb19-8"><a></a>  <span class="fu">collect</span>()</span>
 <span id="cb19-9"><a></a></span>
-<span id="cb19-10"><a></a><span class="co"># une_partie_de_ma_table est ici un data.frame R classique que vous pouvez ouvrir!</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb19-10"><a></a><span class="co"># une_partie_de_ma_table est ici un data.frame R classique que vous pouvez ouvrir!</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div>
 </section>
@@ -1382,7 +1192,7 @@
 <p>Pourquoi ❓ Pour des données qui ne peuvent pas être collectées en mémoire vive</p>
 <p>Export des spark data frames directement sous HDFS : à aucun moment on n’ouvre la table : on peut traiter des données beaucoup plus volumnieuses que la mémoire RAM !</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a></a>ma_table_spark <span class="ot">&lt;-</span> MMO <span class="sc">%&gt;%</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a></a>ma_table_spark <span class="ot">&lt;-</span> MMO <span class="sc">%&gt;%</span></span>
 <span id="cb20-2"><a></a>  </span>
 <span id="cb20-3"><a></a>  <span class="fu">right_join</span>(mon_champ_individuel, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"id_midas"</span>)) <span class="sc">%&gt;%</span></span>
 <span id="cb20-4"><a></a>  </span>
@@ -1390,7 +1200,7 @@
 <span id="cb20-6"><a></a>  </span>
 <span id="cb20-7"><a></a>  <span class="fu">mutate</span>(<span class="at">duree_ctt =</span> <span class="fu">DATEDIFF</span>(FinCTT, DebutCTT) <span class="sc">+</span> <span class="dv">1</span>)</span>
 <span id="cb20-8"><a></a></span>
-<span id="cb20-9"><a></a><span class="fu">spark_write_parquet</span>(ma_table_spark, <span class="st">"hdfs:///resultats/ma_table.parquet"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb20-9"><a></a><span class="fu">spark_write_parquet</span>(ma_table_spark, <span class="st">"hdfs:///resultats/ma_table.parquet"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>Possibilité de récupérer ce fichier sur la bulle MiDARES = en local.</p>
 <div class="callout callout-warning callout-titled callout-style-default">
@@ -1428,12 +1238,12 @@
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a></a>ma_table <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="fu">c</span>(<span class="st">"Anne"</span>, <span class="st">"Paul"</span>), <span class="fu">c</span>(<span class="dv">25</span>,<span class="dv">30</span>))</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a></a>ma_table <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="fu">c</span>(<span class="st">"Anne"</span>, <span class="st">"Paul"</span>), <span class="fu">c</span>(<span class="dv">25</span>,<span class="dv">30</span>))</span>
 <span id="cb21-2"><a></a></span>
 <span id="cb21-3"><a></a>ma_table_spark <span class="ot">&lt;-</span> <span class="fu">copy_to</span>(sc, ma_table) <span class="sc">%&gt;%</span></span>
 <span id="cb21-4"><a></a>  <span class="fu">sdf_coalesce</span>(<span class="at">partitions =</span> <span class="dv">1</span>)</span>
 <span id="cb21-5"><a></a></span>
-<span id="cb21-6"><a></a><span class="fu">spark_write_parquet</span>(ma_table_spark, <span class="st">"hdfs:///resultats/ma_table.parquet"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb21-6"><a></a><span class="fu">spark_write_parquet</span>(ma_table_spark, <span class="st">"hdfs:///resultats/ma_table.parquet"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section id="fermer-sa-session" class="slide level2 smaller">
@@ -1611,7 +1421,7 @@
 <ul>
 <li><p>Apache Spark : <strong>librairie open source</strong> développée dans le langage <code>scala</code></p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a></a>val TopHorrorsIGN2022 <span class="ot">=</span> <span class="fu">Seq</span>(</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a></a>val TopHorrorsIGN2022 <span class="ot">=</span> <span class="fu">Seq</span>(</span>
 <span id="cb22-2"><a></a>  (<span class="dv">9</span>, <span class="st">"Pearl"</span>),</span>
 <span id="cb22-3"><a></a>  (<span class="dv">6</span>, <span class="st">"The Sadness"</span>),</span>
 <span id="cb22-4"><a></a>  (<span class="dv">6</span>, <span class="st">"Offseason"</span>),</span>
@@ -1631,7 +1441,7 @@
 <span id="cb22-18"><a></a>  <span class="fu">.join</span>(TopHorrorsTheAVClub2022, query, <span class="st">"outer"</span>)</span>
 <span id="cb22-19"><a></a>  <span class="fu">.select</span>(cols<span class="sc">:</span> _<span class="sc">*</span>)</span>
 <span id="cb22-20"><a></a></span>
-<span id="cb22-21"><a></a><span class="fu">outerJoin.show</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb22-21"><a></a><span class="fu">outerJoin.show</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div></li>
 <li><p><code>scala</code> adapté pour maîtriser toutes les fonctionnalités de <code>spark</code> et optimiser au maximum les traitements en <code>spark</code></p></li>
 <li><p><code>spark</code> est <strong>compatible avec les langages</strong> <code>scala</code>, <code>R</code>, <code>python</code>, <code>java</code>, et peut interpréter des commandes <strong>SQL.</strong></p></li>
@@ -1669,17 +1479,17 @@
 <h2>Catalyst optimise le code pour nous</h2>
 <p>Par exemple si j’écris le programme :</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a></a>non_optimal <span class="ot">&lt;-</span> table_1 <span class="sc">%&gt;%</span>   </span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a></a>non_optimal <span class="ot">&lt;-</span> table_1 <span class="sc">%&gt;%</span>   </span>
 <span id="cb23-2"><a></a>    <span class="fu">mutate</span>(<span class="at">duree_contrat =</span> <span class="fu">DATEDIFF</span>(fin_contrat, debut_contrat)) <span class="sc">%&gt;%</span>   </span>
-<span id="cb23-3"><a></a>    <span class="fu">filter</span>(debut_contrat <span class="sc">&gt;=</span> <span class="fu">as.Date</span>(<span class="st">"2023-01-01"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb23-3"><a></a>    <span class="fu">filter</span>(debut_contrat <span class="sc">&gt;=</span> <span class="fu">as.Date</span>(<span class="st">"2023-01-01"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p><br></p>
 <p>Catalyst réécrit :</p>
 <p><br></p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a></a>optimal <span class="ot">&lt;-</span> table_1 <span class="sc">%&gt;%</span>   </span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a></a>optimal <span class="ot">&lt;-</span> table_1 <span class="sc">%&gt;%</span>   </span>
 <span id="cb24-2"><a></a>    <span class="fu">filter</span>(debut_contrat <span class="sc">&gt;=</span> <span class="fu">as.Date</span>(<span class="st">"2023-01-01"</span>)) <span class="sc">%&gt;%</span>   </span>
-<span id="cb24-3"><a></a>    <span class="fu">mutate</span>(<span class="at">duree_contrat =</span> <span class="fu">DATEDIFF</span>(fin_contrat, debut_contrat))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb24-3"><a></a>    <span class="fu">mutate</span>(<span class="at">duree_contrat =</span> <span class="fu">DATEDIFF</span>(fin_contrat, debut_contrat))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>Cette optimisation est réalisée sur toutes les transformations compilée avant qu’une action déclenche l’exécution.</p>
 </section>
@@ -1702,35 +1512,46 @@
 <section id="catalyst-optimise-le-code-pour-nous-laissons-le-travailler-1" class="slide level2">
 <h2>Catalyst optimise le code pour nous : laissons-le travailler !</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a></a>non_optimal <span class="ot">&lt;-</span> table_1 <span class="sc">%&gt;%</span> </span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a></a>non_optimal <span class="ot">&lt;-</span> table_1 <span class="sc">%&gt;%</span> </span>
 <span id="cb25-2"><a></a>    <span class="fu">collect</span>() <span class="sc">%&gt;%</span></span>
 <span id="cb25-3"><a></a>    <span class="fu">mutate</span>(<span class="at">duree_contrat =</span> <span class="fu">DATEDIFF</span>(fin_contrat, debut_contrat)) <span class="sc">%&gt;%</span>   </span>
-<span id="cb25-4"><a></a>    <span class="fu">filter</span>(debut_contrat <span class="sc">&gt;=</span> <span class="fu">as.Date</span>(<span class="st">"2023-01-01"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb25-4"><a></a>    <span class="fu">filter</span>(debut_contrat <span class="sc">&gt;=</span> <span class="fu">as.Date</span>(<span class="st">"2023-01-01"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <div class="fragment">
 <p>versus</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a></a>optimal <span class="ot">&lt;-</span> table_1 <span class="sc">%&gt;%</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a></a>optimal <span class="ot">&lt;-</span> table_1 <span class="sc">%&gt;%</span></span>
 <span id="cb26-2"><a></a>    <span class="fu">mutate</span>(<span class="at">duree_contrat =</span> <span class="fu">DATEDIFF</span>(fin_contrat, debut_contrat)) <span class="sc">%&gt;%</span>   </span>
 <span id="cb26-3"><a></a>    <span class="fu">filter</span>(debut_contrat <span class="sc">&gt;=</span> <span class="fu">as.Date</span>(<span class="st">"2023-01-01"</span>)) <span class="sc">%&gt;%</span></span>
 <span id="cb26-4"><a></a>    <span class="fu">head</span>(<span class="dv">5</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb26-5"><a></a>    <span class="fu">collect</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb26-5"><a></a>    <span class="fu">collect</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div>
 </section>
-<section id="jointures-un-cas-particulier" class="slide level2">
-<h2>Jointures : un cas particulier</h2>
-<p>Pour effectuer ce type de jointure avec deux tables de volumétries différentes : A est petite, B est très volumineuse</p>
-
-<img data-src="images/join.png" class="r-stretch"><p>Solution rapide :</p>
+<section id="la-longueur-du-plan-logique" class="slide level2">
+<h2>La longueur du plan logique</h2>
+<p>Fournir un plan logique très long sans déclencher d’action peut créer une erreur en spark : spark “refuse” d’optimiser un plan si long.</p>
+<p>La bonne pratique consiste à “cacher” des résultats intermédiaires, pour déclencher l’exécution régulièrement et conserver les résultats en mémoire, tout en nettoyant la mémoire des résultat intermédiaires précédents :</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a></a>table_finale <span class="ot">&lt;-</span> table_volumineuse_comme_PJC <span class="sc">%&gt;%</span></span>
-<span id="cb27-2"><a></a>  <span class="fu">right_join</span>(petite_table_mon_champ)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<p>Solution lente :</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a></a>table_finale <span class="ot">&lt;-</span> petite_table_mon_champ <span class="sc">%&gt;%</span></span>
-<span id="cb28-2"><a></a>  <span class="fu">left_join</span>(table_volumineuse_comme_PJC)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a></a>table_1 <span class="ot">&lt;-</span> mon_champ <span class="sc">%&gt;%</span></span>
+<span id="cb27-2"><a></a>  <span class="fu">left_join</span>(table_2) <span class="sc">%&gt;%</span></span>
+<span id="cb27-3"><a></a>  <span class="fu">mutate</span>(<span class="at">variable_1 =</span> indicatrice_1 <span class="sc">+</span> indicatrice_2,</span>
+<span id="cb27-4"><a></a>         <span class="at">regroupement_variable_2 =</span> <span class="fu">case_when</span>(variable_2 <span class="sc">%in%</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>) <span class="sc">~</span> <span class="st">"A"</span>,</span>
+<span id="cb27-5"><a></a>                                             variable_2 <span class="sc">%in%</span> <span class="fu">c</span>(<span class="dv">5</span>,<span class="dv">8</span>,<span class="dv">9</span>) <span class="sc">~</span> <span class="st">"B"</span>,</span>
+<span id="cb27-6"><a></a>                                             <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">"C"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb27-7"><a></a>  <span class="fu">left_join</span>(table_3) <span class="sc">%&gt;%</span></span>
+<span id="cb27-8"><a></a>  <span class="fu">sdf_register</span>(<span class="st">"table_1"</span>)</span>
+<span id="cb27-9"><a></a></span>
+<span id="cb27-10"><a></a><span class="fu">tbl_cache</span>(sc, <span class="st">"table_1"</span>)</span>
+<span id="cb27-11"><a></a></span>
+<span id="cb27-12"><a></a>table_4 <span class="ot">&lt;-</span> table_1 <span class="sc">%&gt;%</span></span>
+<span id="cb27-13"><a></a>  <span class="fu">left_join</span>(table_5) <span class="sc">%&gt;%</span></span>
+<span id="cb27-14"><a></a>  <span class="fu">mutate</span>(<span class="at">variable_y =</span> <span class="fu">ifelse</span>(variable_x <span class="sc">&gt;</span> <span class="dv">50</span>, <span class="dv">1</span>, <span class="dv">0</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb27-15"><a></a>  <span class="fu">sdf_register</span>(<span class="st">"table_4"</span>)</span>
+<span id="cb27-16"><a></a></span>
+<span id="cb27-17"><a></a><span class="fu">tbl_cache</span>(sc, <span class="st">"table_4"</span>)</span>
+<span id="cb27-18"><a></a></span>
+<span id="cb27-19"><a></a><span class="fu">tbl_uncache</span>(sc, <span class="st">"table_1"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section id="le-rôle-du-cluster-manager" class="slide level2 smaller">
@@ -1799,6 +1620,195 @@
 <h2>Le stockage distribué avec HDFS</h2>
 
 <img data-src="images/stockage_distribue.drawio.png" class="quarto-figure quarto-figure-center r-stretch"></section>
+<section id="calcul-distribué-calcul-vectoriel" class="slide level2 smaller">
+<h2>Calcul distribué, calcul vectoriel</h2>
+<p><br></p>
+<p>Les opérations les plus coûteuses en spark sont :</p>
+<ul>
+<li><p>les opérations par <strong>groupe de lignes</strong>, qui impliquent des <strong>shuffles</strong>, ou échanges de données entre workers via le réseau</p></li>
+<li><p>les opérations d’écriture sur disque avec <code>spark_write_parquet()</code></p></li>
+<li><p>les opérations 🛑<strong>non vectorisées</strong>🛑, qui entraînent des shuffles lourds et inutiles : boucles for, jointures volumineuses…</p></li>
+</ul>
+<p><br></p>
+<p>Les données MiDAS sont structurées de manière proche d’une <strong>base de données relationnelles :</strong> leur traitement nécessite des jointures. Une partie des données sont <strong>mensuelles</strong> : cette structure peut inciter à programmer en boucle for sur le mois, ce qui est long et inefficient.</p>
+</section>
+<section id="calcul-distribué-calcul-vectoriel-boucles-for" class="slide level2">
+<h2>Calcul distribué, calcul vectoriel : boucles for</h2>
+<p><br></p>
+<p>Cas d’usage : je veux repérer si un groupe d’individus est au RSA un mois, deux mois, trois mois etc. après la sortie de l’assurance-chômage</p>
+<p>J’utilise :</p>
+<ul>
+<li><p>le FNA, dont j’extraie une table individu avec le mois de sortie de l’assurance-chômage, table <code>sorties</code></p></li>
+<li><p>les tables mensuelles de la CNAF <code>cnaf_prestations_mois_m</code></p></li>
+</ul>
+</section>
+<section id="calcul-distribué-calcul-vectoriel-boucles-for-1" class="slide level2 smaller scrollable">
+<h2>Calcul distribué, calcul vectoriel : boucles for</h2>
+<div class="panel-tabset">
+<ul id="tabset-5" class="panel-tabset-tabby"><li><a data-tabby-default="" href="#tabset-5-1">Solution 1</a></li><li><a href="#tabset-5-2">Solution 2</a></li><li><a href="#tabset-5-3">Solution 3</a></li></ul>
+<div class="tab-content">
+<div id="tabset-5-1">
+<p>Lance 12 X tous les mois de sortie jobs spark, beaucoup de shuffles</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb28-2"><a></a><span class="fu">library</span>(sparklyr)</span>
+<span id="cb28-3"><a></a></span>
+<span id="cb28-4"><a></a>res_all <span class="ot">&lt;-</span> <span class="cn">NULL</span></span>
+<span id="cb28-5"><a></a></span>
+<span id="cb28-6"><a></a><span class="cf">for</span> (mois <span class="cf">in</span> mois_sortie_vec) { <span class="co"># 1ère boucle sur les mois de sorties</span></span>
+<span id="cb28-7"><a></a>  <span class="co"># Sous-ensemble des sortants de ce mois</span></span>
+<span id="cb28-8"><a></a>  sorties_mois <span class="ot">&lt;-</span> sorties <span class="sc">%&gt;%</span></span>
+<span id="cb28-9"><a></a>    <span class="fu">filter</span>(mois_sortie <span class="sc">==</span> <span class="sc">!!</span>mois) <span class="sc">%&gt;%</span></span>
+<span id="cb28-10"><a></a>    <span class="fu">select</span>(id, mois_sortie)</span>
+<span id="cb28-11"><a></a></span>
+<span id="cb28-12"><a></a>  <span class="cf">for</span> (h <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">12</span>) { <span class="co"># 2ème boucle sur les 12 mois d'horizon</span></span>
+<span id="cb28-13"><a></a>    </span>
+<span id="cb28-14"><a></a>    mois_cible <span class="ot">&lt;-</span> <span class="fu">as.Date</span>(mois) <span class="sc">+</span> <span class="fu">months</span>(h)</span>
+<span id="cb28-15"><a></a>    nom_tbl <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">"cnaf_prestations_"</span>, <span class="fu">format</span>(mois_cible, <span class="st">"%Y_%m"</span>))</span>
+<span id="cb28-16"><a></a>    table_mois_cnaf <span class="ot">&lt;-</span> <span class="fu">spark_read_parquet</span>(<span class="fu">paste0</span>(chemin_table, nom_tbl))</span>
+<span id="cb28-17"><a></a></span>
+<span id="cb28-18"><a></a>    perception_RSA_mois_h <span class="ot">&lt;-</span> sorties_mois <span class="sc">%&gt;%</span></span>
+<span id="cb28-19"><a></a>      <span class="fu">mutate</span>(<span class="at">mois_h =</span> <span class="fu">sql</span>(<span class="fu">paste0</span>(<span class="st">"add_months(mois_sortie, "</span>, h, <span class="st">")"</span>))) <span class="sc">%&gt;%</span></span>
+<span id="cb28-20"><a></a>      <span class="fu">inner_join</span>(table_mois_cnaf, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"id"</span> <span class="ot">=</span> <span class="st">"id"</span>, <span class="st">"mois_h"</span> <span class="ot">=</span> <span class="st">"mois"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb28-21"><a></a>      <span class="fu">mutate</span>(<span class="at">perception_RSA =</span> <span class="fu">ifelse</span>(RSAVERS <span class="sc">==</span> <span class="st">"C"</span> <span class="sc">&amp;</span> MTRSAVER <span class="sc">&gt;</span> <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">0</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb28-22"><a></a>      <span class="fu">transmute</span>(id, mois_sortie, <span class="at">h =</span> <span class="sc">!!</span>h, perception_RSA)</span>
+<span id="cb28-23"><a></a></span>
+<span id="cb28-24"><a></a>    <span class="co"># empiler et mettre en cache le résultat</span></span>
+<span id="cb28-25"><a></a>    res_all <span class="ot">&lt;-</span> <span class="cf">if</span> (<span class="fu">is.null</span>(res_all)) perception_RSA_mois_h <span class="cf">else</span> <span class="fu">sdf_bind_rows</span>(res_all, perception_RSA_mois_h) <span class="sc">%&gt;%</span> <span class="fu">sdf_register</span>(<span class="fu">paste0</span>(<span class="st">"temp"</span>, mois, h))</span>
+<span id="cb28-26"><a></a>  <span class="fu">tbl_cache</span>(sc, <span class="fu">paste0</span>(<span class="st">"temp"</span>, mois, h))</span>
+<span id="cb28-27"><a></a>  }</span>
+<span id="cb28-28"><a></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+<div id="tabset-5-2">
+<p>Lance 12 jobs et une action à chaque tour</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a></a><span class="cf">for</span> (mois <span class="cf">in</span> liste_mois) {</span>
+<span id="cb29-2"><a></a>  </span>
+<span id="cb29-3"><a></a>  nom_tbl <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">"cnaf_prestations_"</span>, <span class="fu">format</span>(mois, <span class="st">"%Y_%m"</span>))</span>
+<span id="cb29-4"><a></a>  table_mois_cnaf <span class="ot">&lt;-</span> <span class="fu">spark_read_parquet</span>(<span class="fu">paste0</span>(chemin_table, nom_tbl))</span>
+<span id="cb29-5"><a></a></span>
+<span id="cb29-6"><a></a>  <span class="co"># Jointure globale, calcul de l'horizon h </span></span>
+<span id="cb29-7"><a></a>  perception_RSA_mois <span class="ot">&lt;-</span> table_mois_cnaf <span class="sc">%&gt;%</span></span>
+<span id="cb29-8"><a></a>    <span class="fu">inner_join</span>(sorties, <span class="at">by =</span> <span class="st">"id"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb29-9"><a></a>    <span class="fu">mutate</span>(<span class="at">h =</span> <span class="fu">sql</span>(<span class="st">"cast(months_between(mois, mois_sortie) as int)"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb29-10"><a></a>    <span class="fu">filter</span>(h <span class="sc">&gt;=</span> <span class="dv">1</span>, h <span class="sc">&lt;=</span> <span class="dv">12</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb29-11"><a></a>    <span class="fu">select</span>(id, mois_sortie, h, prest)</span>
+<span id="cb29-12"><a></a></span>
+<span id="cb29-13"><a></a>  <span class="co"># Cache pour enregistrer le résultat en mémoire</span></span>
+<span id="cb29-14"><a></a>  perception_RSA_mois_cache <span class="ot">&lt;-</span> perception_RSA_mois <span class="sc">%&gt;%</span> <span class="fu">sdf_register</span>(<span class="fu">paste0</span>(<span class="st">"temp"</span>, mois))</span>
+<span id="cb29-15"><a></a>  <span class="fu">tbl_cache</span>(sc, <span class="fu">paste0</span>(<span class="st">"temp"</span>, mois))</span>
+<span id="cb29-16"><a></a></span>
+<span id="cb29-17"><a></a>  res_stack <span class="ot">&lt;-</span> <span class="cf">if</span> (<span class="fu">is.null</span>(res_stack)) joined_cached <span class="cf">else</span> <span class="fu">sdf_bind_rows</span>(res_stack, joined_cached)</span>
+<span id="cb29-18"><a></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+<div id="tabset-5-3">
+<p>Meilleure solution : un seul plan logique que Catalyst peut entièrement optimsier, en limitant les shuffles, beaucoup plus rapide</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a></a><span class="co"># Charger la première table CNAF</span></span>
+<span id="cb30-2"><a></a>nom_1 <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">"cnaf_prestations_"</span>, <span class="fu">format</span>(<span class="fu">as.Date</span>(<span class="st">"2023-01-01"</span>), <span class="st">"%Y_%m"</span>))</span>
+<span id="cb30-3"><a></a>cnaf_total <span class="ot">&lt;-</span> <span class="fu">spark_read_parquet</span>(<span class="fu">paste0</span>(chemin_table, nom_1))</span>
+<span id="cb30-4"><a></a></span>
+<span id="cb30-5"><a></a><span class="co"># Empiler les autres</span></span>
+<span id="cb30-6"><a></a><span class="cf">for</span> (mois <span class="cf">in</span> liste_mois) {</span>
+<span id="cb30-7"><a></a>  </span>
+<span id="cb30-8"><a></a>  nom_tbl <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">"cnaf_prestations_"</span>, <span class="fu">format</span>(mois, <span class="st">"%Y_%m"</span>))</span>
+<span id="cb30-9"><a></a>  table_mois_cnaf <span class="ot">&lt;-</span> <span class="fu">spark_read_parquet</span>(<span class="fu">paste0</span>(chemin_table, nom_tbl))</span>
+<span id="cb30-10"><a></a>  </span>
+<span id="cb30-11"><a></a>  cnaf_total <span class="ot">&lt;-</span> <span class="fu">sdf_bind_rows</span>(cnaf_total, table_mois_cnaf) <span class="sc">%&gt;%</span></span>
+<span id="cb30-12"><a></a>    <span class="fu">sdf_register</span>(<span class="st">"cnaf_total"</span>)</span>
+<span id="cb30-13"><a></a>  <span class="fu">tbl_cache</span>(sc, <span class="st">"cnaf_total"</span>)</span>
+<span id="cb30-14"><a></a>}</span>
+<span id="cb30-15"><a></a></span>
+<span id="cb30-16"><a></a></span>
+<span id="cb30-17"><a></a><span class="co"># Joindre UNE fois avec la table des sorties (broadcast si petit)</span></span>
+<span id="cb30-18"><a></a>sorties_b <span class="ot">&lt;-</span> <span class="fu">sdf_broadcast</span>(sorties <span class="sc">%&gt;%</span></span>
+<span id="cb30-19"><a></a>  <span class="fu">select</span>(id, mois_sortie)</span>
+<span id="cb30-20"><a></a>)</span>
+<span id="cb30-21"><a></a></span>
+<span id="cb30-22"><a></a>perception_RSA_horizon <span class="ot">&lt;-</span> cnaf_total <span class="sc">%&gt;%</span></span>
+<span id="cb30-23"><a></a>  <span class="fu">inner_join</span>(sorties_b, <span class="at">by =</span> <span class="st">"id"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb30-24"><a></a>  <span class="fu">mutate</span>(</span>
+<span id="cb30-25"><a></a>    <span class="at">h =</span> <span class="fu">sql</span>(<span class="st">"cast(months_between(mois, mois_sortie) as int)"</span>)</span>
+<span id="cb30-26"><a></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb30-27"><a></a>  <span class="fu">filter</span>(h <span class="sc">&gt;=</span> <span class="dv">1</span>, h <span class="sc">&lt;=</span> <span class="dv">12</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb30-28"><a></a>  <span class="fu">select</span>(id, mois_sortie, h, prest)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="calcul-distribué-calcul-vectoriel-jointures" class="slide level2 smaller">
+<h2>Calcul distribué, calcul vectoriel : jointures</h2>
+<p>Une <strong>jointure</strong> implique pour spark de rappatrier les lignes avec les mêmes valeurs de clef sur le même worker : les jointures engendrent des <strong>shuffles</strong>.</p>
+<p><br></p>
+<p>Lorsque l’on joint une <strong>grosse table</strong> avec une <strong>petite table</strong>, Spark peut optimiser le calcul en utilisant un <strong>broadcast join</strong> : la petite table est <strong>diffusée en entier</strong> sur chaque worker, ce qui évite un shuffle massif.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a></a>res <span class="ot">&lt;-</span> grosse_table <span class="sc">%&gt;%</span></span>
+<span id="cb31-2"><a></a>  <span class="fu">inner_join</span>(<span class="fu">sdf_broadcast</span>(petite_table), <span class="at">by =</span> <span class="st">"clef"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p><br></p>
+<p>👉 Ici petite_table est diffusée (broadcast) sur tous les workers : chaque partition de grosse_table fait alors le join localement, sans transfert réseau coûteux.</p>
+</section>
+<section id="calcul-distribué-calcul-vectoriel-jointures-1" class="slide level2 smaller">
+<h2>Calcul distribué, calcul vectoriel : jointures</h2>
+<p><strong>Broadcast automatique</strong> : par défaut, Spark choisit automatiquement le broadcast join si la table à diffuser fait moins de 10 MB (paramètre configurable).</p>
+<p>Au-delà, il utilise un <strong>shuffle join</strong> classique (plus lent).</p>
+<p><strong>Astuce right_join</strong> : dans sparklyr, la position de la table peut influencer le plan choisi par Spark :</p>
+<p><code>petite_table %&gt;% left_join(grosse_table)</code> → Spark n’essaie pas forcément de diffuser la petite.</p>
+<p><code>grosse_table %&gt;% right_join(petite_table)</code> → Spark choisit plus volontiers un broadcast join.</p>
+<p>👉 Bonne pratique : forcer avec <code>sdf_broadcast()</code> quand on sait que la table est petite, plutôt que de compter sur ce comportement implicite.</p>
+</section>
+<section id="calcule-distribué-calcul-vectoriel" class="slide level2 smaller">
+<h2>Calcule distribué, calcul vectoriel</h2>
+<table class="caption-top" style="width:99%;">
+<colgroup>
+<col style="width: 24%">
+<col style="width: 33%">
+<col style="width: 41%">
+</colgroup>
+<thead>
+<tr class="header">
+<th><strong>Opération logique</strong></th>
+<th><strong>Solution non vectorielle</strong></th>
+<th><strong>Solution vectorielle</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>situation à m + 1, 2…</td>
+<td>Boucle for sur les mois</td>
+<td>utilisation de <code>lag()</code> et <code>lead()</code>, ou auto jointure sur les dates</td>
+</tr>
+<tr class="even">
+<td>Répéter une fonction</td>
+<td>user defined functions (UDF)</td>
+<td>éviter les UDF</td>
+</tr>
+<tr class="odd">
+<td>opération groupe de lignes</td>
+<td><code>group_by %&gt;% mutate %&gt;% distinct</code></td>
+<td><code>group_by %&gt;% summarise</code></td>
+</tr>
+<tr class="even">
+<td>joindre petite table avec grosse table</td>
+<td><code>petite_table %&gt;% left_join(grosse_table)</code></td>
+<td>broadcast join</td>
+</tr>
+<tr class="odd">
+<td>joindre deux grosses tables</td>
+<td>boucle for en divisant les tables en petits morceaux</td>
+<td>unique jointure et partition par la clef de jointure</td>
+</tr>
+<tr class="even">
+<td>construire un panel cylindré</td>
+<td>boucle for</td>
+<td><code>cross_join()</code> de deux tables</td>
+</tr>
+</tbody>
+</table>
+</section>
 <section id="la-mémoire-du-driver" class="slide level2">
 <h2>La mémoire du driver</h2>
 
@@ -1807,15 +1817,15 @@
 <h2>L’utilisation de la mémoire du driver</h2>
 <p>Cette configuration permet de collecter des statistiques descriptives et de petites tables sans gêner les autres utilisateurs.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb29" data-code-line-numbers="2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a></a>conf <span class="ot">&lt;-</span> <span class="fu">spark_config</span>()</span>
-<span id="cb29-2"><a></a>conf[<span class="st">"spark.driver.memory"</span>] <span class="ot">&lt;-</span> <span class="st">"20Go"</span></span>
-<span id="cb29-3"><a></a>conf[<span class="st">"spark.executor.memory"</span>] <span class="ot">&lt;-</span> <span class="st">"80Go"</span></span>
-<span id="cb29-4"><a></a>conf[<span class="st">"spark.executor.cores"</span>] <span class="ot">&lt;-</span> <span class="dv">5</span></span>
-<span id="cb29-5"><a></a>conf[<span class="st">"spark.executor.instances"</span>] <span class="ot">&lt;-</span> <span class="dv">2</span></span>
-<span id="cb29-6"><a></a>cont[<span class="st">"spark.yarn.queue"</span>] <span class="ot">&lt;-</span> <span class="st">"prod"</span></span>
-<span id="cb29-7"><a></a>conf[<span class="st">"spark.driver.maxResultSize"</span>] <span class="ot">&lt;-</span> <span class="dv">0</span></span>
-<span id="cb29-8"><a></a></span>
-<span id="cb29-9"><a></a>sc <span class="ot">&lt;-</span> <span class="fu">spark_connect</span>(<span class="at">master =</span> <span class="st">"yarn"</span>, <span class="at">config =</span> conf)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32" data-code-line-numbers="2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a></a>conf <span class="ot">&lt;-</span> <span class="fu">spark_config</span>()</span>
+<span id="cb32-2"><a></a>conf[<span class="st">"spark.driver.memory"</span>] <span class="ot">&lt;-</span> <span class="st">"20Go"</span></span>
+<span id="cb32-3"><a></a>conf[<span class="st">"spark.executor.memory"</span>] <span class="ot">&lt;-</span> <span class="st">"80Go"</span></span>
+<span id="cb32-4"><a></a>conf[<span class="st">"spark.executor.cores"</span>] <span class="ot">&lt;-</span> <span class="dv">5</span></span>
+<span id="cb32-5"><a></a>conf[<span class="st">"spark.executor.instances"</span>] <span class="ot">&lt;-</span> <span class="dv">2</span></span>
+<span id="cb32-6"><a></a>cont[<span class="st">"spark.yarn.queue"</span>] <span class="ot">&lt;-</span> <span class="st">"prod"</span></span>
+<span id="cb32-7"><a></a>conf[<span class="st">"spark.driver.maxResultSize"</span>] <span class="ot">&lt;-</span> <span class="dv">0</span></span>
+<span id="cb32-8"><a></a></span>
+<span id="cb32-9"><a></a>sc <span class="ot">&lt;-</span> <span class="fu">spark_connect</span>(<span class="at">master =</span> <span class="st">"yarn"</span>, <span class="at">config =</span> conf)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <div class="callout callout-caution callout-titled callout-style-default">
 <div class="callout-body">
@@ -1865,17 +1875,17 @@
 <p>La création de la table va être exécutée à nouveau : très long ?</p>
 <p>Comment faire ?</p>
 <div class="panel-tabset">
-<ul id="tabset-5" class="panel-tabset-tabby"><li><a data-tabby-default="" href="#tabset-5-1">Cache</a></li></ul>
+<ul id="tabset-6" class="panel-tabset-tabby"><li><a data-tabby-default="" href="#tabset-6-1">Cache</a></li></ul>
 <div class="tab-content">
-<div id="tabset-5-1">
+<div id="tabset-6-1">
 <p>La création de la table est exécutée une seule fois, le résultat est conservé en mémoire vive</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a></a>ma_table_spark <span class="ot">&lt;-</span> MMO_2017 <span class="sc">%&gt;%</span></span>
-<span id="cb30-2"><a></a>  <span class="fu">filter</span>(DebutCTT <span class="sc">&gt;</span> <span class="fu">as.Date</span>(<span class="st">"2017-06-01"</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb30-3"><a></a>  <span class="fu">mutate</span>(<span class="at">duree_CTT =</span> <span class="fu">DATEDIFF</span>(FinCTT,DebutCTT) <span class="sc">+</span> <span class="dv">1</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb30-4"><a></a>  <span class="fu">sdf_register</span>(<span class="at">name =</span> <span class="st">"ma_table_spark"</span>)</span>
-<span id="cb30-5"><a></a></span>
-<span id="cb30-6"><a></a><span class="fu">tbl_cache</span>(<span class="st">"ma_table_spark"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a></a>ma_table_spark <span class="ot">&lt;-</span> MMO_2017 <span class="sc">%&gt;%</span></span>
+<span id="cb33-2"><a></a>  <span class="fu">filter</span>(DebutCTT <span class="sc">&gt;</span> <span class="fu">as.Date</span>(<span class="st">"2017-06-01"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb33-3"><a></a>  <span class="fu">mutate</span>(<span class="at">duree_CTT =</span> <span class="fu">DATEDIFF</span>(FinCTT,DebutCTT) <span class="sc">+</span> <span class="dv">1</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb33-4"><a></a>  <span class="fu">sdf_register</span>(<span class="at">name =</span> <span class="st">"ma_table_spark"</span>)</span>
+<span id="cb33-5"><a></a></span>
+<span id="cb33-6"><a></a><span class="fu">tbl_cache</span>(<span class="st">"ma_table_spark"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div>
 </div>
@@ -1958,7 +1968,7 @@
 </table>
 <p><br></p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a></a><span class="fu">spark_write_parquet</span>(ma_table, <span class="st">"hdfs:///resultats/ma_table.parquet"</span>, <span class="at">partition_by =</span> <span class="fu">c</span>(<span class="st">"age"</span>,<span class="st">"sex"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb34"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a></a><span class="fu">spark_write_parquet</span>(ma_table, <span class="st">"hdfs:///resultats/ma_table.parquet"</span>, <span class="at">partition_by =</span> <span class="fu">c</span>(<span class="st">"age"</span>,<span class="st">"sex"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section id="éviter-le-problème-des-exécuteurs-inactifs" class="slide level2 smaller">
@@ -1966,12 +1976,12 @@
 <p>Supposons que le jeu de données ait 8 partitions, un exécuteur (avec seulement 1 core) ne peut exécuter qu’une tâche(task) à la fois, et une partition = une tâche.</p>
 <p>Cas 1 : 6 exécuteurs, au dernier tour, il ne reste que 2 tâches, 4 exécuteurs seront inactifs. Cas 2 : 4 exécuteurs, 2*4, aucun exécuteur inactif.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a></a><span class="co"># Get the number of partitions</span></span>
-<span id="cb32-2"><a></a>num_partitions <span class="ot">&lt;-</span> <span class="fu">sdf_num_partitions</span>(df)</span>
-<span id="cb32-3"><a></a><span class="fu">print</span>(num_partitions)</span>
-<span id="cb32-4"><a></a></span>
-<span id="cb32-5"><a></a><span class="co"># Repartition the DataFrame to a specific number of partitions</span></span>
-<span id="cb32-6"><a></a>df_repartitioned <span class="ot">&lt;-</span> <span class="fu">sdf_repartition</span>(df, <span class="at">partitions =</span> <span class="dv">10</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb35"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a></a><span class="co"># Get the number of partitions</span></span>
+<span id="cb35-2"><a></a>num_partitions <span class="ot">&lt;-</span> <span class="fu">sdf_num_partitions</span>(df)</span>
+<span id="cb35-3"><a></a><span class="fu">print</span>(num_partitions)</span>
+<span id="cb35-4"><a></a></span>
+<span id="cb35-5"><a></a><span class="co"># Repartition the DataFrame to a specific number of partitions</span></span>
+<span id="cb35-6"><a></a>df_repartitioned <span class="ot">&lt;-</span> <span class="fu">sdf_repartition</span>(df, <span class="at">partitions =</span> <span class="dv">10</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <ul>
 <li>Le nombre de partitions doit être divisible par le nombre d’exécuteurs.</li>
@@ -1985,12 +1995,12 @@
 <img data-src="images/stage_eventtimeline.png" class="r-stretch"><ul>
 <li><div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a></a><span class="co"># Repartition the DataFrame to a specific number of partitions</span></span>
-<span id="cb33-2"><a></a>df_repartitioned <span class="ot">&lt;-</span> <span class="fu">sdf_repartition</span>(df, <span class="at">partitions =</span> <span class="dv">10</span>)</span>
-<span id="cb33-3"><a></a></span>
-<span id="cb33-4"><a></a><span class="co"># Repartition the DataFrame by a specific column, e.g., "commune_code".</span></span>
-<span id="cb33-5"><a></a><span class="co"># The partition number will be the distinct value number</span></span>
-<span id="cb33-6"><a></a>df_repartitioned <span class="ot">&lt;-</span> <span class="fu">sdf_repartition</span>(df, <span class="at">partition_by =</span> <span class="st">"commune_code"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb36"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a></a><span class="co"># Repartition the DataFrame to a specific number of partitions</span></span>
+<span id="cb36-2"><a></a>df_repartitioned <span class="ot">&lt;-</span> <span class="fu">sdf_repartition</span>(df, <span class="at">partitions =</span> <span class="dv">10</span>)</span>
+<span id="cb36-3"><a></a></span>
+<span id="cb36-4"><a></a><span class="co"># Repartition the DataFrame by a specific column, e.g., "commune_code".</span></span>
+<span id="cb36-5"><a></a><span class="co"># The partition number will be the distinct value number</span></span>
+<span id="cb36-6"><a></a>df_repartitioned <span class="ot">&lt;-</span> <span class="fu">sdf_repartition</span>(df, <span class="at">partition_by =</span> <span class="st">"commune_code"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div></li>
 <li><p>La répartition est une opération très coûteuse, utilisez-la judicieusement.</p></li>
@@ -2029,9 +2039,9 @@
 <p><br></p>
 <p>Par exemple, une session Spark dispose de la configuration suivante :</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a></a>conf[<span class="st">"spark.executor.memory"</span>] <span class="ot">&lt;-</span> <span class="st">"32Go"</span></span>
-<span id="cb34-2"><a></a>conf[<span class="st">"spark.executor.cores"</span>] <span class="ot">&lt;-</span> <span class="dv">4</span></span>
-<span id="cb34-3"><a></a>conf[<span class="st">"spark.executor.instances"</span>] <span class="ot">&lt;-</span> <span class="dv">5</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb37"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a></a>conf[<span class="st">"spark.executor.memory"</span>] <span class="ot">&lt;-</span> <span class="st">"32Go"</span></span>
+<span id="cb37-2"><a></a>conf[<span class="st">"spark.executor.cores"</span>] <span class="ot">&lt;-</span> <span class="dv">4</span></span>
+<span id="cb37-3"><a></a>conf[<span class="st">"spark.executor.instances"</span>] <span class="ot">&lt;-</span> <span class="dv">5</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>5 executor * 4 core = 20 tâches en parallèle. Pour un jeu de données de 200 partitions, il faut 10 tours pour terminer tous les calculs.</p>
 <p><br></p>
@@ -2041,16 +2051,16 @@
 <h2>SparkUI</h2>
 <p>Spark UI permet de consulter le plan logique et physique du traitement demandé. Trois outils permettent d’optimiser les traitements :</p>
 <div class="panel-tabset">
-<ul id="tabset-6" class="panel-tabset-tabby"><li><a data-tabby-default="" href="#tabset-6-1">DAG</a></li><li><a href="#tabset-6-2">GC</a></li><li><a href="#tabset-6-3">Mémoire</a></li></ul>
+<ul id="tabset-7" class="panel-tabset-tabby"><li><a data-tabby-default="" href="#tabset-7-1">DAG</a></li><li><a href="#tabset-7-2">GC</a></li><li><a href="#tabset-7-3">Mémoire</a></li></ul>
 <div class="tab-content">
-<div id="tabset-6-1">
+<div id="tabset-7-1">
 <p><img data-src="images/dag.webp"></p>
 </div>
-<div id="tabset-6-2">
+<div id="tabset-7-2">
 <p>Vérifier que le <code>gc time</code> est inférieur à 10% du temps pour exécuter la tâche ✅</p>
 <p><img data-src="images/gc.png"></p>
 </div>
-<div id="tabset-6-3">
+<div id="tabset-7-3">
 <p>Vérifier que la <code>storage memory</code> ne sature pas la mémoire ✅</p>
 <p><img data-src="images/gc.png"></p>
 </div>
@@ -2064,12 +2074,12 @@
 </ul>
 <p>Le sparkhistory entraîne l’enregistrement de logs assez lourdes, il est donc désactivé par défaut. Pour l’activer sur un programme :</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a></a>conf <span class="ot">&lt;-</span> <span class="fu">spark_config</span>()</span>
-<span id="cb35-2"><a></a>conf[<span class="st">"spark.eventLog.enabled"</span>] <span class="ot">&lt;-</span> <span class="st">"true"</span></span>
-<span id="cb35-3"><a></a>conf[<span class="st">"spark.eventLog.dir"</span>] <span class="ot">&lt;-</span> <span class="st">"hdfs://midares-deb11-nn-01.midares.local:9000/spark-logs"</span></span>
-<span id="cb35-4"><a></a>conf[<span class="st">"appName"</span>] <span class="ot">&lt;-</span> <span class="st">"un_nom_de_traitement"</span></span>
-<span id="cb35-5"><a></a></span>
-<span id="cb35-6"><a></a>sc <span class="ot">&lt;-</span> <span class="fu">spark_connect</span>(<span class="at">master =</span> <span class="st">"yarn"</span>, <span class="at">config =</span> conf)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb38"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a></a>conf <span class="ot">&lt;-</span> <span class="fu">spark_config</span>()</span>
+<span id="cb38-2"><a></a>conf[<span class="st">"spark.eventLog.enabled"</span>] <span class="ot">&lt;-</span> <span class="st">"true"</span></span>
+<span id="cb38-3"><a></a>conf[<span class="st">"spark.eventLog.dir"</span>] <span class="ot">&lt;-</span> <span class="st">"hdfs://midares-deb11-nn-01.midares.local:9000/spark-logs"</span></span>
+<span id="cb38-4"><a></a>conf[<span class="st">"appName"</span>] <span class="ot">&lt;-</span> <span class="st">"un_nom_de_traitement"</span></span>
+<span id="cb38-5"><a></a></span>
+<span id="cb38-6"><a></a>sc <span class="ot">&lt;-</span> <span class="fu">spark_connect</span>(<span class="at">master =</span> <span class="st">"yarn"</span>, <span class="at">config =</span> conf)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section id="pyspark" class="slide level2">
@@ -2094,14 +2104,14 @@
 <li><p>le <strong>système HDFS</strong> est relié à la bulle Midares : possible de charger des données en clique-bouton de la bulle vers HDFS de manière très rapide et de télécharger des tables de HDFS pour les récupérer en local</p></li>
 </ul>
 
-<div class="quarto-auto-generated-content">
+
+</section></section>
+    </div>
+  <div class="quarto-auto-generated-content" style="display: none;">
 <div class="footer footer-default">
 
 </div>
-</div>
-</section></section>
-    </div>
-  </div>
+</div></div>
 
   <script>window.backupDefine = window.define; window.define = undefined;</script>
   <script src="site_libs/revealjs/dist/reveal.js"></script>
@@ -2130,7 +2140,8 @@
 'autoAnimateEasing': "ease",
 'autoAnimateDuration': 1,
 'autoAnimateUnmatched': true,
-'menu': {"side":"left","useTextContentForMissingTitles":true,"markers":false,"loadIcons":false,"custom":[{"title":"Tools","icon":"<i class=\"fas fa-gear\"></i>","content":"<ul class=\"slide-menu-items\">\n<li class=\"slide-tool-item active\" data-item=\"0\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.fullscreen(event)\"><kbd>f</kbd> Fullscreen</a></li>\n<li class=\"slide-tool-item\" data-item=\"1\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.speakerMode(event)\"><kbd>s</kbd> Speaker View</a></li>\n<li class=\"slide-tool-item\" data-item=\"2\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.overview(event)\"><kbd>o</kbd> Slide Overview</a></li>\n<li class=\"slide-tool-item\" data-item=\"3\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.togglePdfExport(event)\"><kbd>e</kbd> PDF Export Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"4\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.keyboardHelp(event)\"><kbd>?</kbd> Keyboard Help</a></li>\n</ul>"}],"openButton":true},
+'jumpToSlide': true,
+'menu': {"side":"left","useTextContentForMissingTitles":true,"markers":false,"loadIcons":false,"custom":[{"title":"Tools","icon":"<i class=\"fas fa-gear\"></i>","content":"<ul class=\"slide-menu-items\">\n<li class=\"slide-tool-item active\" data-item=\"0\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.fullscreen(event)\"><kbd>f</kbd> Fullscreen</a></li>\n<li class=\"slide-tool-item\" data-item=\"1\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.speakerMode(event)\"><kbd>s</kbd> Speaker View</a></li>\n<li class=\"slide-tool-item\" data-item=\"2\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.overview(event)\"><kbd>o</kbd> Slide Overview</a></li>\n<li class=\"slide-tool-item\" data-item=\"3\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.togglePdfExport(event)\"><kbd>e</kbd> PDF Export Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"4\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleScrollView(event)\"><kbd>r</kbd> Scroll View Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"5\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.keyboardHelp(event)\"><kbd>?</kbd> Keyboard Help</a></li>\n</ul>"}],"openButton":true},
 'smaller': false,
  
         // Display controls in the bottom right corner
@@ -2284,7 +2295,7 @@
         margin: 0.1,
 
         math: {
-          mathjax: 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js',
+          mathjax: 'https://cdn.jsdelivr.net/npm/mathjax@2.7.9/MathJax.js',
           config: 'TeX-AMS_HTML-full',
           tex2jax: {
             inlineMath: [['\\(','\\)']],
@@ -2349,192 +2360,173 @@
     </script>
 
     <script id="quarto-html-after-body" type="application/javascript">
-    window.document.addEventListener("DOMContentLoaded", function (event) {
-      const toggleBodyColorMode = (bsSheetEl) => {
-        const mode = bsSheetEl.getAttribute("data-mode");
-        const bodyEl = window.document.querySelector("body");
-        if (mode === "dark") {
-          bodyEl.classList.add("quarto-dark");
-          bodyEl.classList.remove("quarto-light");
-        } else {
-          bodyEl.classList.add("quarto-light");
-          bodyEl.classList.remove("quarto-dark");
-        }
-      }
-      const toggleBodyColorPrimary = () => {
-        const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
-        if (bsSheetEl) {
-          toggleBodyColorMode(bsSheetEl);
-        }
-      }
-      toggleBodyColorPrimary();  
-      const tabsets =  window.document.querySelectorAll(".panel-tabset-tabby")
-      tabsets.forEach(function(tabset) {
-        const tabby = new Tabby('#' + tabset.id);
-      });
-      const isCodeAnnotation = (el) => {
-        for (const clz of el.classList) {
-          if (clz.startsWith('code-annotation-')) {                     
-            return true;
+      window.document.addEventListener("DOMContentLoaded", function (event) {
+        const tabsets =  window.document.querySelectorAll(".panel-tabset-tabby")
+        tabsets.forEach(function(tabset) {
+          const tabby = new Tabby('#' + tabset.id);
+        });
+        const isCodeAnnotation = (el) => {
+          for (const clz of el.classList) {
+            if (clz.startsWith('code-annotation-')) {                     
+              return true;
+            }
           }
+          return false;
         }
-        return false;
-      }
-      const onCopySuccess = function(e) {
-        // button target
-        const button = e.trigger;
-        // don't keep focus
-        button.blur();
-        // flash "checked"
-        button.classList.add('code-copy-button-checked');
-        var currentTitle = button.getAttribute("title");
-        button.setAttribute("title", "Copied!");
-        let tooltip;
-        if (window.bootstrap) {
-          button.setAttribute("data-bs-toggle", "tooltip");
-          button.setAttribute("data-bs-placement", "left");
-          button.setAttribute("data-bs-title", "Copied!");
-          tooltip = new bootstrap.Tooltip(button, 
-            { trigger: "manual", 
-              customClass: "code-copy-button-tooltip",
-              offset: [0, -8]});
-          tooltip.show();    
-        }
-        setTimeout(function() {
-          if (tooltip) {
-            tooltip.hide();
-            button.removeAttribute("data-bs-title");
-            button.removeAttribute("data-bs-toggle");
-            button.removeAttribute("data-bs-placement");
+        const onCopySuccess = function(e) {
+          // button target
+          const button = e.trigger;
+          // don't keep focus
+          button.blur();
+          // flash "checked"
+          button.classList.add('code-copy-button-checked');
+          var currentTitle = button.getAttribute("title");
+          button.setAttribute("title", "Copied!");
+          let tooltip;
+          if (window.bootstrap) {
+            button.setAttribute("data-bs-toggle", "tooltip");
+            button.setAttribute("data-bs-placement", "left");
+            button.setAttribute("data-bs-title", "Copied!");
+            tooltip = new bootstrap.Tooltip(button, 
+              { trigger: "manual", 
+                customClass: "code-copy-button-tooltip",
+                offset: [0, -8]});
+            tooltip.show();    
           }
-          button.setAttribute("title", currentTitle);
-          button.classList.remove('code-copy-button-checked');
-        }, 1000);
-        // clear code selection
-        e.clearSelection();
-      }
-      const getTextToCopy = function(trigger) {
-          const codeEl = trigger.previousElementSibling.cloneNode(true);
+          setTimeout(function() {
+            if (tooltip) {
+              tooltip.hide();
+              button.removeAttribute("data-bs-title");
+              button.removeAttribute("data-bs-toggle");
+              button.removeAttribute("data-bs-placement");
+            }
+            button.setAttribute("title", currentTitle);
+            button.classList.remove('code-copy-button-checked');
+          }, 1000);
+          // clear code selection
+          e.clearSelection();
+        }
+        const getTextToCopy = function(trigger) {
+          const outerScaffold = trigger.parentElement.cloneNode(true);
+          const codeEl = outerScaffold.querySelector('code');
           for (const childEl of codeEl.children) {
             if (isCodeAnnotation(childEl)) {
               childEl.remove();
             }
           }
           return codeEl.innerText;
-      }
-      const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
-        text: getTextToCopy
-      });
-      clipboard.on('success', onCopySuccess);
-      if (window.document.getElementById('quarto-embedded-source-code-modal')) {
-        // For code content inside modals, clipBoardJS needs to be initialized with a container option
-        // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
-        const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
-          text: getTextToCopy,
-          container: window.document.getElementById('quarto-embedded-source-code-modal')
-        });
-        clipboardModal.on('success', onCopySuccess);
-      }
-        var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
-        var mailtoRegex = new RegExp(/^mailto:/);
-          var filterRegex = new RegExp("https:\/\/leoniefvr\.github\.io\/Formation_spark\/");
-        var isInternal = (href) => {
-            return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
         }
-        // Inspect non-navigation links and adorn them if external
-     	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
-        for (var i=0; i<links.length; i++) {
-          const link = links[i];
-          if (!isInternal(link.href)) {
-            // undo the damage that might have been done by quarto-nav.js in the case of
-            // links that we want to consider external
-            if (link.dataset.originalHref !== undefined) {
-              link.href = link.dataset.originalHref;
+        const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+          text: getTextToCopy
+        });
+        clipboard.on('success', onCopySuccess);
+        if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+          const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+            text: getTextToCopy,
+            container: window.document.getElementById('quarto-embedded-source-code-modal')
+          });
+          clipboardModal.on('success', onCopySuccess);
+        }
+          var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+          var mailtoRegex = new RegExp(/^mailto:/);
+            var filterRegex = new RegExp("https:\/\/leoniefvr\.github\.io\/Formation_spark\/");
+          var isInternal = (href) => {
+              return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+          }
+          // Inspect non-navigation links and adorn them if external
+         var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+          for (var i=0; i<links.length; i++) {
+            const link = links[i];
+            if (!isInternal(link.href)) {
+              // undo the damage that might have been done by quarto-nav.js in the case of
+              // links that we want to consider external
+              if (link.dataset.originalHref !== undefined) {
+                link.href = link.dataset.originalHref;
+              }
             }
           }
-        }
-      function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
-        const config = {
-          allowHTML: true,
-          maxWidth: 500,
-          delay: 100,
-          arrow: false,
-          appendTo: function(el) {
-              return el.closest('section.slide') || el.parentElement;
-          },
-          interactive: true,
-          interactiveBorder: 10,
-          theme: 'light-border',
-          placement: 'bottom-start',
-        };
-        if (contentFn) {
-          config.content = contentFn;
-        }
-        if (onTriggerFn) {
-          config.onTrigger = onTriggerFn;
-        }
-        if (onUntriggerFn) {
-          config.onUntrigger = onUntriggerFn;
-        }
-          config['offset'] = [0,0];
-          config['maxWidth'] = 700;
-        window.tippy(el, config); 
-      }
-      const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
-      for (var i=0; i<noterefs.length; i++) {
-        const ref = noterefs[i];
-        tippyHover(ref, function() {
-          // use id or data attribute instead here
-          let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
-          try { href = new URL(href).hash; } catch {}
-          const id = href.replace(/^#\/?/, "");
-          const note = window.document.getElementById(id);
-          if (note) {
-            return note.innerHTML;
-          } else {
-            return "";
+        function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+          const config = {
+            allowHTML: true,
+            maxWidth: 500,
+            delay: 100,
+            arrow: false,
+            appendTo: function(el) {
+                return el.closest('section.slide') || el.parentElement;
+            },
+            interactive: true,
+            interactiveBorder: 10,
+            theme: 'light-border',
+            placement: 'bottom-start',
+          };
+          if (contentFn) {
+            config.content = contentFn;
           }
-        });
-      }
-      const findCites = (el) => {
-        const parentEl = el.parentElement;
-        if (parentEl) {
-          const cites = parentEl.dataset.cites;
-          if (cites) {
-            return {
-              el,
-              cites: cites.split(' ')
-            };
-          } else {
-            return findCites(el.parentElement)
+          if (onTriggerFn) {
+            config.onTrigger = onTriggerFn;
           }
-        } else {
-          return undefined;
+          if (onUntriggerFn) {
+            config.onUntrigger = onUntriggerFn;
+          }
+            config['offset'] = [0,0];
+            config['maxWidth'] = 700;
+          window.tippy(el, config); 
         }
-      };
-      var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
-      for (var i=0; i<bibliorefs.length; i++) {
-        const ref = bibliorefs[i];
-        const citeInfo = findCites(ref);
-        if (citeInfo) {
-          tippyHover(citeInfo.el, function() {
-            var popup = window.document.createElement('div');
-            citeInfo.cites.forEach(function(cite) {
-              var citeDiv = window.document.createElement('div');
-              citeDiv.classList.add('hanging-indent');
-              citeDiv.classList.add('csl-entry');
-              var biblioDiv = window.document.getElementById('ref-' + cite);
-              if (biblioDiv) {
-                citeDiv.innerHTML = biblioDiv.innerHTML;
-              }
-              popup.appendChild(citeDiv);
-            });
-            return popup.innerHTML;
+        const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+        for (var i=0; i<noterefs.length; i++) {
+          const ref = noterefs[i];
+          tippyHover(ref, function() {
+            // use id or data attribute instead here
+            let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+            try { href = new URL(href).hash; } catch {}
+            const id = href.replace(/^#\/?/, "");
+            const note = window.document.getElementById(id);
+            if (note) {
+              return note.innerHTML;
+            } else {
+              return "";
+            }
           });
         }
-      }
-    });
-    </script>
+        const findCites = (el) => {
+          const parentEl = el.parentElement;
+          if (parentEl) {
+            const cites = parentEl.dataset.cites;
+            if (cites) {
+              return {
+                el,
+                cites: cites.split(' ')
+              };
+            } else {
+              return findCites(el.parentElement)
+            }
+          } else {
+            return undefined;
+          }
+        };
+        var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+        for (var i=0; i<bibliorefs.length; i++) {
+          const ref = bibliorefs[i];
+          const citeInfo = findCites(ref);
+          if (citeInfo) {
+            tippyHover(citeInfo.el, function() {
+              var popup = window.document.createElement('div');
+              citeInfo.cites.forEach(function(cite) {
+                var citeDiv = window.document.createElement('div');
+                citeDiv.classList.add('hanging-indent');
+                citeDiv.classList.add('csl-entry');
+                var biblioDiv = window.document.getElementById('ref-' + cite);
+                if (biblioDiv) {
+                  citeDiv.innerHTML = biblioDiv.innerHTML;
+                }
+                popup.appendChild(citeDiv);
+              });
+              return popup.innerHTML;
+            });
+          }
+        }
+      });
+      </script>
     
 
 </body></html>

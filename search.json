@@ -1,10 +1,80 @@
 [
   {
+    "objectID": "dates.html",
+    "href": "dates.html",
+    "title": "Les dates avec sparklyr",
+    "section": "",
+    "text": "Les fonctions de lubridate()ne sont pas adaptées aux spark_data_frames.\n\nConvertir une chaîne de caractère de la forme AAAA-MM-DD en Date : même fonction qu’en R base\n\ndate_1 &lt;- as.Date(\"2024-05-26\")\n\nCalculer une durée entre deux dates : fonction datediff()\n\nPJC_spark &lt;- spark_read_parquet(sc,\n                                path = \"hdfs:///dataset/MiDAS_v4/pjc.parquet\",\n                                memory = FALSE)\n\nduree_pjc_df &lt;- PJC_spark %&gt;%\n  rename(date_fin_pjc = as.Date(KDFPJ),\n         date_deb_pjc = as.Date(KDDPJ)) %&gt;%\n  mutate(duree_pjc = datediff(date_fin_pjc, date_deb_pjc) + 1) %&gt;%\n  head(5)\n\nAjouter ou soustraire des jours ou des mois à une date : date_add(), date_sub() et add_months().\n\nduree_pjc_bis_df &lt;- duree_pjc_df %&gt;%\n  mutate(duree_pjc_plus_5 = date_add(duree_pjc, int(5)),\n         duree_pjc_moins_5 = date_sub(duree_pjc, int(5)),\n         duree_pjc_plus_1_mois = add_months(duree_pjc, int(1))) %&gt;%\n  head(5)\n\n\n\n\n\n\n\n\nTipFormat\n\n\n\nLe int() est important car ces fonctions Hive n’acceptent que les entiers pour l’ajout de jours : taper uniquement 5 est considéré comme un flottant dans R.\n\n\n\n\n\n\n\n\nNoteAdd months\n\n\n\nSi la date en entrée est le dernier jour d’un mois, la date retournée avec add_months(date_entree, int(1)) sera le dernier jour calendaire du mois suivant.\n\n\nSi tu as besoin d’autres fonctions de dates, tu peux consulter le site fonctions dates spark hive",
+    "crumbs": [
+      "Les dates avec sparklyr"
+    ]
+  },
+  {
+    "objectID": "dates.html#dates",
+    "href": "dates.html#dates",
+    "title": "Les dates avec sparklyr",
+    "section": "",
+    "text": "Les fonctions de lubridate()ne sont pas adaptées aux spark_data_frames.\n\nConvertir une chaîne de caractère de la forme AAAA-MM-DD en Date : même fonction qu’en R base\n\ndate_1 &lt;- as.Date(\"2024-05-26\")\n\nCalculer une durée entre deux dates : fonction datediff()\n\nPJC_spark &lt;- spark_read_parquet(sc,\n                                path = \"hdfs:///dataset/MiDAS_v4/pjc.parquet\",\n                                memory = FALSE)\n\nduree_pjc_df &lt;- PJC_spark %&gt;%\n  rename(date_fin_pjc = as.Date(KDFPJ),\n         date_deb_pjc = as.Date(KDDPJ)) %&gt;%\n  mutate(duree_pjc = datediff(date_fin_pjc, date_deb_pjc) + 1) %&gt;%\n  head(5)\n\nAjouter ou soustraire des jours ou des mois à une date : date_add(), date_sub() et add_months().\n\nduree_pjc_bis_df &lt;- duree_pjc_df %&gt;%\n  mutate(duree_pjc_plus_5 = date_add(duree_pjc, int(5)),\n         duree_pjc_moins_5 = date_sub(duree_pjc, int(5)),\n         duree_pjc_plus_1_mois = add_months(duree_pjc, int(1))) %&gt;%\n  head(5)\n\n\n\n\n\n\n\n\nTipFormat\n\n\n\nLe int() est important car ces fonctions Hive n’acceptent que les entiers pour l’ajout de jours : taper uniquement 5 est considéré comme un flottant dans R.\n\n\n\n\n\n\n\n\nNoteAdd months\n\n\n\nSi la date en entrée est le dernier jour d’un mois, la date retournée avec add_months(date_entree, int(1)) sera le dernier jour calendaire du mois suivant.\n\n\nSi tu as besoin d’autres fonctions de dates, tu peux consulter le site fonctions dates spark hive",
+    "crumbs": [
+      "Les dates avec sparklyr"
+    ]
+  },
+  {
+    "objectID": "oom.html",
+    "href": "oom.html",
+    "title": "Out of memory",
+    "section": "",
+    "text": "L’export direct d’un spark data frame en parquet sur HDFS est une meilleure alternative : tu peux ensuite charger la table parquet en data frame R si tu souhaites la traiter en mémoire vive.\nContrairement au collect(), quelle que soit la taille de la table, exporter sous HDFS ne renverra jamais d’erreur, tandis que le collect()ne fonctionne pas pour les tables volumineuses.\nCet export direct n’est pas fonctionnel en spark local : encore une raison de passer sur le cluster Spark !\nSi tu souhaites voir ta table, tu peux collecter les premières lignes de celle-ci en combinant les fonctions head()et collect().\n\n\n\n\n\nSi tu as utilisé des fonctions telles que compute() dans ton programme, elles peuvent être à l’origine d’une erreur Out of memory : ces commandes ne sont pas bien adaptées à Spark et les résultats temporaires stockés en mémoire vive ne sont pas visibles dans l’espace dédié sur SparkUI onglet Storage, il semblerait que ces résultats temporaires soient stockés “au mauvais endroit” et occupent de l’espace sans que l’utilisateur y ait accès.\nPrivilégier les fonctions tbl_cache() avec sdf_register()pour forcer l’exécution du programme.\n\n\n\n\n\nForcer l’exécution du programme le plus tard possible pour permettre à Spark d’optimiser tout le programme et d’utiiliser les ressources de la manière la plus parcimonieuse possible.\nTester son programme sur une toute petite partie des tables, étape par étape, en forçant l’exécution (appel d’une action telle que print() ou collect() ) à chaque étape pour la phase de débuggage, puis supprimer toutes les actions intermédiaires non nécessaires du programme pour que Spark optimise tout le programme.\n\n\n\n\nPar souci de parcimonie et pour faciliter le travail de nos collègues sur des ressources partagées, cette option doit rester l’ultime recours pour éviter l’erreur Out of memory 🤝",
+    "crumbs": [
+      "Out of memory : help !"
+    ]
+  },
+  {
+    "objectID": "oom.html#collecter-le-moins-possible",
+    "href": "oom.html#collecter-le-moins-possible",
+    "title": "Out of memory",
+    "section": "",
+    "text": "L’export direct d’un spark data frame en parquet sur HDFS est une meilleure alternative : tu peux ensuite charger la table parquet en data frame R si tu souhaites la traiter en mémoire vive.\nContrairement au collect(), quelle que soit la taille de la table, exporter sous HDFS ne renverra jamais d’erreur, tandis que le collect()ne fonctionne pas pour les tables volumineuses.\nCet export direct n’est pas fonctionnel en spark local : encore une raison de passer sur le cluster Spark !\nSi tu souhaites voir ta table, tu peux collecter les premières lignes de celle-ci en combinant les fonctions head()et collect().",
+    "crumbs": [
+      "Out of memory : help !"
+    ]
+  },
+  {
+    "objectID": "oom.html#eviter-les-fonctions-arrow",
+    "href": "oom.html#eviter-les-fonctions-arrow",
+    "title": "Out of memory",
+    "section": "",
+    "text": "Si tu as utilisé des fonctions telles que compute() dans ton programme, elles peuvent être à l’origine d’une erreur Out of memory : ces commandes ne sont pas bien adaptées à Spark et les résultats temporaires stockés en mémoire vive ne sont pas visibles dans l’espace dédié sur SparkUI onglet Storage, il semblerait que ces résultats temporaires soient stockés “au mauvais endroit” et occupent de l’espace sans que l’utilisateur y ait accès.\nPrivilégier les fonctions tbl_cache() avec sdf_register()pour forcer l’exécution du programme.",
+    "crumbs": [
+      "Out of memory : help !"
+    ]
+  },
+  {
+    "objectID": "oom.html#laisser-spark-travailler-pour-nous",
+    "href": "oom.html#laisser-spark-travailler-pour-nous",
+    "title": "Out of memory",
+    "section": "",
+    "text": "Forcer l’exécution du programme le plus tard possible pour permettre à Spark d’optimiser tout le programme et d’utiiliser les ressources de la manière la plus parcimonieuse possible.\nTester son programme sur une toute petite partie des tables, étape par étape, en forçant l’exécution (appel d’une action telle que print() ou collect() ) à chaque étape pour la phase de débuggage, puis supprimer toutes les actions intermédiaires non nécessaires du programme pour que Spark optimise tout le programme.",
+    "crumbs": [
+      "Out of memory : help !"
+    ]
+  },
+  {
+    "objectID": "oom.html#si-tout-ceci-ne-fonctionne-pas-passer-à-la-configuration-traitement-très-lourd",
+    "href": "oom.html#si-tout-ceci-ne-fonctionne-pas-passer-à-la-configuration-traitement-très-lourd",
+    "title": "Out of memory",
+    "section": "",
+    "text": "Par souci de parcimonie et pour faciliter le travail de nos collègues sur des ressources partagées, cette option doit rester l’ultime recours pour éviter l’erreur Out of memory 🤝",
+    "crumbs": [
+      "Out of memory : help !"
+    ]
+  },
+  {
     "objectID": "configuration.html",
     "href": "configuration.html",
     "title": "Configuration",
     "section": "",
-    "text": "Il est nécessaire de configurer la session spark pour établir une connexion entre la session R et un cluster spark (appelée spark connection). Les paramètres à définir sont :\n\nLes ressources physiques utilisées :\n\npar le driver : avec spark.driver.memory\npar chaque worker avec spark.executor.memory et spark.executor.cores\nle nombre de worker avec spark.executor.instances\nLa file sur laquelle on travaille avec spark.yarn.queue\n\nla limite de taille des résulats qui peuvent être collectés par le driver avec spark.driver.maxResultSize. 0 correspond à l’absence de limite.\n\n\n\n\nconf &lt;- spark_config()\nconf[\"spark.driver.memory\"] &lt;- \"40Go\"\nconf[\"spark.executor.memory\"] &lt;- \"60Go\"\nconf[\"spark.executor.cores\"] &lt;- 4\nconf[\"spark.executor.instances\"] &lt;- 2\ncont[\"spark.yarn.queue\"] &lt;- \"prod\"\nconf[\"spark.driver.maxResultSize\"] &lt;- 0\n\nsc &lt;- spark_connect(master = \"yarn\", config = conf)\n\n\n\n\n\nlibrary(sparklyr)\nlibrary(dplyr)\nlibrary(dbplyr)\n\nconf &lt;- spark_config()\nconf[\"spark.driver.memory\"] &lt;- \"20Go\"\nconf[\"spark.executor.memory\"] &lt;- \"60Go\"\nconf[\"spark.executor.cores\"] &lt;- 4\nconf[\"spark.executor.instances\"] &lt;- 3\ncont[\"spark.yarn.queue\"] &lt;- \"prod\"\nconf[\"spark.driver.maxResultSize\"] &lt;- 0\n\nsc &lt;- spark_connect(master = \"yarn\", config = conf)\n\n\n\n\n\n\n\nTemps de connexion\n\n\n\nPour se connecter au cluster, il faut environ 5 minutes, à chaque connexion. Spark cluster n’est pas du tout adapté à des traitements légers (moins de 10 minutes).",
+    "text": "Il est nécessaire de configurer la session spark pour établir une connexion entre la session R et un cluster spark (appelée spark connection). Les paramètres à définir sont :\n\nLes ressources physiques utilisées :\n\npar le driver : avec spark.driver.memory\npar chaque worker avec spark.executor.memory et spark.executor.cores\nle nombre de worker avec spark.executor.instances\nLa file sur laquelle on travaille avec spark.yarn.queue\n\nla limite de taille des résulats qui peuvent être collectés par le driver avec spark.driver.maxResultSize. 0 correspond à l’absence de limite.\n\n\n\n\nconf &lt;- spark_config()\nconf[\"spark.driver.memory\"] &lt;- \"40Go\"\nconf[\"spark.executor.memory\"] &lt;- \"60Go\"\nconf[\"spark.executor.cores\"] &lt;- 4\nconf[\"spark.executor.instances\"] &lt;- 2\ncont[\"spark.yarn.queue\"] &lt;- \"prod\"\nconf[\"spark.driver.maxResultSize\"] &lt;- 0\n\nsc &lt;- spark_connect(master = \"yarn\", config = conf)\n\n\n\n\n\nlibrary(sparklyr)\nlibrary(dplyr)\nlibrary(dbplyr)\n\nconf &lt;- spark_config()\nconf[\"spark.driver.memory\"] &lt;- \"20Go\"\nconf[\"spark.executor.memory\"] &lt;- \"60Go\"\nconf[\"spark.executor.cores\"] &lt;- 4\nconf[\"spark.executor.instances\"] &lt;- 3\ncont[\"spark.yarn.queue\"] &lt;- \"prod\"\nconf[\"spark.driver.maxResultSize\"] &lt;- 0\n\nsc &lt;- spark_connect(master = \"yarn\", config = conf)\n\n\n\n\n\n\n\nImportantTemps de connexion\n\n\n\nPour se connecter au cluster, il faut environ 5 minutes, à chaque connexion. Spark cluster n’est pas du tout adapté à des traitements légers (moins de 10 minutes).",
     "crumbs": [
       "Configuration"
     ]
@@ -24,9 +94,26 @@
     "href": "configuration.html#traitement-très-lourd",
     "title": "Configuration",
     "section": "",
-    "text": "library(sparklyr)\nlibrary(dplyr)\nlibrary(dbplyr)\n\nconf &lt;- spark_config()\nconf[\"spark.driver.memory\"] &lt;- \"20Go\"\nconf[\"spark.executor.memory\"] &lt;- \"60Go\"\nconf[\"spark.executor.cores\"] &lt;- 4\nconf[\"spark.executor.instances\"] &lt;- 3\ncont[\"spark.yarn.queue\"] &lt;- \"prod\"\nconf[\"spark.driver.maxResultSize\"] &lt;- 0\n\nsc &lt;- spark_connect(master = \"yarn\", config = conf)\n\n\n\n\n\n\n\nTemps de connexion\n\n\n\nPour se connecter au cluster, il faut environ 5 minutes, à chaque connexion. Spark cluster n’est pas du tout adapté à des traitements légers (moins de 10 minutes).",
+    "text": "library(sparklyr)\nlibrary(dplyr)\nlibrary(dbplyr)\n\nconf &lt;- spark_config()\nconf[\"spark.driver.memory\"] &lt;- \"20Go\"\nconf[\"spark.executor.memory\"] &lt;- \"60Go\"\nconf[\"spark.executor.cores\"] &lt;- 4\nconf[\"spark.executor.instances\"] &lt;- 3\ncont[\"spark.yarn.queue\"] &lt;- \"prod\"\nconf[\"spark.driver.maxResultSize\"] &lt;- 0\n\nsc &lt;- spark_connect(master = \"yarn\", config = conf)\n\n\n\n\n\n\n\nImportantTemps de connexion\n\n\n\nPour se connecter au cluster, il faut environ 5 minutes, à chaque connexion. Spark cluster n’est pas du tout adapté à des traitements légers (moins de 10 minutes).",
     "crumbs": [
       "Configuration"
+    ]
+  },
+  {
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "About",
+    "section": "",
+    "text": "About this site\n\n1 + 1\n\n[1] 2"
+  },
+  {
+    "objectID": "ressources.html",
+    "href": "ressources.html",
+    "title": "Ressources",
+    "section": "",
+    "text": "Documentation 📚\n\nDocumentation CASD : Documentation Data Science\nDocumentation MiDAS : Documentation en ligne MiDAS\nDocumentation du package sparklyr : Package sparklyr\nManipulation des dates : fonctions dates spark hive\n\n\n\nExemple de traitement\nSur la bulle, tu trouveras dans C:\\Users\\Public\\Docuemnts\\TUTORIEL_CLUSTER un document quarto avec un exemple de traitement minimal de MiDAS en spark sur le cluster.",
+    "crumbs": [
+      "Ressources"
     ]
   },
   {
@@ -57,6 +144,76 @@
     "text": "Statistiques\n\nRésumé statistique : sdf_describe() , summary()ne fonctionne pas.\nDimension : sdf_dim, la fonction nrow()ne fonctionne pas.\nQuantiles approximatifs : le calcul des quantiles sur données distirbuées renvoie une approximation car toutes les données ne peuvent pas être rappatriées sur la même machine physique du fait de la volumétrie, sdf_quantile()",
     "crumbs": [
       "Fonctions spécifiques à sparklyr"
+    ]
+  },
+  {
+    "objectID": "bonnes_pratiques.html",
+    "href": "bonnes_pratiques.html",
+    "title": "Bonnes pratiques",
+    "section": "",
+    "text": "Spark et le mode local :\n\nun seul ordinateur alors que spark est fait pour plusieurs ordinateurs distincts\nbeaucoup moins de ressources disponibles sur la bulle que sur le cluster\nmauvaise gestion de l’allocation des ressources entre utilisateurs : pas faite pour plusieurs utilisateurs\nralentissements considérables et bugs : bloque les autres utilisateurs\n▶️spark n’est adapté que pour le cluster de calcul, la bulle pour faire du R sans spark sur des données peu volumineuses\n\n\n\n\n\n\n\n\n\nLes ordinateurs du cluster ont besoin de s’envoyer des données par le réseau : c’est la partie la plus lente d’un programme spark !\nSi j’augmente les ressources : par exemple, je réserve 3 ordinateurs du cluster plutôt que 2\n\nEffet puissance de calcul : plus de ressources pour faire les calculs = réduction du temps de calcul\nEffet augmentation des échanges réseau (shuffles) : augmentation du temps de calcul\nGêne des autre utilisateurs\n\n\n\n\n\n\n\n\n\n\nNoteCollecter, c’est quoi ?\n\n\n\nCollecter c’est utiliser l’instruction collect(). Elle permet de rapatrier l’ensemble des résultats du cluster vers la bulle et la session R de l’utilisateur en format R, par exemple des data.frames.\nCollect() :\n\nest une action : elle déclencher tous les calculs\nimplique des échanges réseau très importants : entre ordinateurs du cluster et du cluster vers la bulle : c’est extrêmement long, moins efficient que l’enregistrement sur disque directement depuis spark\nrappatrie les résultats (une table) dans la mémoire vive de R, qui est sur la bulle : si le résultat est volumineux, cela bloque les autres utilisateurs\n\n\n\nRecommandations :\n\nNe pas collecter des tables de plus de 15 Go\nUtiliser les autres méthodes proposées pour ne pas bloquer les utilisateurs qui ont besoin de R en mode classique\nNe pas changer les configurations\n\n\n\n\nIl faut impérativement fermer sa session spark après une session de travail. Deux moyens pour ça :\n\nfermer R Studio\nsi on ne ferme pas RStudio, utiliser la fonction spark_disconnect_all() dans son code\n\nSi on souhaite lancer un code le soir en partant, on n’oublie pas le spark_disconnect_all() à la fin du code.\n\n\n\n\n\n\nWarningPartage des ressources\n\n\n\nLes ressources réservés par un utilisateur ne sont libérées pour les autres que lorsqu’il se déconnecte. Ne pas se déconnecter, c’est bloquer les ressources. Si j’ai réservé deux ordinateurs du cluster sur 15, personne d’autres ne peut les réserver tant que je n’ai pas déconnecter ma session spark.\nNous fermerons les sessions ouvertes trop longtemps (départ de congés sans déconnexion) si des utilisateurs présents en ont besoin : risque de perte du travail non enregistré.\n\n\nPour ne pas bloquer les collègues 👨‍💻\n\n\n\nYarn permet de consulter la réservation des ressources par les utilisateurs.\nOn peut y accéder en copiant le lien suivant dans Google chrome sur la bulle (mettre en favori) : midares-deb11-nn-01.midares.local:8088/cluster\nVérifier que notre session est fermée et qu’on ne prend pas trop de ressources : yarn\n\n\n\n\n\nAide au passage d’un code sur le cluster\nProgrammer entre collègues\nContributions à la documentation MiDAS : section fiches, à l’aide de pull requests sur github",
+    "crumbs": [
+      "Bonnes pratiques"
+    ]
+  },
+  {
+    "objectID": "bonnes_pratiques.html#mode-local-inadapté-et-mauvaise-pratique",
+    "href": "bonnes_pratiques.html#mode-local-inadapté-et-mauvaise-pratique",
+    "title": "Bonnes pratiques",
+    "section": "",
+    "text": "Spark et le mode local :\n\nun seul ordinateur alors que spark est fait pour plusieurs ordinateurs distincts\nbeaucoup moins de ressources disponibles sur la bulle que sur le cluster\nmauvaise gestion de l’allocation des ressources entre utilisateurs : pas faite pour plusieurs utilisateurs\nralentissements considérables et bugs : bloque les autres utilisateurs\n▶️spark n’est adapté que pour le cluster de calcul, la bulle pour faire du R sans spark sur des données peu volumineuses",
+    "crumbs": [
+      "Bonnes pratiques"
+    ]
+  },
+  {
+    "objectID": "bonnes_pratiques.html#utiliser-les-configuratoins-recommandées",
+    "href": "bonnes_pratiques.html#utiliser-les-configuratoins-recommandées",
+    "title": "Bonnes pratiques",
+    "section": "",
+    "text": "Les ordinateurs du cluster ont besoin de s’envoyer des données par le réseau : c’est la partie la plus lente d’un programme spark !\nSi j’augmente les ressources : par exemple, je réserve 3 ordinateurs du cluster plutôt que 2\n\nEffet puissance de calcul : plus de ressources pour faire les calculs = réduction du temps de calcul\nEffet augmentation des échanges réseau (shuffles) : augmentation du temps de calcul\nGêne des autre utilisateurs",
+    "crumbs": [
+      "Bonnes pratiques"
+    ]
+  },
+  {
+    "objectID": "bonnes_pratiques.html#ne-pas-collecter",
+    "href": "bonnes_pratiques.html#ne-pas-collecter",
+    "title": "Bonnes pratiques",
+    "section": "",
+    "text": "NoteCollecter, c’est quoi ?\n\n\n\nCollecter c’est utiliser l’instruction collect(). Elle permet de rapatrier l’ensemble des résultats du cluster vers la bulle et la session R de l’utilisateur en format R, par exemple des data.frames.\nCollect() :\n\nest une action : elle déclencher tous les calculs\nimplique des échanges réseau très importants : entre ordinateurs du cluster et du cluster vers la bulle : c’est extrêmement long, moins efficient que l’enregistrement sur disque directement depuis spark\nrappatrie les résultats (une table) dans la mémoire vive de R, qui est sur la bulle : si le résultat est volumineux, cela bloque les autres utilisateurs\n\n\n\nRecommandations :\n\nNe pas collecter des tables de plus de 15 Go\nUtiliser les autres méthodes proposées pour ne pas bloquer les utilisateurs qui ont besoin de R en mode classique\nNe pas changer les configurations",
+    "crumbs": [
+      "Bonnes pratiques"
+    ]
+  },
+  {
+    "objectID": "bonnes_pratiques.html#fermer-sa-session",
+    "href": "bonnes_pratiques.html#fermer-sa-session",
+    "title": "Bonnes pratiques",
+    "section": "",
+    "text": "Il faut impérativement fermer sa session spark après une session de travail. Deux moyens pour ça :\n\nfermer R Studio\nsi on ne ferme pas RStudio, utiliser la fonction spark_disconnect_all() dans son code\n\nSi on souhaite lancer un code le soir en partant, on n’oublie pas le spark_disconnect_all() à la fin du code.\n\n\n\n\n\n\nWarningPartage des ressources\n\n\n\nLes ressources réservés par un utilisateur ne sont libérées pour les autres que lorsqu’il se déconnecte. Ne pas se déconnecter, c’est bloquer les ressources. Si j’ai réservé deux ordinateurs du cluster sur 15, personne d’autres ne peut les réserver tant que je n’ai pas déconnecter ma session spark.\nNous fermerons les sessions ouvertes trop longtemps (départ de congés sans déconnexion) si des utilisateurs présents en ont besoin : risque de perte du travail non enregistré.\n\n\nPour ne pas bloquer les collègues 👨‍💻",
+    "crumbs": [
+      "Bonnes pratiques"
+    ]
+  },
+  {
+    "objectID": "bonnes_pratiques.html#yarn",
+    "href": "bonnes_pratiques.html#yarn",
+    "title": "Bonnes pratiques",
+    "section": "",
+    "text": "Yarn permet de consulter la réservation des ressources par les utilisateurs.\nOn peut y accéder en copiant le lien suivant dans Google chrome sur la bulle (mettre en favori) : midares-deb11-nn-01.midares.local:8088/cluster\nVérifier que notre session est fermée et qu’on ne prend pas trop de ressources : yarn",
+    "crumbs": [
+      "Bonnes pratiques"
+    ]
+  },
+  {
+    "objectID": "bonnes_pratiques.html#mutualiser-les-expériences",
+    "href": "bonnes_pratiques.html#mutualiser-les-expériences",
+    "title": "Bonnes pratiques",
+    "section": "",
+    "text": "Aide au passage d’un code sur le cluster\nProgrammer entre collègues\nContributions à la documentation MiDAS : section fiches, à l’aide de pull requests sur github",
+    "crumbs": [
+      "Bonnes pratiques"
     ]
   },
   {
@@ -501,33 +658,13 @@
     "text": "Merci pour votre attention !"
   },
   {
-    "objectID": "dates.html",
-    "href": "dates.html",
-    "title": "Les dates avec sparklyr",
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Atelier d’initiation à spark avec R en mode cluster",
     "section": "",
-    "text": "Les fonctions de lubridate()ne sont pas adaptées aux spark_data_frames.\n\nConvertir une chaîne de caractère de la forme AAAA-MM-DD en Date : même fonction qu’en R base\n\ndate_1 &lt;- as.Date(\"2024-05-26\")\n\nCalculer une durée entre deux dates : fonction datediff()\n\nPJC_spark &lt;- spark_read_parquet(sc,\n                                path = \"hdfs:///dataset/MiDAS_v4/pjc.parquet\",\n                                memory = FALSE)\n\nduree_pjc_df &lt;- PJC_spark %&gt;%\n  rename(date_fin_pjc = as.Date(KDFPJ),\n         date_deb_pjc = as.Date(KDDPJ)) %&gt;%\n  mutate(duree_pjc = datediff(date_fin_pjc, date_deb_pjc) + 1) %&gt;%\n  head(5)\n\nAjouter ou soustraire des jours ou des mois à une date : date_add(), date_sub() et add_months().\n\nduree_pjc_bis_df &lt;- duree_pjc_df %&gt;%\n  mutate(duree_pjc_plus_5 = date_add(duree_pjc, int(5)),\n         duree_pjc_moins_5 = date_sub(duree_pjc, int(5)),\n         duree_pjc_plus_1_mois = add_months(duree_pjc, int(1))) %&gt;%\n  head(5)\n\n\n\n\n\n\n\n\nFormat\n\n\n\nLe int() est important car ces fonctions Hive n’acceptent que les entiers pour l’ajout de jours : taper uniquement 5 est considéré comme un flottant dans R.\n\n\n\n\n\n\n\n\nAdd months\n\n\n\nSi la date en entrée est le dernier jour d’un mois, la date retournée avec add_months(date_entree, int(1)) sera le dernier jour calendaire du mois suivant.\n\n\nSi tu as besoin d’autres fonctions de dates, tu peux consulter le site fonctions dates spark hive",
+    "text": "Bienvenue ! 👋\nCe site est une aide à l’utilisation de spark avec R sur un cluster de calcul Spark à destination de débutants en R ne connaissant pas du tout le fonctionnement et la programmation en spark.\nTu vas apprendre ici (je l’espère 🙂) :\n\nl’intérêt d’utiliser Spark pour manipuler des données volumineuses telles que l’appariement MiDAS ⏳\nle fonctionnement de Spark sur un cluster de calcul 🔢\nl’utilisation de Spark sous R avec le package sparklyr, très facile si tu connais dplyr 👨‍💻\nquelques pistes d’optimisation d’un programme avec Spark 💡\n\nDe quoi profiter ensuite du temps gagné grâce au calcul distribué ! 🚀",
     "crumbs": [
-      "Les dates avec sparklyr"
-    ]
-  },
-  {
-    "objectID": "dates.html#dates",
-    "href": "dates.html#dates",
-    "title": "Les dates avec sparklyr",
-    "section": "",
-    "text": "Les fonctions de lubridate()ne sont pas adaptées aux spark_data_frames.\n\nConvertir une chaîne de caractère de la forme AAAA-MM-DD en Date : même fonction qu’en R base\n\ndate_1 &lt;- as.Date(\"2024-05-26\")\n\nCalculer une durée entre deux dates : fonction datediff()\n\nPJC_spark &lt;- spark_read_parquet(sc,\n                                path = \"hdfs:///dataset/MiDAS_v4/pjc.parquet\",\n                                memory = FALSE)\n\nduree_pjc_df &lt;- PJC_spark %&gt;%\n  rename(date_fin_pjc = as.Date(KDFPJ),\n         date_deb_pjc = as.Date(KDDPJ)) %&gt;%\n  mutate(duree_pjc = datediff(date_fin_pjc, date_deb_pjc) + 1) %&gt;%\n  head(5)\n\nAjouter ou soustraire des jours ou des mois à une date : date_add(), date_sub() et add_months().\n\nduree_pjc_bis_df &lt;- duree_pjc_df %&gt;%\n  mutate(duree_pjc_plus_5 = date_add(duree_pjc, int(5)),\n         duree_pjc_moins_5 = date_sub(duree_pjc, int(5)),\n         duree_pjc_plus_1_mois = add_months(duree_pjc, int(1))) %&gt;%\n  head(5)\n\n\n\n\n\n\n\n\nFormat\n\n\n\nLe int() est important car ces fonctions Hive n’acceptent que les entiers pour l’ajout de jours : taper uniquement 5 est considéré comme un flottant dans R.\n\n\n\n\n\n\n\n\nAdd months\n\n\n\nSi la date en entrée est le dernier jour d’un mois, la date retournée avec add_months(date_entree, int(1)) sera le dernier jour calendaire du mois suivant.\n\n\nSi tu as besoin d’autres fonctions de dates, tu peux consulter le site fonctions dates spark hive",
-    "crumbs": [
-      "Les dates avec sparklyr"
-    ]
-  },
-  {
-    "objectID": "ressources.html",
-    "href": "ressources.html",
-    "title": "Ressources",
-    "section": "",
-    "text": "Documentation 📚\n\nDocumentation CASD : Documentation Data Science\nDocumentation MiDAS : Documentation en ligne MiDAS\nDocumentation du package sparklyr : Package sparklyr\nManipulation des dates : fonctions dates spark hive\n\n\n\nExemple de traitement\nSur la bulle, tu trouveras dans C:\\Users\\Public\\Docuemnts\\TUTORIEL_CLUSTER un document quarto avec un exemple de traitement minimal de MiDAS en spark sur le cluster.",
-    "crumbs": [
-      "Ressources"
+      "Introduction"
     ]
   },
   {
@@ -805,7 +942,7 @@
     "href": "slides_v.html#quelques-fonctions-r-pas-encore-traduites",
     "title": "Initiation à Spark avec R en mode cluster",
     "section": "Quelques fonctions R pas encore traduites",
-    "text": "Quelques fonctions R pas encore traduites\n\nDatesTableauStatistiques\n\n\nLes fonctions de lubridate()ne sont pas adaptées au spark_data_frames.\n\nConvertir une chaîne de caractère de la forme AAAA-MM-DD en Date\n\ndate_1 &lt;- as.Date(\"2024-05-26\")\n\nCalculer une durée entre deux dates\n\nPJC_spark &lt;- spark_read_parquet(sc,\n                                path = \"hdfs:///dataset/MiDAS_v4/pjc.parquet\",\n                                memory = FALSE)\n\nduree_pjc_df &lt;- PJC_spark %&gt;%\n  rename(date_fin_pjc = as.Date(KDFPJ),\n         date_deb_pjc = as.Date(KDDPJ)) %&gt;%\n  mutate(duree_pjc = datediff(date_fin_pjc, date_deb_pjc) + 1) %&gt;%\n  head(5)\n\nAjouter ou soustraire des jours ou des mois à une date\n\nduree_pjc_bis_df &lt;- duree_pjc_df %&gt;%\n  mutate(duree_pjc_plus_5 = date_add(duree_pjc, int(5)),\n         duree_pjc_moins_5 = date_sub(duree_pjc, int(5)),\n         duree_pjc_plus_1_mois = add_months(duree_pjc, int(1))) %&gt;%\n  head(5)\n\n\n\n\n\n\n\n\nAdd_months\n\n\nSi la date en entrée est le dernier jour d’un mois, la date retournée avec add_months(date_entree, int(1)) sera le dernier jour calendaire du mois suivant.\n\n\n\n\n\n\n\n\n\nFormat\n\n\nLe int() est important car ces fonctions Hive n’accepte que les entiers pour l’ajout de jours : taper uniquement 5 est considéré comme un flottant dans R.\n\n\n\n\n\n\nTri dans un groupe pour effectuer un calcul séquentiel\n\nODD_spark &lt;- spark_read_parquet(sc,\n                                path = \"hdfs:///dataset/MiDAS_v4/odd.parquet\",\n                                memory = FALSE)\n\nODD_premier &lt;- ODD_spark %&gt;%\n  group_by(id_midas) %&gt;%\n  window_order(id_midas, KDPOD) %&gt;%\n  mutate(date_premier_droit = first(KDPOD)) %&gt;%\n  ungroup() %&gt;%\n  distinct(id_midas, KROD3, date_premier_droit) %&gt;%\n  head(5)\n\nTri pour une sortie : sdf_sort() , arrange() ne fonctionne pas\nConcaténer les lignes (ou les colonnes sdf_bind_cols())\n\nODD_1 &lt;- ODD_spark %&gt;%\n  filter(KDPOD &lt;= as.Date(\"2017-12-31\")) %&gt;%\n  mutate(groupe = \"temoins\")\n\nODD_2 &lt;- ODD_spark %&gt;%\n  filter(KDPOD &gt;= as.Date(\"2021-12-31\")) %&gt;%\n  mutate(groupe = \"traites\")\n\nODD_evaluation &lt;- sdf_bind_rows(ODD_1, ODD_2)\n\nDédoublonner une table\n\ndroits_dans_PJC &lt;- PJC_spark %&gt;%\n  sdf_distinct(id_midas, KROD3)\n\nprint(head(droits_dans_PJC, 5))\n\nPJC_dedoublonnee &lt;- PJC_spark %&gt;%\n  sdf_drop_duplicates()\n\nprint(head(PJC_dedoublonnee, 5))\n\nPivot : les fonctions du packag tidyr ne fonctionnent pas sur données spark\n\nODD_sjr_moyen &lt;- ODD_spark %&gt;%\n  mutate(groupe = ifelse(KDPOD &lt;= as.Date(\"2020-12-31\"), \"controles\", \"traites\")) %&gt;%\n  sdf_pivot(groupe ~ KCRGC,\n    fun.aggregate = list(KQCSJP = \"mean\")\n  )\n\n\n\n\n\nRésumé statistique : sdf_describe() , summary()ne fonctionne pas.\nDimension : sdf_dim, la fonction nrow()ne fonctionne pas.\nQuantiles approximatifs : le calcul des quantiles sur données distirbuées renvoie une approximation car toutes les données ne peuvent pas être rappatriées sur la même machine physique du fait de la volumétrie, sdf_quantile()\nEchantillonnage aléatoire : sdf_random_split",
+    "text": "Quelques fonctions R pas encore traduites\n\nDatesTableauStatistiques\n\n\nLes fonctions de lubridate()ne sont pas adaptées au spark_data_frames.\n\nConvertir une chaîne de caractère de la forme AAAA-MM-DD en Date\n\n\n    date_1 &lt;- as.Date(\"2024-05-26\")\n\n\nCalculer une durée entre deux dates\n\n\n    PJC_spark &lt;- spark_read_parquet(sc,\n                                    path = \"hdfs:///dataset/MiDAS_v4/pjc.parquet\",\n                                    memory = FALSE)\n\n    duree_pjc_df &lt;- PJC_spark %&gt;%\n      rename(date_fin_pjc = as.Date(KDFPJ),\n             date_deb_pjc = as.Date(KDDPJ)) %&gt;%\n      mutate(duree_pjc = datediff(date_fin_pjc, date_deb_pjc) + 1) %&gt;%\n      head(5)\n\n\nAjouter ou soustraire des jours ou des mois à une date\n\n\n    duree_pjc_bis_df &lt;- duree_pjc_df %&gt;%\n      mutate(duree_pjc_plus_5 = date_add(duree_pjc, int(5)),\n             duree_pjc_moins_5 = date_sub(duree_pjc, int(5)),\n             duree_pjc_plus_1_mois = add_months(duree_pjc, int(1))) %&gt;%\n      head(5)\n\n\n\n\n\n\n\nAdd_months\n\n\nSi la date en entrée est le dernier jour d’un mois, la date retournée avec add_months(date_entree, int(1)) sera le dernier jour calendaire du mois suivant.\n\n\n\n\n\n\n\n\n\nFormat\n\n\nLe int() est important car ces fonctions Hive n’accepte que les entiers pour l’ajout de jours : taper uniquement 5 est considéré comme un flottant dans R.\n\n\n\n\n\n\nTri dans un groupe pour effectuer un calcul séquentiel\n\n\n    ODD_spark &lt;- spark_read_parquet(sc,\n                                    path = \"hdfs:///dataset/MiDAS_v4/odd.parquet\",\n                                    memory = FALSE)\n\n    ODD_premier &lt;- ODD_spark %&gt;%\n      group_by(id_midas) %&gt;%\n      window_order(id_midas, KDPOD) %&gt;%\n      mutate(date_premier_droit = first(KDPOD)) %&gt;%\n      ungroup() %&gt;%\n      distinct(id_midas, KROD3, date_premier_droit) %&gt;%\n      head(5)\n\n\nTri pour une sortie : sdf_sort() , arrange() ne fonctionne pas\nConcaténer les lignes (ou les colonnes sdf_bind_cols())\n\nODD_1 &lt;- ODD_spark %&gt;%\n  filter(KDPOD &lt;= as.Date(\"2017-12-31\")) %&gt;%\n  mutate(groupe = \"temoins\")\n\nODD_2 &lt;- ODD_spark %&gt;%\n  filter(KDPOD &gt;= as.Date(\"2021-12-31\")) %&gt;%\n  mutate(groupe = \"traites\")\n\nODD_evaluation &lt;- sdf_bind_rows(ODD_1, ODD_2)\n\nDédoublonner une table\n\n\n    droits_dans_PJC &lt;- PJC_spark %&gt;%\n      sdf_distinct(id_midas, KROD3)\n\n    print(head(droits_dans_PJC, 5))\n\n    PJC_dedoublonnee &lt;- PJC_spark %&gt;%\n      sdf_drop_duplicates()\n\n    print(head(PJC_dedoublonnee, 5))\n\n\nPivot : les fonctions du packag tidyr ne fonctionnent pas sur données spark\n\n\n    ODD_sjr_moyen &lt;- ODD_spark %&gt;%\n      mutate(groupe = ifelse(KDPOD &lt;= as.Date(\"2020-12-31\"), \"controles\", \"traites\")) %&gt;%\n      sdf_pivot(groupe ~ KCRGC,\n        fun.aggregate = list(KQCSJP = \"mean\")\n      )\n\n\n\n\nRésumé statistique : sdf_describe() , summary()ne fonctionne pas.\nDimension : sdf_dim, la fonction nrow()ne fonctionne pas.\nQuantiles approximatifs : le calcul des quantiles sur données distirbuées renvoie une approximation car toutes les données ne peuvent pas être rappatriées sur la même machine physique du fait de la volumétrie, sdf_quantile()\nEchantillonnage aléatoire : sdf_random_split",
     "crumbs": [
       "Slides"
     ]
@@ -1031,11 +1168,11 @@
     ]
   },
   {
-    "objectID": "slides_v.html#jointures-un-cas-particulier",
-    "href": "slides_v.html#jointures-un-cas-particulier",
+    "objectID": "slides_v.html#la-longueur-du-plan-logique",
+    "href": "slides_v.html#la-longueur-du-plan-logique",
     "title": "Initiation à Spark avec R en mode cluster",
-    "section": "Jointures : un cas particulier",
-    "text": "Jointures : un cas particulier\nPour effectuer ce type de jointure avec deux tables de volumétries différentes : A est petite, B est très volumineuse\n\nSolution rapide :\n\ntable_finale &lt;- table_volumineuse_comme_PJC %&gt;%\n  right_join(petite_table_mon_champ)\n\nSolution lente :\n\ntable_finale &lt;- petite_table_mon_champ %&gt;%\n  left_join(table_volumineuse_comme_PJC)",
+    "section": "La longueur du plan logique",
+    "text": "La longueur du plan logique\nFournir un plan logique très long sans déclencher d’action peut créer une erreur en spark : spark “refuse” d’optimiser un plan si long.\nLa bonne pratique consiste à “cacher” des résultats intermédiaires, pour déclencher l’exécution régulièrement et conserver les résultats en mémoire, tout en nettoyant la mémoire des résultat intermédiaires précédents :\n\ntable_1 &lt;- mon_champ %&gt;%\n  left_join(table_2) %&gt;%\n  mutate(variable_1 = indicatrice_1 + indicatrice_2,\n         regroupement_variable_2 = case_when(variable_2 %in% c(1,2,3) ~ \"A\",\n                                             variable_2 %in% c(5,8,9) ~ \"B\",\n                                             TRUE ~ \"C\")) %&gt;%\n  left_join(table_3) %&gt;%\n  sdf_register(\"table_1\")\n\ntbl_cache(sc, \"table_1\")\n\ntable_4 &lt;- table_1 %&gt;%\n  left_join(table_5) %&gt;%\n  mutate(variable_y = ifelse(variable_x &gt; 50, 1, 0)) %&gt;%\n  sdf_register(\"table_4\")\n\ntbl_cache(sc, \"table_4\")\n\ntbl_uncache(sc, \"table_1\")",
     "crumbs": [
       "Slides"
     ]
@@ -1096,6 +1233,66 @@
     "title": "Initiation à Spark avec R en mode cluster",
     "section": "Le stockage distribué avec HDFS",
     "text": "Le stockage distribué avec HDFS",
+    "crumbs": [
+      "Slides"
+    ]
+  },
+  {
+    "objectID": "slides_v.html#calcul-distribué-calcul-vectoriel",
+    "href": "slides_v.html#calcul-distribué-calcul-vectoriel",
+    "title": "Initiation à Spark avec R en mode cluster",
+    "section": "Calcul distribué, calcul vectoriel",
+    "text": "Calcul distribué, calcul vectoriel\n\nLes opérations les plus coûteuses en spark sont :\n\nles opérations par groupe de lignes, qui impliquent des shuffles, ou échanges de données entre workers via le réseau\nles opérations d’écriture sur disque avec spark_write_parquet()\nles opérations 🛑non vectorisées🛑, qui entraînent des shuffles lourds et inutiles : boucles for, jointures volumineuses…\n\n\nLes données MiDAS sont structurées de manière proche d’une base de données relationnelles : leur traitement nécessite des jointures. Une partie des données sont mensuelles : cette structure peut inciter à programmer en boucle for sur le mois, ce qui est long et inefficient.",
+    "crumbs": [
+      "Slides"
+    ]
+  },
+  {
+    "objectID": "slides_v.html#calcul-distribué-calcul-vectoriel-boucles-for",
+    "href": "slides_v.html#calcul-distribué-calcul-vectoriel-boucles-for",
+    "title": "Initiation à Spark avec R en mode cluster",
+    "section": "Calcul distribué, calcul vectoriel : boucles for",
+    "text": "Calcul distribué, calcul vectoriel : boucles for\n\nCas d’usage : je veux repérer si un groupe d’individus est au RSA un mois, deux mois, trois mois etc. après la sortie de l’assurance-chômage\nJ’utilise :\n\nle FNA, dont j’extraie une table individu avec le mois de sortie de l’assurance-chômage, table sorties\nles tables mensuelles de la CNAF cnaf_prestations_mois_m",
+    "crumbs": [
+      "Slides"
+    ]
+  },
+  {
+    "objectID": "slides_v.html#calcul-distribué-calcul-vectoriel-boucles-for-1",
+    "href": "slides_v.html#calcul-distribué-calcul-vectoriel-boucles-for-1",
+    "title": "Initiation à Spark avec R en mode cluster",
+    "section": "Calcul distribué, calcul vectoriel : boucles for",
+    "text": "Calcul distribué, calcul vectoriel : boucles for\n\nSolution 1Solution 2Solution 3\n\n\nLance 12 X tous les mois de sortie jobs spark, beaucoup de shuffles\n\nlibrary(dplyr)\nlibrary(sparklyr)\n\nres_all &lt;- NULL\n\nfor (mois in mois_sortie_vec) { # 1ère boucle sur les mois de sorties\n  # Sous-ensemble des sortants de ce mois\n  sorties_mois &lt;- sorties %&gt;%\n    filter(mois_sortie == !!mois) %&gt;%\n    select(id, mois_sortie)\n\n  for (h in 1:12) { # 2ème boucle sur les 12 mois d'horizon\n    \n    mois_cible &lt;- as.Date(mois) + months(h)\n    nom_tbl &lt;- paste0(\"cnaf_prestations_\", format(mois_cible, \"%Y_%m\"))\n    table_mois_cnaf &lt;- spark_read_parquet(paste0(chemin_table, nom_tbl))\n\n    perception_RSA_mois_h &lt;- sorties_mois %&gt;%\n      mutate(mois_h = sql(paste0(\"add_months(mois_sortie, \", h, \")\"))) %&gt;%\n      inner_join(table_mois_cnaf, by = c(\"id\" = \"id\", \"mois_h\" = \"mois\")) %&gt;%\n      mutate(perception_RSA = ifelse(RSAVERS == \"C\" & MTRSAVER &gt; 0, 1, 0)) %&gt;%\n      transmute(id, mois_sortie, h = !!h, perception_RSA)\n\n    # empiler et mettre en cache le résultat\n    res_all &lt;- if (is.null(res_all)) perception_RSA_mois_h else sdf_bind_rows(res_all, perception_RSA_mois_h) %&gt;% sdf_register(paste0(\"temp\", mois, h))\n  tbl_cache(sc, paste0(\"temp\", mois, h))\n  }\n}\n\n\n\nLance 12 jobs et une action à chaque tour\n\nfor (mois in liste_mois) {\n  \n  nom_tbl &lt;- paste0(\"cnaf_prestations_\", format(mois, \"%Y_%m\"))\n  table_mois_cnaf &lt;- spark_read_parquet(paste0(chemin_table, nom_tbl))\n\n  # Jointure globale, calcul de l'horizon h \n  perception_RSA_mois &lt;- table_mois_cnaf %&gt;%\n    inner_join(sorties, by = \"id\") %&gt;%\n    mutate(h = sql(\"cast(months_between(mois, mois_sortie) as int)\")) %&gt;%\n    filter(h &gt;= 1, h &lt;= 12) %&gt;%\n    select(id, mois_sortie, h, prest)\n\n  # Cache pour enregistrer le résultat en mémoire\n  perception_RSA_mois_cache &lt;- perception_RSA_mois %&gt;% sdf_register(paste0(\"temp\", mois))\n  tbl_cache(sc, paste0(\"temp\", mois))\n\n  res_stack &lt;- if (is.null(res_stack)) joined_cached else sdf_bind_rows(res_stack, joined_cached)\n}\n\n\n\nMeilleure solution : un seul plan logique que Catalyst peut entièrement optimsier, en limitant les shuffles, beaucoup plus rapide\n\n# Charger la première table CNAF\nnom_1 &lt;- paste0(\"cnaf_prestations_\", format(as.Date(\"2023-01-01\"), \"%Y_%m\"))\ncnaf_total &lt;- spark_read_parquet(paste0(chemin_table, nom_1))\n\n# Empiler les autres\nfor (mois in liste_mois) {\n  \n  nom_tbl &lt;- paste0(\"cnaf_prestations_\", format(mois, \"%Y_%m\"))\n  table_mois_cnaf &lt;- spark_read_parquet(paste0(chemin_table, nom_tbl))\n  \n  cnaf_total &lt;- sdf_bind_rows(cnaf_total, table_mois_cnaf) %&gt;%\n    sdf_register(\"cnaf_total\")\n  tbl_cache(sc, \"cnaf_total\")\n}\n\n\n# Joindre UNE fois avec la table des sorties (broadcast si petit)\nsorties_b &lt;- sdf_broadcast(sorties %&gt;%\n  select(id, mois_sortie)\n)\n\nperception_RSA_horizon &lt;- cnaf_total %&gt;%\n  inner_join(sorties_b, by = \"id\") %&gt;%\n  mutate(\n    h = sql(\"cast(months_between(mois, mois_sortie) as int)\")\n  ) %&gt;%\n  filter(h &gt;= 1, h &lt;= 12) %&gt;%\n  select(id, mois_sortie, h, prest)",
+    "crumbs": [
+      "Slides"
+    ]
+  },
+  {
+    "objectID": "slides_v.html#calcul-distribué-calcul-vectoriel-jointures",
+    "href": "slides_v.html#calcul-distribué-calcul-vectoriel-jointures",
+    "title": "Initiation à Spark avec R en mode cluster",
+    "section": "Calcul distribué, calcul vectoriel : jointures",
+    "text": "Calcul distribué, calcul vectoriel : jointures\nUne jointure implique pour spark de rappatrier les lignes avec les mêmes valeurs de clef sur le même worker : les jointures engendrent des shuffles.\n\nLorsque l’on joint une grosse table avec une petite table, Spark peut optimiser le calcul en utilisant un broadcast join : la petite table est diffusée en entier sur chaque worker, ce qui évite un shuffle massif.\n\nres &lt;- grosse_table %&gt;%\n  inner_join(sdf_broadcast(petite_table), by = \"clef\")\n\n\n👉 Ici petite_table est diffusée (broadcast) sur tous les workers : chaque partition de grosse_table fait alors le join localement, sans transfert réseau coûteux.",
+    "crumbs": [
+      "Slides"
+    ]
+  },
+  {
+    "objectID": "slides_v.html#calcul-distribué-calcul-vectoriel-jointures-1",
+    "href": "slides_v.html#calcul-distribué-calcul-vectoriel-jointures-1",
+    "title": "Initiation à Spark avec R en mode cluster",
+    "section": "Calcul distribué, calcul vectoriel : jointures",
+    "text": "Calcul distribué, calcul vectoriel : jointures\nBroadcast automatique : par défaut, Spark choisit automatiquement le broadcast join si la table à diffuser fait moins de 10 MB (paramètre configurable).\nAu-delà, il utilise un shuffle join classique (plus lent).\nAstuce right_join : dans sparklyr, la position de la table peut influencer le plan choisi par Spark :\npetite_table %&gt;% left_join(grosse_table) → Spark n’essaie pas forcément de diffuser la petite.\ngrosse_table %&gt;% right_join(petite_table) → Spark choisit plus volontiers un broadcast join.\n👉 Bonne pratique : forcer avec sdf_broadcast() quand on sait que la table est petite, plutôt que de compter sur ce comportement implicite.",
+    "crumbs": [
+      "Slides"
+    ]
+  },
+  {
+    "objectID": "slides_v.html#calcule-distribué-calcul-vectoriel",
+    "href": "slides_v.html#calcule-distribué-calcul-vectoriel",
+    "title": "Initiation à Spark avec R en mode cluster",
+    "section": "Calcule distribué, calcul vectoriel",
+    "text": "Calcule distribué, calcul vectoriel\n\n\n\n\n\n\n\n\nOpération logique\nSolution non vectorielle\nSolution vectorielle\n\n\n\n\nsituation à m + 1, 2…\nBoucle for sur les mois\nutilisation de lag() et lead(), ou auto jointure sur les dates\n\n\nRépéter une fonction\nuser defined functions (UDF)\néviter les UDF\n\n\nopération groupe de lignes\ngroup_by %&gt;% mutate %&gt;% distinct\ngroup_by %&gt;% summarise\n\n\njoindre petite table avec grosse table\npetite_table %&gt;% left_join(grosse_table)\nbroadcast join\n\n\njoindre deux grosses tables\nboucle for en divisant les tables en petits morceaux\nunique jointure et partition par la clef de jointure\n\n\nconstruire un panel cylindré\nboucle for\ncross_join() de deux tables",
     "crumbs": [
       "Slides"
     ]
@@ -1258,143 +1455,6 @@
     "text": "Le stockage distribué avec HDFS\nHadoop Distributed File System (HDFS)\n\nstockage sur différentes machines : les différents ordinateurs workers du cluster\ndonnées divisées en blocs plus petits de taille fixe et répartis sur les machines : aucune table de MiDAS n’existe en entier sur le cluster\nchaque bloc est répliqué trois fois : il existe trois fois les 10 premières lignes de la table FNA sur trois ordinateurs différents du cluster (résilience)\nun NameNode supervise les métadonnées et gère la structure du système de fichiers : il sait où sont quels fichiers\nles DataNodes stockent effectivement les blocs de données : les datanodes sont en fait les disques durs des workers du cluster, chaque ordinateur du cluster dispose d’un disque avec une partie des données MiDAS\nle système HDFS est relié à la bulle Midares : possible de charger des données en clique-bouton de la bulle vers HDFS de manière très rapide et de télécharger des tables de HDFS pour les récupérer en local",
     "crumbs": [
       "Slides"
-    ]
-  },
-  {
-    "objectID": "bonnes_pratiques.html",
-    "href": "bonnes_pratiques.html",
-    "title": "Bonnes pratiques",
-    "section": "",
-    "text": "Spark et le mode local :\n\nun seul ordinateur alors que spark est fait pour plusieurs ordinateurs distincts\nbeaucoup moins de ressources disponibles sur la bulle que sur le cluster\nmauvaise gestion de l’allocation des ressources entre utilisateurs : pas faite pour plusieurs utilisateurs\nralentissements considérables et bugs : bloque les autres utilisateurs\n▶️spark n’est adapté que pour le cluster de calcul, la bulle pour faire du R sans spark sur des données peu volumineuses\n\n\n\n\n\n\n\n\n\nLes ordinateurs du cluster ont besoin de s’envoyer des données par le réseau : c’est la partie la plus lente d’un programme spark !\nSi j’augmente les ressources : par exemple, je réserve 3 ordinateurs du cluster plutôt que 2\n\nEffet puissance de calcul : plus de ressources pour faire les calculs = réduction du temps de calcul\nEffet augmentation des échanges réseau (shuffles) : augmentation du temps de calcul\nGêne des autre utilisateurs\n\n\n\n\n\n\n\n\n\n\nCollecter, c’est quoi ?\n\n\n\nCollecter c’est utiliser l’instruction collect(). Elle permet de rapatrier l’ensemble des résultats du cluster vers la bulle et la session R de l’utilisateur en format R, par exemple des data.frames.\nCollect() :\n\nest une action : elle déclencher tous les calculs\nimplique des échanges réseau très importants : entre ordinateurs du cluster et du cluster vers la bulle : c’est extrêmement long, moins efficient que l’enregistrement sur disque directement depuis spark\nrappatrie les résultats (une table) dans la mémoire vive de R, qui est sur la bulle : si le résultat est volumineux, cela bloque les autres utilisateurs\n\n\n\nRecommandations :\n\nNe pas collecter des tables de plus de 15 Go\nUtiliser les autres méthodes proposées pour ne pas bloquer les utilisateurs qui ont besoin de R en mode classique\nNe pas changer les configurations\n\n\n\n\nIl faut impérativement fermer sa session spark après une session de travail. Deux moyens pour ça :\n\nfermer R Studio\nsi on ne ferme pas RStudio, utiliser la fonction spark_disconnect_all() dans son code\n\nSi on souhaite lancer un code le soir en partant, on n’oublie pas le spark_disconnect_all() à la fin du code.\n\n\n\n\n\n\nPartage des ressources\n\n\n\nLes ressources réservés par un utilisateur ne sont libérées pour les autres que lorsqu’il se déconnecte. Ne pas se déconnecter, c’est bloquer les ressources. Si j’ai réservé deux ordinateurs du cluster sur 15, personne d’autres ne peut les réserver tant que je n’ai pas déconnecter ma session spark.\nNous fermerons les sessions ouvertes trop longtemps (départ de congés sans déconnexion) si des utilisateurs présents en ont besoin : risque de perte du travail non enregistré.\n\n\nPour ne pas bloquer les collègues 👨‍💻\n\n\n\nYarn permet de consulter la réservation des ressources par les utilisateurs.\nOn peut y accéder en copiant le lien suivant dans Google chrome sur la bulle (mettre en favori) : midares-deb11-nn-01.midares.local:8088/cluster\nVérifier que notre session est fermée et qu’on ne prend pas trop de ressources : yarn\n\n\n\n\n\nAide au passage d’un code sur le cluster\nProgrammer entre collègues\nContributions à la documentation MiDAS : section fiches, à l’aide de pull requests sur github",
-    "crumbs": [
-      "Bonnes pratiques"
-    ]
-  },
-  {
-    "objectID": "bonnes_pratiques.html#mode-local-inadapté-et-mauvaise-pratique",
-    "href": "bonnes_pratiques.html#mode-local-inadapté-et-mauvaise-pratique",
-    "title": "Bonnes pratiques",
-    "section": "",
-    "text": "Spark et le mode local :\n\nun seul ordinateur alors que spark est fait pour plusieurs ordinateurs distincts\nbeaucoup moins de ressources disponibles sur la bulle que sur le cluster\nmauvaise gestion de l’allocation des ressources entre utilisateurs : pas faite pour plusieurs utilisateurs\nralentissements considérables et bugs : bloque les autres utilisateurs\n▶️spark n’est adapté que pour le cluster de calcul, la bulle pour faire du R sans spark sur des données peu volumineuses",
-    "crumbs": [
-      "Bonnes pratiques"
-    ]
-  },
-  {
-    "objectID": "bonnes_pratiques.html#utiliser-les-configuratoins-recommandées",
-    "href": "bonnes_pratiques.html#utiliser-les-configuratoins-recommandées",
-    "title": "Bonnes pratiques",
-    "section": "",
-    "text": "Les ordinateurs du cluster ont besoin de s’envoyer des données par le réseau : c’est la partie la plus lente d’un programme spark !\nSi j’augmente les ressources : par exemple, je réserve 3 ordinateurs du cluster plutôt que 2\n\nEffet puissance de calcul : plus de ressources pour faire les calculs = réduction du temps de calcul\nEffet augmentation des échanges réseau (shuffles) : augmentation du temps de calcul\nGêne des autre utilisateurs",
-    "crumbs": [
-      "Bonnes pratiques"
-    ]
-  },
-  {
-    "objectID": "bonnes_pratiques.html#ne-pas-collecter",
-    "href": "bonnes_pratiques.html#ne-pas-collecter",
-    "title": "Bonnes pratiques",
-    "section": "",
-    "text": "Collecter, c’est quoi ?\n\n\n\nCollecter c’est utiliser l’instruction collect(). Elle permet de rapatrier l’ensemble des résultats du cluster vers la bulle et la session R de l’utilisateur en format R, par exemple des data.frames.\nCollect() :\n\nest une action : elle déclencher tous les calculs\nimplique des échanges réseau très importants : entre ordinateurs du cluster et du cluster vers la bulle : c’est extrêmement long, moins efficient que l’enregistrement sur disque directement depuis spark\nrappatrie les résultats (une table) dans la mémoire vive de R, qui est sur la bulle : si le résultat est volumineux, cela bloque les autres utilisateurs\n\n\n\nRecommandations :\n\nNe pas collecter des tables de plus de 15 Go\nUtiliser les autres méthodes proposées pour ne pas bloquer les utilisateurs qui ont besoin de R en mode classique\nNe pas changer les configurations",
-    "crumbs": [
-      "Bonnes pratiques"
-    ]
-  },
-  {
-    "objectID": "bonnes_pratiques.html#fermer-sa-session",
-    "href": "bonnes_pratiques.html#fermer-sa-session",
-    "title": "Bonnes pratiques",
-    "section": "",
-    "text": "Il faut impérativement fermer sa session spark après une session de travail. Deux moyens pour ça :\n\nfermer R Studio\nsi on ne ferme pas RStudio, utiliser la fonction spark_disconnect_all() dans son code\n\nSi on souhaite lancer un code le soir en partant, on n’oublie pas le spark_disconnect_all() à la fin du code.\n\n\n\n\n\n\nPartage des ressources\n\n\n\nLes ressources réservés par un utilisateur ne sont libérées pour les autres que lorsqu’il se déconnecte. Ne pas se déconnecter, c’est bloquer les ressources. Si j’ai réservé deux ordinateurs du cluster sur 15, personne d’autres ne peut les réserver tant que je n’ai pas déconnecter ma session spark.\nNous fermerons les sessions ouvertes trop longtemps (départ de congés sans déconnexion) si des utilisateurs présents en ont besoin : risque de perte du travail non enregistré.\n\n\nPour ne pas bloquer les collègues 👨‍💻",
-    "crumbs": [
-      "Bonnes pratiques"
-    ]
-  },
-  {
-    "objectID": "bonnes_pratiques.html#yarn",
-    "href": "bonnes_pratiques.html#yarn",
-    "title": "Bonnes pratiques",
-    "section": "",
-    "text": "Yarn permet de consulter la réservation des ressources par les utilisateurs.\nOn peut y accéder en copiant le lien suivant dans Google chrome sur la bulle (mettre en favori) : midares-deb11-nn-01.midares.local:8088/cluster\nVérifier que notre session est fermée et qu’on ne prend pas trop de ressources : yarn",
-    "crumbs": [
-      "Bonnes pratiques"
-    ]
-  },
-  {
-    "objectID": "bonnes_pratiques.html#mutualiser-les-expériences",
-    "href": "bonnes_pratiques.html#mutualiser-les-expériences",
-    "title": "Bonnes pratiques",
-    "section": "",
-    "text": "Aide au passage d’un code sur le cluster\nProgrammer entre collègues\nContributions à la documentation MiDAS : section fiches, à l’aide de pull requests sur github",
-    "crumbs": [
-      "Bonnes pratiques"
-    ]
-  },
-  {
-    "objectID": "about.html",
-    "href": "about.html",
-    "title": "About",
-    "section": "",
-    "text": "About this site\n\n1 + 1\n\n[1] 2"
-  },
-  {
-    "objectID": "index.html",
-    "href": "index.html",
-    "title": "Atelier d’initiation à spark avec R en mode cluster",
-    "section": "",
-    "text": "Bienvenue ! 👋\nCe site est une aide à l’utilisation de spark avec R sur un cluster de calcul Spark à destination de débutants en R ne connaissant pas du tout le fonctionnement et la programmation en spark.\nTu vas apprendre ici (je l’espère 🙂) :\n\nl’intérêt d’utiliser Spark pour manipuler des données volumineuses telles que l’appariement MiDAS ⏳\nle fonctionnement de Spark sur un cluster de calcul 🔢\nl’utilisation de Spark sous R avec le package sparklyr, très facile si tu connais dplyr 👨‍💻\nquelques pistes d’optimisation d’un programme avec Spark 💡\n\nDe quoi profiter ensuite du temps gagné grâce au calcul distribué ! 🚀",
-    "crumbs": [
-      "Introduction"
-    ]
-  },
-  {
-    "objectID": "oom.html",
-    "href": "oom.html",
-    "title": "Out of memory",
-    "section": "",
-    "text": "L’export direct d’un spark data frame en parquet sur HDFS est une meilleure alternative : tu peux ensuite charger la table parquet en data frame R si tu souhaites la traiter en mémoire vive.\nContrairement au collect(), quelle que soit la taille de la table, exporter sous HDFS ne renverra jamais d’erreur, tandis que le collect()ne fonctionne pas pour les tables volumineuses.\nCet export direct n’est pas fonctionnel en spark local : encore une raison de passer sur le cluster Spark !\nSi tu souhaites voir ta table, tu peux collecter les premières lignes de celle-ci en combinant les fonctions head()et collect().\n\n\n\n\n\nSi tu as utilisé des fonctions telles que compute() dans ton programme, elles peuvent être à l’origine d’une erreur Out of memory : ces commandes ne sont pas bien adaptées à Spark et les résultats temporaires stockés en mémoire vive ne sont pas visibles dans l’espace dédié sur SparkUI onglet Storage, il semblerait que ces résultats temporaires soient stockés “au mauvais endroit” et occupent de l’espace sans que l’utilisateur y ait accès.\nPrivilégier les fonctions tbl_cache() avec sdf_register()pour forcer l’exécution du programme.\n\n\n\n\n\nForcer l’exécution du programme le plus tard possible pour permettre à Spark d’optimiser tout le programme et d’utiiliser les ressources de la manière la plus parcimonieuse possible.\nTester son programme sur une toute petite partie des tables, étape par étape, en forçant l’exécution (appel d’une action telle que print() ou collect() ) à chaque étape pour la phase de débuggage, puis supprimer toutes les actions intermédiaires non nécessaires du programme pour que Spark optimise tout le programme.\n\n\n\n\nPar souci de parcimonie et pour faciliter le travail de nos collègues sur des ressources partagées, cette option doit rester l’ultime recours pour éviter l’erreur Out of memory 🤝",
-    "crumbs": [
-      "Out of memory : help !"
-    ]
-  },
-  {
-    "objectID": "oom.html#collecter-le-moins-possible",
-    "href": "oom.html#collecter-le-moins-possible",
-    "title": "Out of memory",
-    "section": "",
-    "text": "L’export direct d’un spark data frame en parquet sur HDFS est une meilleure alternative : tu peux ensuite charger la table parquet en data frame R si tu souhaites la traiter en mémoire vive.\nContrairement au collect(), quelle que soit la taille de la table, exporter sous HDFS ne renverra jamais d’erreur, tandis que le collect()ne fonctionne pas pour les tables volumineuses.\nCet export direct n’est pas fonctionnel en spark local : encore une raison de passer sur le cluster Spark !\nSi tu souhaites voir ta table, tu peux collecter les premières lignes de celle-ci en combinant les fonctions head()et collect().",
-    "crumbs": [
-      "Out of memory : help !"
-    ]
-  },
-  {
-    "objectID": "oom.html#eviter-les-fonctions-arrow",
-    "href": "oom.html#eviter-les-fonctions-arrow",
-    "title": "Out of memory",
-    "section": "",
-    "text": "Si tu as utilisé des fonctions telles que compute() dans ton programme, elles peuvent être à l’origine d’une erreur Out of memory : ces commandes ne sont pas bien adaptées à Spark et les résultats temporaires stockés en mémoire vive ne sont pas visibles dans l’espace dédié sur SparkUI onglet Storage, il semblerait que ces résultats temporaires soient stockés “au mauvais endroit” et occupent de l’espace sans que l’utilisateur y ait accès.\nPrivilégier les fonctions tbl_cache() avec sdf_register()pour forcer l’exécution du programme.",
-    "crumbs": [
-      "Out of memory : help !"
-    ]
-  },
-  {
-    "objectID": "oom.html#laisser-spark-travailler-pour-nous",
-    "href": "oom.html#laisser-spark-travailler-pour-nous",
-    "title": "Out of memory",
-    "section": "",
-    "text": "Forcer l’exécution du programme le plus tard possible pour permettre à Spark d’optimiser tout le programme et d’utiiliser les ressources de la manière la plus parcimonieuse possible.\nTester son programme sur une toute petite partie des tables, étape par étape, en forçant l’exécution (appel d’une action telle que print() ou collect() ) à chaque étape pour la phase de débuggage, puis supprimer toutes les actions intermédiaires non nécessaires du programme pour que Spark optimise tout le programme.",
-    "crumbs": [
-      "Out of memory : help !"
-    ]
-  },
-  {
-    "objectID": "oom.html#si-tout-ceci-ne-fonctionne-pas-passer-à-la-configuration-traitement-très-lourd",
-    "href": "oom.html#si-tout-ceci-ne-fonctionne-pas-passer-à-la-configuration-traitement-très-lourd",
-    "title": "Out of memory",
-    "section": "",
-    "text": "Par souci de parcimonie et pour faciliter le travail de nos collègues sur des ressources partagées, cette option doit rester l’ultime recours pour éviter l’erreur Out of memory 🤝",
-    "crumbs": [
-      "Out of memory : help !"
     ]
   }
 ]
