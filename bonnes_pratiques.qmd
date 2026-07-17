@@ -6,8 +6,6 @@ title: "Bonnes pratiques"
 
 ## Mode local : inadapté et mauvaise pratique {.smaller}
 
-![](images/mode_local.PNG)
-
 <br>
 
 Spark et le mode local :
@@ -23,8 +21,6 @@ Spark et le mode local :
     ▶️spark n'est adapté que pour le cluster de calcul, la bulle pour faire du R sans spark sur des données peu volumineuses
 
 ## Utiliser les configuratoins recommandées {.smaller}
-
-![](images/reduce_distribue.drawio.png){fig-align="center"}
 
 Les ordinateurs du cluster ont besoin de **s'envoyer des données par le réseau** : c'est la partie la plus lente d'un programme spark !
 
@@ -62,7 +58,6 @@ Recommandations :
 
 ## Fermer sa session {.smaller}
 
-
 Il faut impérativement fermer sa session spark après une session de travail. Deux moyens pour ça :
 
 -   fermer R Studio
@@ -78,7 +73,6 @@ Les ressources réservés par un utilisateur ne sont libérées pour les autres 
 
 Nous fermerons les sessions ouvertes trop longtemps (départ de congés sans déconnexion) si des utilisateurs présents en ont besoin : risque de perte du travail non enregistré.
 :::
-
 
 Pour ne pas bloquer les collègues 👨‍💻
 

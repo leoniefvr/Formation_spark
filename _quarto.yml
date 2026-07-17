@@ -19,14 +19,10 @@ website:
         text: Slides
       - href: configuration.qmd
         text: 'Configuration'
-      - href: fonctions_specifiques.qmd
-        text: 'Fonctions spécifiques à sparklyr'
       - href: dates.qmd
         text: 'Les dates avec sparklyr'
       - href: oom.qmd
         text: 'Out of memory : help !'
-      - href: errors.qmd
-        text: 'Guide des erreurs'
       - href: bonnes_pratiques.qmd
         text: 'Bonnes pratiques'
       - href: ressources.qmd

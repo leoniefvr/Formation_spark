@@ -6,7 +6,7 @@ title: "Atelier d'initiation à spark avec R en mode cluster"
 
 Ce site est une aide à l'utilisation de spark avec R sur un cluster de calcul Spark à destination de débutants en R ne connaissant pas du tout le fonctionnement et la programmation en spark.
 
-Tu vas apprendre ici (je l'espère 🙂) :
+Tu vas apprendre ici :
 
 -   **l'intérêt d'utiliser Spark** pour manipuler des **données volumineuses** telles que l'appariement MiDAS ⏳
 

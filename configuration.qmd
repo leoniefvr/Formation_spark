@@ -14,50 +14,41 @@ Il est nécessaire de configurer la session spark pour établir une connexion en
 
     3.  le nombre de worker avec **spark.executor.instances**
 
-    4.  La file sur laquelle on travaille avec **spark.yarn.queue**
 
 -   la limite de taille des résulats qui peuvent être collectés par le driver avec **spark.driver.maxResultSize. 0 correspond à l'absence de limite.**
 
-## Traitement normal en spark
+## Configuration à utiliser
 
-```{r}
-#| eval: false
-#| echo: true
-
-conf <- spark_config()
-conf["spark.driver.memory"] <- "40Go"
-conf["spark.executor.memory"] <- "60Go"
-conf["spark.executor.cores"] <- 4
-conf["spark.executor.instances"] <- 2
-cont["spark.yarn.queue"] <- "prod"
-conf["spark.driver.maxResultSize"] <- 0
-
-sc <- spark_connect(master = "yarn", config = conf)
-```
-
-
-## Traitement très lourd
+Cette configuration a été testée dans des opérations de benchmark très lourdes : elle n'est pas limitante dans les traitements de la totalité des données Midas.
 
 ```{r}
 #| eval: false
 #| echo: true
 
 library(sparklyr)
-library(dplyr)
-library(dbplyr)
+library(tidyverse)
+
+# Fichier de configuration Spark
 
 conf <- spark_config()
-conf["spark.driver.memory"] <- "20Go"
-conf["spark.executor.memory"] <- "60Go"
-conf["spark.executor.cores"] <- 4
-conf["spark.executor.instances"] <- 3
-cont["spark.yarn.queue"] <- "prod"
-conf["spark.driver.maxResultSize"] <- 0
 
+conf["spark.driver.memory"] <- "16g"                          
+conf$spark.driver.maxResultSize <- 0
+conf["spark.executor.cores"] <- 2                             
+conf["spark.executor.memory"] <- "12g"
+conf["spark.executor.memoryOverhead"] <- "5g"
+conf["spark.executor.instances"] <- 5
+conf["spark.default.parallelism"] <- 20
+conf["spark.sql.shuffle.partitions"] <- 200
+conf["spark.sql.adaptive.enabled"] <- "true"
+conf["spark.sql.adaptive.coalescePartitions.enabled"] <- "true"
+conf["spark.sql.adaptive.localShuffleReader.enabled"] <- "true"
+conf["spark.sql.adaptive.skewJoin.enabled"] <- "true"
+conf["spark.sql.adaptive.skewJoin.skewedPartitionFactor"] <- 2
+conf["spark.sql.adaptive.skewJoin.skewedPartitionThresholdInBytes"] <- 64L * 1024L^2
+conf["spark.locality.wait"] <- "1s"
 sc <- spark_connect(master = "yarn", config = conf)
 ```
-
-
 ::: callout-important
 ## Temps de connexion
 

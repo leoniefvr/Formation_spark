@@ -9,19 +9,19 @@ format: revealjs
 
 2.  Utiliser MiDAS avec R : un défi 💭
 
-3.  Sparklyr : l'outil ergonomique de spark en R 👨‍💻
+3.  `sparklyr` dans l'écosystème de R : quiz ❓
 
-4.  Les bonnes pratiques sur une infrastructure partagée 🖥️
+4.  La syntaxe `sparklyr` : une syntaxe familière, celle de `dplyr`👨‍💻
 
-5.  Optimiser la mémoire : pourquoi et comment ⏳
+5.  Le cluster spark : distribution des données️ 📂
 
-6.  Pour aller plus loin 💡
+6.  Le cluster spark : distribution des traitements ⏳
+
+7.  Quelques bonnes pratiques  🤝
+
+8.  Pour aller plus loin 💡
 
 # Un rapide tour de table 💬
-
-::: notes
-Poste, usages de R, connaissance spark
-:::
 
 # MiDAS : une base de données volumineuse 📚
 
@@ -71,11 +71,11 @@ Midas est disponible sous la forme de plusieurs tables au format parquet.
 
 # Traiter MiDAS en R : un défi 👨‍💻
 
-## Traiter MiDAS en R classique : les limites
+## Traiter MiDAS en R classique : les limites {.smaller}
 
-Nous ne pouvons pas manipuler les données Midas exhaustives sur notre ordinateur portable professionnel avec R classique.
+Nous ne pouvons pas manipuler les données Midas exhaustives sur notre ordinateur portable professionnel avec R classique pour deux raisons :
 
-1.  En R classique, les données sont chargées en mémoire RAM : si les données sont plus volumineuses que la mémoire disponible, pas possible de traiter les données.
+1.  En R classique, les données sont chargées en mémoire RAM : si les données sont plus volumineuses que la mémoire disponible, il n'est pas possible de les traiter.
 
 ```{r}
 #| eval: false
@@ -91,7 +91,7 @@ Nous ne pouvons pas manipuler les données Midas exhaustives sur notre ordinateu
 
 . . .
 
-2.  Réaliser des opérations coûteuses en ressources : Midas est un appariement composé de nombreuses tables à apparier entre elles, ce qui est coûteux en ressources informatiques (RAM).
+2.  La structure de Midas nécessite de réaliser des opérations coûteuses en ressources : appariement de nombreuses tables à apparier entre elles.
 
 ```{r}
 #| eval: false
@@ -104,7 +104,7 @@ jointure <- PJC %>%
 
 ```
 
-Et sur un serveur partagé comme la bulle CASD ?
+Et sur un serveur partagé comme la bulle CASD, est-ce possible ?
 
 ## Une bulle CASD {.smaller}
 
@@ -113,19 +113,19 @@ Et sur un serveur partagé comme la bulle CASD ?
 
 Le disque dur, aussi appelé **Hard Disk Drive (HDD)**, est une solution de **stockage permanente** :
 
--   les données sont conservées même **après l'arrêt de l'appareil**
+-   Les données sont conservées même **après l'arrêt de l'appareil**.
 
--   l'espace de stockage est **volumineux**
+-   L'espace de stockage est **volumineux**.
 
--   mais les opérations d'écriture et de lecture ne sont pas du tout instantannées
+-   Les opérations d'écriture et de lecture ne sont pas du tout instantannées.
 
 ### La mémoire vive
 
 La mémoire vive, aussi appelée **RAM**, se distingue de la mémoire de stockage (disque) :
 
--   par sa **rapidité**, notamment pour fournir des données au processeur pour effectuer des calculs
+-   par sa **rapidité**, notamment pour fournir des données au processeur pour effectuer des calculs ;
 
--   par sa **volatilité** (toutes les données sont perdues si l'ordinateur n'est plus alimenté)
+-   par sa **volatilité** (toutes les données sont perdues si l'ordinateur n'est plus alimenté) ;
 
 -   par l'accès direct aux informations qui y sont stockées, **quasi instantanné**.
 
@@ -133,18 +133,16 @@ La mémoire vive, aussi appelée **RAM**, se distingue de la mémoire de stockag
 
 Le processeur :
 
--   permet d'**exécuter des tâches et des programmes** : convertir un fichier, exécuter un logiciel
+-   permet d'**exécuter des tâches et des programmes** : convertir un fichier, exécuter un logiciel.
 
--   est composé d'un ou de plusieurs **coeurs** : un coeur ne peut exécuter qu'une seule tâche à la fois. Si le processeur contient plusieurs coeurs, il peut exécuter autant de tâches en parallèle qu'il a de coeurs
+-   est composé d'un ou de plusieurs **coeurs** : un coeur ne peut exécuter qu'une seule tâche à la fois. Si le processeur contient plusieurs coeurs, il peut exécuter autant de tâches en parallèle qu'il a de coeurs.
 
 -   se caractérise aussi par sa **fréquence** : elle est globalement proportionnelle au nombre d'opérations qu'il est capable d'effetuer par seconde.
 :::
 
 ## Une bulle CASD {.smaller}
 
-Pour des raisons de sécurité, les données Midas ne doivent être manipulées que sur la bulle Midares, une bulle CASD sécurisée, non connectée à internet, dotée d'un cluster spark, que nous décrirons plus tard.
-
-Des ressources partagées entre tous les utilsateurs simultanés :
+Pour des raisons de sécurité, les données Midas ne doivent être manipulées que via la bulle CASD sécurisée Midares dotée d'un cluster spark. Les ressources de la bulle sont partagées entre tous les utilsateurs simultanés :
 
 -   256 Go de mémoire vive (ou RAM)
 -   Un processeur (ou CPU) composé de 16 coeurs
@@ -155,23 +153,31 @@ Même si ces ressources sont plus importantes que celle d'un ordinateur portable
 
 ## Quizz
 
-Le quizz suivant s'adresse aux personnes familières avec : R classique en syntaxe `tidyverse`; le format parquet et son traitement en R avec `arrow` ; `duckDB`et `dbplyr` ; éventuellement `data.table`
+Le quizz suivant s'adresse aux personnes familières avec :
 
-# ❓Quizz ❓ comparaison entre dplyr, arrow, DuckDB, data.table et sparklyr
+-   R classique en syntaxe `tidyverse` ;
 
-## Contexte
+-   le format parquet et son traitement en R avec `arrow` ;
+
+-   `duckDB` et `dbplyr` ;
+
+-   éventuellement `data.table` .
+
+# ❓Quizz ❓ `sparklyr` dans l'écosystème de R
+
+## Contexte {.smaller}
 
 Vous travaillez sur votre ordinateur professionnel de la Dares. Vous disposez donc de 16 Go de mémoire RAM, d'un disque dur de plusieurs centaines de Go et de 6 coeurs dans votre processeur. Ce sont vos **ressources informatiques** sur lesquelles les traitements sont exécutés.
 
-Vous travaillez uniquement en R via RStudio. Vous souhaitez effectuer des opérations de traitement de données et non de l'économétrie : - sélectionner des colonnes - créer de nouvelles variables - filtrer des lignes - calculer des statistiques descriptives simples - joindre des tables entre elles
+Vous travaillez uniquement en R via RStudio. Vous souhaitez effectuer des opérations de **traitement de données** et non de l'économétrie : sélectionner des colonnes, filtrer des lignes, etc.
 
-Vous avez le choix entre différentes syntaxes : `dplyr`, `data.table`, `SQL`dans `duckDB`. Nous n'abordons pas R base.
+Vous avez le choix entre différentes **syntaxes** : `dplyr`, `data.table`, `SQL`dans `duckDB`. Nous n'abordons pas R base.
 
-Vous avez aussi le choix entre différents moteurs de calcul : R classique avec des `data.frames`, `duckDB`, `arrow`, `data.table`.
+Vous avez aussi le choix entre différents **moteurs de calcul** : R classique avec des `data.frames`, `duckDB`, `arrow`, `data.table`.
 
-L'objectif de ce quizz est de comprendre les similitudes entre certaines de ces solutions que certains d'entre vous connaissent déjà, et spark avec `sparklyr`, la solution qui vous est présentée pour traiter les données Midas.
+L'objectif de ce quizz est de comprendre les similitudes entre ces solutions que certains d'entre vous connaissent déjà, et spark avec `sparklyr`, la solution qui vous est présentée pour traiter les données Midas.
 
-## Question 1 — syntaxe et moteur de calcul
+## Question 1 — syntaxe et moteur de calcul {.smaller .scrollable}
 
 **Avec quel moteur de calcul peut-on utiliser directement les fonctions principales de `dplyr` ?**
 
@@ -185,22 +191,36 @@ Les fonctions principales sont `filter()`, `mutate()`, `select()`, `summarise()`
 . . .
 
 ::: {.callout-tip title="Réponse"}
-Les bonnes réponses sont A, B et D : `DuckDB`est compatible avec la syntaxe `dplyr` grâce au package `dbplyr`, `arrow` et ses datasets sont compatibles avec cette syntaxe également et les formats classiques de R (`data.table`, `tibble`) peuvent aussi être manipulés via cette syntaxe. `data.table` peut également recevoir une syntaxe `dplyr` avec `dtplyr`, qui n’est pas abordé ici. `data.table` est un moteur de calcul qui dispose initialement de sa propre syntaxe.
+Les bonnes réponses sont A, B et D :
+
+-   `DuckDB` est compatible avec la syntaxe `dplyr` grâce au package `dbplyr` ;
+
+-   `arrow` et ses datasets sont compatibles avec cette syntaxe également ;
+
+-   les formats classiques de R (`data.table`, `tibble`) peuvent aussi être manipulés via cette syntaxe.
+
+-   `data.table` peut également recevoir une syntaxe `dplyr` avec `dtplyr`, qui n’est pas abordé ici. `data.table` est un moteur de calcul qui dispose initialement de sa propre syntaxe.
 :::
 
 . . .
 
 ::: {.callout-note title="Définitions"}
-`dplyr` fournit une syntaxe de code : une syntaxe permet de décrire ce que l’on veut faire : filtrer, agréger, joindre, etc. Le moteur de calcul est le logiciel qui exécute réellement ces opérations, par exemple R, `DuckDB` ou `arrow`. `data.table`est à la fois un moteur de calcul et une syntaxe particulière. L’endroit d’exécution correspond aux ressources utilisées : ordinateur personnel dans notre cas, mais ce peut être un serveur partagé comme la bulle Midares. Un même moteur peut fonctionner dans plusieurs environnements.
+`dplyr` fournit une **syntaxe** de code : une syntaxe permet de décrire ce que l’on veut faire : filtrer, agréger, joindre, etc.
+
+Le **moteur de calcul** est le logiciel qui **exécute** réellement ces opérations, par exemple R, `DuckDB` ou `arrow`.
+
+`data.table` est à la fois un moteur de calcul et une syntaxe particulière.
+
+L’**endroit d’exécution** correspond aux ressources utilisées : ordinateur personnel dans notre cas, mais ce peut être un serveur partagé comme la bulle Midares. Un même moteur peut fonctionner dans plusieurs environnements.
 :::
 
 . . .
 
-::: {.callout-note title="À retenir pour Spark"}
-Spark est un moteur de calcul. La syntaxe `dplyr` est compatible avec ce logiciel grâce au package `sparklyr`. Spark est exécuté sur un cluster spark, un nouvel endroit d'exécution.
+::: {.callout-important title="À retenir pour Spark"}
+Spark est un **moteur de calcul**. La syntaxe `dplyr` est compatible avec ce logiciel grâce aux packages `sparklyr` et `dbplyr`. Spark est exécuté sur un **cluster spark**, un nouvel endroit d'exécution.
 :::
 
-## Question 2 — utilisation de `dplyr` avec différents moteurs
+## Question 2 — utilisation de `dplyr` avec différents moteurs {.smaller .scrollable}
 
 **Avec `arrow` et `duckDB`, quelles fonctions du `tidyverse` ne peut-on parfois pas utiliser ?**
 
@@ -224,16 +244,20 @@ Une syntaxe `dplyr` est en fait traduite dans le langage adapté au moteur de ca
 
 -   `arrow` permet de traduire `dplyr` en instructions exécutables sur un dataset arrow.
 
-Si une fonction ne dispose pas d'une traduction compatible avec le moteur de calcul, alors elle n'est pas utilisable.
+Si une fonction ne dispose pas d'une **traduction** **compatible avec le moteur de calcul**, alors elle n'est pas utilisable.
 :::
 
 . . .
 
-::: {.callout-note title="À retenir pour Spark"}
-Spark est un moteur de calcul. Les packages `sparklyr` et `dbplyr` rendent compatibles les instructions `dplyr` avec ce moteur de calcul : `dbplyr` traduit les verbes `dplyr` en Spark SQL, lui-même traduit en instruction spark natives exécutables par le moteur de calcul spark. Néanmoins, toutes les fonctions du `tidyverse` ne sont pas disponibles avec spark : c'est le cas de nombreuses fonctions de `lubridate` et de `stringr`, ainsi que de certaines fonctions de R base comme `nrow()`.
+::: {.callout-important title="À retenir pour Spark"}
+Spark est un moteur de calcul.
+
+Les packages `sparklyr` et `dbplyr` rendent compatibles les instructions `dplyr` avec ce moteur de calcul : `dbplyr` **traduit** les verbes `dplyr` en **Spark SQL**, lui-même traduit en **instructions spark natives** exécutables par le moteur de calcul spark.
+
+Néanmoins, toutes les fonctions du `tidyverse` ne sont pas disponibles avec spark : c'est le cas de nombreuses fonctions de `lubridate` et de `stringr`, ainsi que de certaines fonctions de R base comme `nrow()`.
 :::
 
-## Question 3 — lecture paresseuse de données
+## Question 3 — lecture paresseuse de données {.smaller .scrollable}
 
 **Que se passe-t-il quand on utilise `arrow::open_dataset()` sur un dossier de fichiers Parquet ?**
 
@@ -245,22 +269,30 @@ Spark est un moteur de calcul. Les packages `sparklyr` et `dbplyr` rendent compa
 . . .
 
 ::: {.callout-tip title="Réponse"}
-Les bonnes réponses sont C et D : `arrow::open_dataset()` ouvre une vue logique sur un ensemble de fichiers, sans charger immédiatement toutes les données dans R. Comme les données ne sont pas chargées dans la session R, on ne peut pas ouvrir ces données et les consulter via l'environnement, contrairement à un `data.frame` R classique. `arrow` peut consulter certaines métadonnées afin d’identifier notamment les fichiers du dataset, les colonnes, leurs types et les éventuelles partitions.
+Les bonnes réponses sont C et D : `arrow::open_dataset()` ouvre une vue logique sur un ensemble de fichiers, **sans charger** immédiatement toutes les données dans R.
+
+Comme les données ne sont pas chargées dans la session R, on ne peut pas ouvrir ces données et les consulter via l'environnement, contrairement à un `data.frame` R classique.
+
+`arrow` peut consulter certaines **métadonnées** afin d’identifier notamment les fichiers du dataset, les colonnes, leurs types et les éventuelles partitions.
 :::
 
 . . .
 
 ::: {.callout-note title="Définitions"}
-On dit qu'avec `arrow::open_dataset()`, la lecture des données est paresseuse/lazy. Avec `read_parquet(ma_table, as_data_frame = TRUE`, la lecture n'est pas lazy : la table est chargée en session R comme un `data.frame` classique. `duckdb::tbl_file(con, "data.parquet")` est aussi une lecture paresseuse des données.
+On dit qu'avec `arrow::open_dataset()`, la **lecture des données est paresseuse/lazy**.
+
+Avec `read_parquet(ma_table, as_data_frame = TRUE)`, la lecture n'est pas lazy : la table est chargée en session R comme un `data.frame` classique.
+
+`duckdb::tbl_file(con, "data.parquet")` est aussi une lecture paresseuse des données.
 :::
 
 . . .
 
-::: {.callout-note title="À retenir pour Spark"}
-Spark est compatible avec le format parquet : les tables Midas au format parquet peuvent être lues de manière lazy avec `spark.read.parquet( memory = FALSE)`. En spark, il ne faut utiliser que la lecture paresseuse des données (`memory = False`), beaucoup plus efficace.
+::: {.callout-important title="À retenir pour Spark"}
+Spark est **compatible avec le format parquet** : les tables Midas au format parquet peuvent être lues de manière **lazy** avec `spark.read.parquet( memory = FALSE)`. En spark, il ne faut utiliser que la lecture paresseuse des données (`memory = False`), beaucoup plus efficace.
 :::
 
-## Question 4 — évaluation paresseuse du programme
+## Question 4 — évaluation paresseuse du programme {.smaller .scrollable}
 
 **Dans un pipeline `dplyr` utilisant `DuckDB`, quelles opérations déclenchent une exécution ?**
 
@@ -274,11 +306,11 @@ Spark est compatible avec le format parquet : les tables Midas au format parquet
 . . .
 
 ::: {.callout-tip title="Réponse"}
-Les bonnes réponses sont A, C et F : en `duckDB`, les verbes `dplyr` comme `filter()`, `mutate()`, `summarise()`viennent enrichir une requête, un plan de traitement, qui n'est exéctué que lorsque l'utilisateur demande un résultat (imprimer, collecter) ou ordonne l'exécution de la requête dans le moteur de calcul à "distance" = sans pouvoir visualiser son résultat dans la session R (`compute()`). On dit que `duckDB`est paresseux.
+Les bonnes réponses sont A, C et F : en `duckDB`, les verbes `dplyr` comme `filter()`, `mutate()`, `summarise()`viennent enrichir une requête, un plan de traitement, qui n'est exéctué que lorsque l'utilisateur demande un résultat (imprimer, collecter) ou ordonne l'exécution de la requête dans le moteur de calcul à "distance" = sans pouvoir visualiser son résultat dans la session R (`compute()`). On dit que `duckDB` est **paresseux**.
 
 `arrow` peut aussi être paresseux : il faut exécuter `collect()` ou `print()` pour déclencher les calculs et récupérer un résultat visible dans la session R.
 
-`data.table` et R classique (`tidyverse` sur `data.frame`) ne sont pas paresseux : à chaque fonction lancée (`filter()`) le calcul est exécuté et les données sont chargées et traitées.
+`data.table` et R classique (`tidyverse` sur `data.frame`) ne sont pas paresseux : à chaque fonction lancée (`filter()`) le calcul est exécuté et les données sont chargées et traitées. On parle de traitement **eager**.
 :::
 
 . . .
@@ -289,11 +321,11 @@ Les bonnes réponses sont A, C et F : en `duckDB`, les verbes `dplyr` comme `fil
 
 . . .
 
-::: {.callout-note title="À retenir pour Spark"}
-Spark est aussi paresseux : les transformations `filter()`, `mutate()`, `summarise()` sont insérées dans un plan de traitement, puis les actions comme `print()`, `collect()` déclenchent l'exécution du plan de traitement et la récupération d'un résultat consultable en session R.
+::: {.callout-important title="À retenir pour Spark"}
+Spark est aussi **paresseux** : les **transformations** `filter()`, `mutate()`, `summarise()` sont insérées dans un plan de traitement, puis les **actions** comme `print()`, `collect()` déclenchent l'exécution du plan de traitement voire la récupération d'un résultat consultable en session R.
 :::
 
-## Question 5 — bonnes pratiques sur tables volumineuses
+## Question 5 — bonnes pratiques sur tables volumineuses {.smaller .scrollable}
 
 **Quel que soit le moteur de calcul utilisé, quelles pratiques sont des bonnes pratiques quand on travaille sur des tables volumineuses de données ?**
 
@@ -318,57 +350,55 @@ Les boucles `for` ne sont généralement pas idéales, car elles répètent les 
 
 . . .
 
-::: {.callout-note title="À retenir pour Spark"}
+::: {.callout-important title="À retenir pour Spark"}
 Avec Spark, réduire rapidement le nombre de lignes et de colonnes et éviter de charger les données dans la mémoire restent des bonnes pratiques essentielles. En revanche, les boucles `for`, qui déclenchent souvent une succession de jobs, et les fonctions R personnalisées appliquées ligne par ligne sont à éviter encore davantage.
+
+Spark est adapté aux données très volumineuses : il est préférable de ne pas scinder le traitement sur des sous-tables quand une unique requête est possible.
 :::
 
-## Conclusion du quizz
+## Conclusions du quizz {.smaller}
 
-Spark avec `sparklyr`est un moteur de calcul qui présente des similitudes avec d'autres manières de programmer en R :
+Spark avec `sparklyr` présente des similitudes avec d'autres manières de programmer en R :
 
--   Comme pour `duckDB` et `arrow`, avec `sparklyr`, les tables Spark sont principalement manipulées avec `dplyr` (grâce à `dbplyr`), SQL et les fonctions spécifiques de `sparklyr` ; les expressions R base ou `data.table` ne sont pas automatiquement traduites.
+-   Comme pour `duckDB` et `arrow`, avec `sparklyr`, les tables Spark sont principalement manipulées avec `dplyr` (grâce à `dbplyr`), SQL et les fonctions spécifiques de `sparklyr` ; les expressions R base ne sont pas automatiquement traduites. **Spark est un moteur de calcul**, `dplyr` est sa **syntaxe** principale.
 
--   Spark est compatible avec le format parquet et parcimonieux dans la lecture des données, comme d'autres moteurs de calcul (`arrow`, `duckDB`).
+-   Spark est compatible avec le **format parquet** et parcimonieux dans la lecture des données, comme d'autres moteurs de calcul (`arrow`, `duckDB`).
 
--   Spark est paresseux, comme d'autres moteurs de calcul (`arrow`, `duckDB`).
+-   Spark est **paresseux**, comme d'autres moteurs de calcul (`arrow`, `duckDB`).
 
 -   En spark, les tris globaux doivent être réservés aux situations où l’ordre des lignes est réellement nécessaire.
 
--   Avec spark, il faut éviter les boucles et les fonctions ligne à ligne (`rowwise()`) lorsqu'un seul pipeline sur la table complète peut réaliser l'opération.
+-   Avec spark, il faut **éviter les boucles et les fonctions ligne à ligne** (`rowwise()`) lorsqu'un seul pipeline sur la table complète peut réaliser l'opération.
 
 # La syntaxe `sparklyr` : une syntaxe familière, celle de `dplyr`, mais un autre moteur de calcul
 
-## Syntaxe et moteur de calcul
+## Syntaxe et moteur de calcul {.smaller .scrollable}
 
-Avec `sparklyr`, il faut distinguer :
+Avec spark et `sparklyr`, il faut distinguer :
 
--   la syntaxe du programme : ce sont les instructions utilisées pour décrire le traitement. Avec `sparklyr`, la syntaxe du programme est majoritairement celle de `dplyr`.
+-   la **syntaxe** du programme : ce sont les instructions utilisées pour décrire le traitement. Avec `sparklyr`, la syntaxe du programme est majoritairement celle de `dplyr`.
 
--   le moteur de calcul : spark est un moteur de calcul, c'est le logiciel qui exécute réellement les opérations.
+-   le **moteur de calcul** : spark est un moteur de calcul, c'est le logiciel qui exécute réellement les opérations.
 
-Pour utiliser le logiciel spark, il est possible d'utilisation plusieurs langages :
+Pour utiliser le logiciel spark, il est possible d'utiliser plusieurs langages :
 
--   python avec \`pyspark
+-   python avec `pyspark` ;
 
--   R avec `sparkR` : nous n'abordons pas cette syntaxe dans cette formation
+-   R avec `sparkR` : nous n'abordons pas cette syntaxe dans cette formation ;
 
 -   R avec `sparklyr` : `sparklyr`et `dbplyr` permettent de traduire la syntaxe `dplyr` en instructions lisibles par le moteur de calcul spark.
 
 ::: callout-important
-Le code est écrit dans RStudio, mais les opérations sur les tables sont exécutées par Spark et non par R.
+Le code est écrit dans RStudio, mais les opérations sur les tables sont **exécutées par** **Spark** et non par R.
 :::
 
 ::: callout-note
-Spark est compatible avec le format parquet : avec `sparklyr`, on peut lire et écrire des tables parquet.
+Spark est compatible avec le format **parquet** : avec `sparklyr`, on peut lire et écrire des tables parquet.
 :::
 
-## Le code `dplyr` doit être traduisible par Spark
+## Le code `dplyr` doit être traduisible {.smaller}
 
-Les principaux verbes sont utilisables :
-
-```         
-filter() select() mutate() group_by() summarise() left_join()
-```
+Les principaux verbes sont utilisables : `filter()`, `select()`, `mutate()`, `group_by()`, `summarise()`, `left_join()` etc.
 
 Les expressions placées à l’intérieur doivent également avoir un équivalent compris par Spark, traduisibles par `sparklyr` ou `dbplyr`.
 
@@ -380,9 +410,9 @@ En revanche, une fonction R arbitraire n’est pas automatiquement exécutable p
 
 -   Mes user defined functions (`function`) ne sont pas nécessairement traduisibles en spark non plus.
 
-Revenons en détails sur les différences syntaxiques entre `sparklyr` et le `tidyverse`.
+Revenons en détails sur les **différences syntaxiques** entre `sparklyr` et le `tidyverse`.
 
-## Sparklyr, une syntaxe proche de `dplyr`
+## Sparklyr, une syntaxe proche de `dplyr` {.smaller}
 
 L'enchaînement d'opérations de `dplyr` suivant est compréhensible par spark :
 
@@ -403,7 +433,9 @@ mmo_17_df_spark_modifie <- mmo_17_df_spark %>%
 
 Néanmoins, si vous sélectionnez ce programme et que vous appuyer sur Run dans Rstudio, il ne se passera "rien" : vous ne pourrez pas ouvrir et consulter le contenu de mmo_17_df_spark_modifie, aucun calcul ne sera vraiment exécuté.
 
-## Le chargement paresseux des données
+Spark est dit **paresseux** : revenons sur cette notion.
+
+## Le chargement paresseux des données {.smaller}
 
 Quand on lit une table Parquet avec Spark :
 
@@ -415,14 +447,10 @@ PJC_spark <- spark_read_parquet(sc,
                                 memory = FALSE)
 ```
 
-Spark crée une référence vers les données, mais ne transforme pas toute la table en `data.frame` R. Spark examine aussi les métadonnées de la table : colonnes, type des colonnes = schéma de données (numérique, caractère, date), etc.
+Spark crée une référence vers les données, mais ne transforme pas toute la table en `data.frame` R. Spark examine aussi les **métadonnées** de la table : colonnes, type des colonnes = schéma de données (numérique, caractère, date), etc.
 
 ::: {.callout-note title="À retenir"}
-La table reste côté Spark.
-
-RStudio contient seulement un objet qui permet de manipuler cette table à distance.
-
-Le chargement est dit paresseux.
+La table reste côté Spark. RStudio contient seulement un objet qui permet de manipuler cette table à distance. Le chargement est dit paresseux.
 :::
 
 . . .
@@ -466,7 +494,7 @@ nb_debut_contrat_fev_17 <- mmo_17_df_spark_mois %>%
 
 ```
 
-## La lazy evaluation : un gain de temps considérable
+## La lazy evaluation : un gain de temps considérable {.smaller}
 
 <br>
 
@@ -478,7 +506,7 @@ En réalité, lorsqu'on appuie sur le bouton `run`, il ne se passe pas "rien". L
 
 ![](images/erreur_variable_inexistante.PNG){width="300"}
 
-## Récupérer un résultat {.smaller}
+## Récupérer un résultat {.smaller .scrollable}
 
 ::: {.callout-note title="Définitions"}
 `collect()` constitue une frontière entre le moteur de calcul (spark) et R classique en session Rstudio. Avant `collect()`, les données restent dans le moteur, à distance de la session (au format de `DuckDB` ou de `arrow`). Après `collect()`, le résultat devient un `data.frame` R qu'on peut ouvrir via l'environnement de RStudio et consulter.
@@ -504,9 +532,7 @@ Il est recommandé de ne pas utiliser ce bouton en programmant en sparklyr : il 
 
 ## Les erreurs spark {.smaller}
 
-Les erreurs de **programmation** sont soulevées avant que les calculs commencent.
-
-Des erreurs peuvent survenir pendant l'exécution du code, quelques minutes après l'appel d'une action par exemple.
+Les erreurs de **programmation** sont soulevées avant que les calculs commencent. Des erreurs peuvent survenir pendant l'exécution du code, quelques minutes après l'appel d'une action par exemple.
 
 ::: callout-warning
 ## Collecter des données trop volumineuses
@@ -525,19 +551,17 @@ Une source fréquente d'erreur pendant l'exécution est l'appel d'un `collect()`
 ::: callout-caution
 ## Les erreurs sparklyr
 
-Les erreurs envoyées par spark sont "traduites" par sparklyr pour être affichées dans la console de R. Elles ne sont pas toujours très lisibles, ou très précises sur la nature de l'erreur/sa source. En effet, nous avons vu que les instructions `dplyr` sont en fait traduite en instructions spark natives avant d'être lues et analysées par spark : c'est pourquoi les erreurs relevées sont majoritairement écrites en instructions spark natives.
+Les erreurs envoyées par spark ne sont pas toujours très lisibles, ou très précises sur la nature de l'erreur/sa source. En effet, nous avons vu que les instructions `dplyr` sont en fait traduite en instructions spark natives avant d'être lues et analysées par spark : c'est pourquoi les erreurs relevées sont majoritairement écrites en instructions spark natives.
 :::
 
 ## Les principales différences syntaxiques {.smaller .scrollable}
 
-La majorité des commandes `dplyr` fonctionnent sur un spark_data_frame avec le package `sparklyr`. Les divergences principales sont les suivantes :
+La majorité des commandes `dplyr` fonctionnent sur un `spark_data_frame` avec le package `sparklyr`. Les divergences principales sont les suivantes :
 
 +--------------------------------------------------------------------+-------------------+---------------------------------------------------------------------------------------------------------------+
-| # Fonctionnalité                                                   | # `tidyverse`     | # `sparklyr`                                                                                                  |
+| #### Fonctionnalité                                                | #### `tidyverse`  | #### `sparklyr`                                                                                               |
 |                                                                    |                   |                                                                                                               |
 | import d'un fichier `.parquet`                                     | `read_parquet`    | `spark_read_parquet()`                                                                                        |
-+--------------------------------------------------------------------+-------------------+---------------------------------------------------------------------------------------------------------------+
-|                                                                    |                   |                                                                                                               |
 +--------------------------------------------------------------------+-------------------+---------------------------------------------------------------------------------------------------------------+
 | tri d'un tableau                                                   | `arrange()`       | `window_order()`                                                                                              |
 +--------------------------------------------------------------------+-------------------+---------------------------------------------------------------------------------------------------------------+
@@ -613,7 +637,7 @@ Le `int()` est important car ces fonctions Spark SQL n'acceptent que les entiers
 
 # ❓Quizz ❓ la syntaxe de `sparklyr`
 
-## Question 1
+## Question 1 {.smaller .scrollable}
 
 **Que contient un objet `tbl_spark` chargé avec `spark_read_parquet(memory = FALSE)` visible dans l'environnement RStudio ?**
 
@@ -628,7 +652,7 @@ Le `int()` est important car ces fonctions Spark SQL n'acceptent que les entiers
 La réponse est B : le chargement des données est paresseux, seules quelques métadonnées sont lues. Spark est ainsi plus adapté que R classique pour les données dont la taille dépasse la RAM.
 :::
 
-## Question 2
+## Question 2 {.smaller .scrollable}
 
 **Parmi ces opérations, lesquelles sont des transformations lazy ?**
 
@@ -643,7 +667,7 @@ La réponse est B : le chargement des données est paresseux, seules quelques m�
 Les bonnes réponses sont A, B et D : elles ne réclament pas la récupération d'un résultat en session R contrairement à `sdf_nrow()`, `collect()`, `print()` etc.
 :::
 
-## Question 3
+## Question 3 {.smaller .scrollable}
 
 **Que fait `collect()` ?**
 
@@ -655,10 +679,10 @@ Les bonnes réponses sont A, B et D : elles ne réclament pas la récupération 
 . . .
 
 ::: {.callout-tip title="Réponse"}
-La réponse est B : `collect()` transforme le résultat spark en `data.frame`consultable par l'utilisateur. Ainsi, les mêmes contraintes s'appliquent alors sur les ressources qu'en R classique : le résultat collecté doit être suffisamment petit pour tenir dans la mémoire de la session R.
+La réponse est C : `collect()` transforme le résultat spark en `data.frame` consultable par l'utilisateur. Ainsi, les mêmes contraintes s'appliquent alors sur les ressources qu'en R classique : le résultat collecté doit être suffisamment petit pour tenir dans la mémoire de la session R.
 :::
 
-## Question 4
+## Question 4 {.smaller .scrollable}
 
 **Quel traitement est adapté à spark ?**
 
@@ -702,11 +726,13 @@ for (i in 1:nrow(table)) {
 La réponse est A : avec Spark, il faut privilégier les opérations globales plutôt que les traitements R ligne par ligne (C) et on ne peut utiliser que les fonctions traduisibles par le moteur (pas `rowwise()` et `ma_fonction()`, B).
 :::
 
-## Pourquoi spark plutôt qu'un autre moteur de calcul ? {.smaller}
+## Pourquoi spark plutôt qu'un autre moteur de calcul ? {.smaller .scrollable}
 
-Jusqu’ici, on a vu que Spark ressemble à d’autres moteurs compatibles avec R (`duckDB`, `arrow`) : syntaxe `dplyr`, lecture lazy, transformations, actions, `collect()`. Alors pourquoi choisir spark pour traiter Midas ?
+Jusqu’ici, on a vu que Spark ressemble à d’autres moteurs compatibles avec R (`duckDB`, `arrow`) : syntaxe `dplyr`, format parquet, lecture lazy, transformations, actions. Alors pourquoi choisir spark pour traiter Midas ?
 
-Spark n’exécute pas seulement le traitement différemment, il l’exécute sur une infrastructure différente, le cluster spark.
+. . .
+
+Spark n’exécute pas seulement le traitement différemment, il l’exécute sur une **infrastructure** différente, le **cluster spark.**
 
 . . .
 
@@ -714,12 +740,12 @@ Spark n’exécute pas seulement le traitement différemment, il l’exécute su
 La différence majeure est l’**infrastructure d’exécution**.
 
 -   `dplyr`, `data.table`, `DuckDB` ou `arrow` travaillent principalement sur **une machine** : votre PC ou un serveur comme la bulle Midares.
--   Spark travaille sur un **cluster** : plusieurs machines (ordinateurs), coordonnés pour traiter les données.
+-   Spark travaille sur un **cluster** : plusieurs machines (ordinateurs), coordonnées pour traiter les données.
 :::
 
 . . .
 
-::: {.callout-tip title="Conséquence pour des données volumineuses"}
+::: {.callout-important title="Conséquence pour des données volumineuses"}
 Avec 700 Go de données et de nombreuses tables à apparier, le problème n’est plus seulement d’écrire un bon code R.
 
 Il faut un moteur capable de :
@@ -736,9 +762,9 @@ Il faut un moteur capable de :
 Spark n’est donc pas choisi parce que sa syntaxe est plus agréable, mais parce que son mode de fonctionnement est **distribué** et non **local**.
 :::
 
-# Le cluster spark : distribution des données
+# Le cluster spark : distribution des données 📂
 
-## Quelques définitions informatiques
+## Quelques définitions informatiques {.smaller .scrollable}
 
 -   Une **machine physique** est un ordinateur réel qui dispose de processeurs, de mémoire RAM et de disque dur.
 
@@ -746,9 +772,9 @@ Spark n’est donc pas choisi parce que sa syntaxe est plus agréable, mais parc
 
 -   Un **cluster spark** de type yarn est un ensemble de machines physiques connectées en réseau entre elles et capables de se coordonner pour effectuer des traitements spark.
 
--   Le **système de stockage du cluster spark** s'appelle **HDFS** et est un système de stockage distribué : les données sont réparties sont l'ensemble des disques durs des ordinateurs du cluster spark.
+-   Le **système de stockage du cluster spark** s'appelle **HDFS** et est un système de stockage distribué : les données sont partitionnées et leurs partitions sont réparties sont l'ensemble des disques durs des ordinateurs du cluster spark, sans que chaque machine connaisse l'ensemble des données.
 
-Le cluster spark de la bulle Midares contient 15 ordinateurs physiques. 
+Le cluster spark de la bulle Midares contient 15 ordinateurs physiques.
 
 Chaque ordinateur dispose des ressources physiques suivantes :
 
@@ -758,13 +784,11 @@ Chaque ordinateur dispose des ressources physiques suivantes :
 
 -   un disque dur conséquent
 
-
-## Le cluster spark Midares
+## Le cluster spark Midares {.smaller}
 
 Le cluster spark est accessible via la bulle Midares : il faut d'abord se connecter à la bulle, configurer l'accès au cluster pour la première fois qu'on l'utilise, puis se connecter au cluster via RStudio pour chaque utilisation du cluster spark.
 
 ![](/images/schema_reservation_ressources.png){fig-align="center"}
-
 
 ## Connexion {.smaller}
 
@@ -797,20 +821,19 @@ conf["spark.locality.wait"] <- "1s"
 sc <- spark_connect(master = "yarn", config = conf)
 ```
 
-
 ::: callout-important
 ## Temps de connexion
 
 Pour se connecter au cluster, il faut environ 5 minutes, à chaque connexion. Spark cluster n'est pas du tout adapté à des traitements légers (moins de 10 minutes).
 :::
 
-## La distribution des données
+## La distribution des données {.smaller}
 
 Les données sont distribuées sur les noeuds du cluster : chaque noeud ne dispose pas de toutes les données Midas sur son propre disque dur. Chaque morceau de données est répliqué trois fois.
 
 ![](/images/schema_reservation_ressources.png){fig-align="center"}
 
-## Comment consulter les données disponibles sur HDFS
+## Comment consulter les données disponibles sur HDFS {.smaller}
 
 HDFS dispose d'une interface visuelle sur laquelle on peut voir les tables disponibles : la distribution des données est invisible sur cette interface.
 
@@ -832,14 +855,11 @@ Il est possible de charger des bases enregistrées n'importe où sur la bulle su
 ![](/images/hdfs_upload_2.png){.fragment fig-align="center" width="1100" height="450"}
 :::
 
-
 ## Le stockage distribué avec HDFS {.smaller}
 
 ![](images/stockage_distribue.drawio.png){fig-align="center"}
 
 ## Chargement des données avec `sparklyr` {.smaller}
-
-<br>
 
 ```{r}
 #| eval: false
@@ -865,9 +885,38 @@ Spark interroge en réalité le NameNode HDFS pour savoir où sont situés les b
 `mmo_17_df_spark` est un spark data frame (sdf) : il ne peut pas être ouvert comme un data frame R classique, il n'est pas dans la session R, il reste dans tous les cas côté cluster.
 :::
 
+## Exporter des données depuis Spark vers HDFS {.smaller}
+
+Après un traitement Spark, le résultat peut être **exporté sur HDFS** sans être rapatrié dans la session R.
+
+```{r}
+#| eval: false
+#| echo: true
+
+resultat_spark %>%
+  spark_write_parquet(
+    path = "hdfs:///votre_dossier/resultat_final",
+    mode = "overwrite"
+  )
+```
+
+::: {.callout-tip title="A retenir"}
+Exporter avec `spark_write_parquet()` écrit le résultat côté cluster, dans HDFS.
+
+Cela permet de conserver une table produite par Spark sans utiliser `collect()`.
+:::
+
+::: {.callout-warning title="Attention"}
+`mode = "overwrite"` remplace les données déjà présentes dans le dossier cible.
+
+L’export déclenche une action Spark : le plan de traitement est réellement exécuté au moment de l’écriture.
+:::
+
+`spark_write_parquet()` sert bien à écrire une table en Parquet, avec un chemin pouvant être en `hdfs://`.
+
 ## Télécharger des données en local {.smaller}
 
-Il est également possible de transférer des données de HDFS vers la bulle en les téléchargeant.
+Il est également possible de transférer des données de HDFS vers la bulle en les téléchargeant : c'est utile par exemple quand on a créé notre table finale avec spark et qu'on veut utiliser un package d'économétrie sur la bulle en local.
 
 ::: r-stack
 ![](images/hdfs_browse.png){.fragment width="1000" height="700"}
@@ -875,16 +924,104 @@ Il est également possible de transférer des données de HDFS vers la bulle en 
 ![](/images/hdfs_dowload.PNG){.fragment}
 :::
 
-# Le cluster spark : distribution des traitements
+# ❓ Quiz — La distribution des données dans Spark
 
+## Question 1 — Données locales ou données sur cluster {.smaller .scrollable}
+
+**Quelle est la différence entre une donnée stockée dans la bulle Midares et une donnée stockée dans HDFS ?**
+
+-   A. Une donnée dans la bulle Midares est stockée sur l’environnement de travail RStudio
+-   B. Une donnée dans HDFS est répartie sur plusieurs nœuds du cluster
+-   C. Une donnée dans HDFS est nécessairement chargée dans la RAM de R
+-   D. Une donnée dans la bulle Midares est automatiquement distribuée sur le cluster
+
+. . .
+
+::: {.callout-tip title="Réponse"}
+Les bonnes réponses sont **A et B**.
+
+La bulle Midares correspond à l’environnement depuis lequel on lance le code. HDFS correspond au stockage distribué du cluster : les fichiers y sont découpés et répartis entre plusieurs nœuds.
+:::
+
+## Question 2 — Lecture paresseuse des données {.smaller .scrollable}
+
+**Quand on lit une table Parquet avec `spark_read_parquet(memory = FALSE)`, que se passe-t-il ?**
+
+-   A. La table entière est chargée dans la RAM de R
+-   B. Spark crée une table distante qui référence les fichiers Parquet
+-   C. Les traitements seront réellement exécutés lorsqu’une action demandera un résultat
+-   D. Toutes les données sont immédiatement copiées dans la bulle Midares
+
+. . .
+
+::: {.callout-tip title="Réponse"}
+Les bonnes réponses sont **B et C**.
+
+La lecture crée une table Spark liée aux fichiers Parquet, sans rapatrier toute la table dans R. Les transformations restent lazy : Spark construit un plan de traitement, puis l’exécute lorsqu’une action demande un résultat.
+:::
+
+## Question 3 — Le rôle du NameNode {.smaller .scrollable}
+
+**Que contient principalement le NameNode HDFS ?**
+
+-   A. Toutes les données des fichiers HDFS
+-   B. Les métadonnées des fichiers et l’emplacement de leurs blocs
+-   C. Les résultats des traitements Spark
+-   D. Les ressources en RAM et en processeurs du cluster
+
+. . .
+
+::: {.callout-tip title="Réponse"}
+La réponse est **B**.
+
+Le NameNode connaît l’organisation des fichiers et l’emplacement de leurs blocs, mais il ne stocke pas les données elles-mêmes.
+:::
+
+## Question 4 — Le rôle des DataNodes {.smaller .scrollable}
+
+**Où les données HDFS sont-elles réellement stockées ?**
+
+-   A. Sur les disques des différents DataNodes
+-   B. Dans la RAM du driver Spark
+-   C. Dans la session RStudio
+-   D. Sur le disque de la bulle Midares
+
+. . .
+
+::: {.callout-tip title="Réponse"}
+La réponse est **A**.
+
+Les fichiers sont découpés en blocs répartis sur les disques des différents nœuds du cluster. Les services DataNode permettent de lire et d’écrire ces blocs.
+:::
+
+## Question 5 — Les partitions Spark {.smaller .scrollable}
+
+**Qu’est-ce qu’une partition Spark ?**
+
+-   A. Une copie complète de la table
+-   B. Une portion des données pouvant être confiée à une tâche Spark
+-   C. Une machine physique du cluster
+-   D. Un fichier obligatoirement stocké sur un seul DataNode
+
+. . .
+
+::: {.callout-tip title="Réponse"}
+La réponse est **B**.
+
+Spark découpe les données en partitions afin de pouvoir traiter plusieurs portions de la table en parallèle.
+
+Une partition Spark ne correspond pas nécessairement exactement à un fichier Parquet, à un dossier de partitionnement Parquet ou à un bloc HDFS. C'est un objet de type spark.
+:::
+
+# Le cluster spark : distribution des traitements ⏳
 
 ## Le driver en sparklyr {.smaller}
 
-![](/images/schema_distribution_traitement.png){fig-align="center" width="400"}
+![](/images/traduction_code_driver.png){fig-align="center" width="400"}
 
--   Le programme R est traduit en Spark SQL grâce au package `sparklyr` dans la session R.
+-   Le programme R est traduit en Spark SQL grâce aux packages `sparklyr` et `dbplyr` dans la session R.
 
--   Le driver traduit le programme SQL en instruction spark : un plan logique de traitement. 
+-   Le driver traduit le programme SQL en instruction spark : un plan logique de traitement.
 
 -   S'il remarque une erreur, l'erreur est envoyée directement à l'utilisateur en session R avant l'exécution du programme : c'est la force de la lazy evaluation.
 
@@ -892,7 +1029,7 @@ Il est également possible de transférer des données de HDFS vers la bulle en 
 
 ![](images/catalyst.jpg)
 
-source : documentation CASD 
+source : documentation CASD
 
 ## Le driver optimise le programme {.smaller}
 
@@ -908,7 +1045,7 @@ Spark optimise automatiquement les programmes soumis :
 
 ![](images/dag.webp){fig-align="center"}
 
-## Le driver optimise le programme
+## Le driver optimise le programme {.smaller}
 
 Par exemple si j'écris le programme :
 
@@ -936,7 +1073,7 @@ optimal <- table_1 %>%
     mutate(duree_contrat = DATEDIFF(fin_contrat, debut_contrat))
 ```
 
-Cette optimisation est réalisée sur toutes les transformations compilée avant qu'une action déclenche l'exécution.
+Cette optimisation est réalisée sur toutes les transformations compilées avant qu'une action déclenche l'exécution.
 
 ## Le driver optimise le programme {.smaller}
 
@@ -958,7 +1095,7 @@ On évite :
 
 Sinon Catalyst ne voit pas la suite du code et ne peut pas l'optimiser.
 
-## Le driver optimise le programme
+## Le driver optimise le programme {.smaller}
 
 ```{r}
 #| eval: false 
@@ -987,7 +1124,7 @@ optimal <- table_1 %>%
 
 ```
 
-## La longueur du plan logique
+## La longueur du plan logique {.smaller}
 
 Fournir un plan logique très long sans déclencher d'action peut créer une erreur en spark : spark "refuse" d'optimiser un plan si long.
 
@@ -1018,19 +1155,20 @@ tbl_cache(sc, "table_4")
 tbl_uncache(sc, "table_1")
 ```
 
-## Le driver distribue les traitements {.smaller}
+## Le driver distribue les traitements {.smaller .scrollable}
 
 ![](images/schema_distribution_traitement.png){fig-align="center"}
+
 ## Le driver distribue les traitements {.smaller}
 
 Le driver ne se contente pas d’optimiser le plan logique : il le transforme ensuite en **plan physique**.
 
 Ce plan physique indique concrètement :
 
-- quelles tâches doivent être exécutées ;
-- sur quelles morceaux de données appelés partitions de données ;
-- par quels exécuteurs ;
-- dans quel ordre.
+-   quelles tâches doivent être exécutées ;
+-   sur quelles morceaux de données appelés partitions de données ;
+-   par quels exécuteurs ;
+-   dans quel ordre.
 
 . . .
 
@@ -1042,7 +1180,7 @@ Si un bloc HDFS est présent sur le nœud 1, Spark cherchera à faire exécuter 
 Objectif : limiter les lectures à distance et les transferts réseau de données, longs et coûteux en ressources.
 :::
 
-## Le rôle de l'exécuteur
+## Le rôle de l'exécuteur {.smaller}
 
 L'exécuteur effectue le morceau de programme qu'on lui affecte :
 
@@ -1052,43 +1190,49 @@ L'exécuteur effectue le morceau de programme qu'on lui affecte :
 
 -   il peut communiquer avec les autres workers en réseau pour partager des données ou des résultats intermédiaires : c'est un shuffle.
 
+Le calcul n'est pas seulement distribué, il est **parallèle** : chaque exécuteur travaille en parallèle des autres, d'où l'efficience de spark.
 
-## Traitement MAP distribué
+::: callout-important
+Le partage de données entre exécuteurs est lent : c'est un échange via le réseau. Il est important d'identifier les opérations qui nécessitent un shuffle de celles qui n'en impliquent pas.
+:::
+
+## Traitement MAP distribué {.smaller}
+
+Un traitement MAP n'implique pas de shuffle. C'est le traitement parallèle par excellence : l'exécuteur peut effectuer la totalité du traitement commandé par le driver sans interragir ou attendre des données des autres exécuteurs.
 
 ![](images/map_distribue.drawio.png){fig-align="center"}
 
 ## Traitement REDUCE distribué
 
-Les traitements REDUCE impliquent des échanges de données entre exécuteurs : un shuffle.
+Les traitements REDUCE impliquent des shuffles.
 
 ![](images/reduce_distribue.drawio.png){fig-align="center"}
-
 
 ## Le shuffle
 
 ![](images/schema_distribution_traitement.png){fig-align="center"}
 
-## Quelles opérations provoquent souvent un shuffle ?
+## Quelles opérations provoquent souvent un shuffle ? {.smaller .scrollable}
 
-Un **shuffle** apparaît lorsque Spark doit redistribuer les lignes entre executors pour réunir les données nécessaires au même endroit.
+Un **shuffle** apparaît lorsque Spark doit redistribuer les lignes entre exécuteurs pour réunir les données nécessaires au même endroit.
 
 . . .
 
 ::: {.callout-warning title="Opérations souvent coûteuses"}
-- `group_by()` + `summarise()`  
-  → regrouper toutes les lignes d’un même groupe
+-   `group_by()` + `summarise()`\
+    → regrouper toutes les lignes d’un même groupe
 
-- `left_join()`, `inner_join()`, etc.  
-  → réunir les lignes ayant la même clé de jointure
+-   `left_join()`, `inner_join()`, etc.\
+    → réunir les lignes ayant la même clé de jointure
 
-- `distinct()`  
-  → comparer les lignes pour supprimer les doublons
+-   `distinct()`\
+    → comparer les lignes pour supprimer les doublons
 
-- `arrange()`  
-  → trier globalement les données
+-   `arrange()`\
+    → trier globalement les données
 
-- `repartition()`  
-  → changer volontairement la répartition des données
+-   `repartition()`\
+    → changer volontairement la répartition des données
 :::
 
 . . .
@@ -1099,14 +1243,7 @@ Un shuffle n’est pas interdit, mais il est coûteux : il implique des échange
 Il faut donc éviter les shuffles inutiles, surtout les tris ou dédoublonnages de confort.
 :::
 
-::: {.callout-tip title="Lecture du schéma"}
-- Flèches noires : le driver envoie des tâches aux executors.
-- Flèches bleues : les executors lisent ou écrivent des données dans HDFS.
-- Flèches rouges : les executors s’échangent des données intermédiaires lors d’un shuffle.
-:::
-
-
-## Calcul distribué, calcul vectoriel : boucles for
+## Calcul distribué, calcul vectoriel : boucles for {.smaller}
 
 <br>
 
@@ -1275,13 +1412,114 @@ Au-delà, il utilise un **shuffle join** classique (plus lent).
 | construire un panel cylindré           | boucle for                                           | `cross_join()` de deux tables                                      |
 +----------------------------------------+------------------------------------------------------+--------------------------------------------------------------------+
 
+# ❓ Quiz — La distribution des traitements dans Spark
+
+## Question 1 — Le rôle du driver {.smaller .scrollable}
+
+**Quel est le rôle principal du driver Spark ?**
+
+-   A. Stocker les blocs des fichiers HDFS
+-   B. Construire les plans d’exécution et distribuer les tâches aux exécuteurs
+-   C. Exécuter lui-même toutes les opérations sur les données
+-   D. Remplacer la session RStudio
+
+. . .
+
+::: {.callout-tip title="Réponse"}
+La réponse est **B**.
+
+Le driver coordonne l’application Spark : il construit les plans de traitement, organise les calculs et envoie les tâches aux exécuteurs.
+:::
+
+## Question 2 — Le rôle des exécuteurs {.smaller .scrollable}
+
+**Quelles affirmations décrivent correctement un exécuteur Spark ?**
+
+-   A. Il exécute les tâches envoyées par le driver
+-   B. Il traite les partitions de données qui lui sont confiées
+-   C. Il traduit le code `dplyr` en Spark SQL dans la session R
+-   D. Il est un ordinateur physique
+
+. . .
+
+::: {.callout-tip title="Réponse"}
+Les bonnes réponses sont **A et B**.
+
+Un exécuteur est un processus situé sur un noeud worker : le noeud worker est l'ordinateur physique, l'exécuteur est virtuel et n'occupe qu'une partie des ressources du noeud sur lequel il est hébergé. Il exécute les tâches Spark sur les partitions qui lui sont confiées.
+:::
+
+## Question 3 — Plan de traitement {.smaller .scrollable}
+
+**Que cherche à déterminer le driver spark lors de la construction du plan de traitement ?**
+
+-   A. Les opérations logiques à exécuter
+-   B. Les éventuelles erreurs de code
+-   C. Le nombre de lignes que RStudio peut afficher dans l’environnement
+-   D. Le placement des tâches au plus près des données (sur les noeuds) lorsque cela est possible
+
+. . .
+
+::: {.callout-tip title="Réponse"}
+Les bonnes réponses sont **A, B et C**.
+
+Les opérations logiques sont ordonnées dans un plan logique.
+
+Ensuite, le driver construit le plan physique qui décrit comment le traitement sera exécuté. Spark découpe ensuite ce traitement en tâches et cherche, lorsque cela est possible, à exécuter les calculs sur les noeuds proches des données.
+
+Cette recherche de proximité est appelée **data locality**.
+:::
+
+## Question 4 — Les shuffles {.smaller .scrollable}
+
+**Quelles opérations peuvent souvent provoquer un shuffle ?**
+
+-   A. `distinct()`
+-   B. `select()`
+-   C. `group_by()` suivi de `summarise()`
+-   D. Une jointure entre deux grandes tables
+-   E. `filter()`
+-   F. Un tri global avec `arrange()`
+
+. . .
+
+::: {.callout-tip title="Réponse"}
+Les bonnes réponses sont **C, D, E et F**.
+
+Ces opérations peuvent obliger Spark à redistribuer les lignes entre les exécuteurs afin de réunir au même endroit les données ayant une même clé ou devant être comparées.
+
+Ce transfert de données intermédiaires entre exécuteurs est appelé un **shuffle**. Il implique généralement des échanges réseau et des écritures temporaires sur disque.
+:::
+
+## Question 5 — Programmer pour un traitement distribué {.smaller .scrollable}
+
+**Pourquoi faut-il privilégier des opérations globales et traduisibles par Spark ?**
+
+-   A. Elles permettent à Spark d’optimiser et de distribuer automatiquement le traitement
+-   B. Elles obligent le driver à traiter chaque ligne séparément
+-   C. Elles évitent les traitements R ligne par ligne et les successions inutiles de jobs
+-   D. Elles garantissent qu’aucun shuffle ne se produira jamais
+
+. . .
+
+::: {.callout-tip title="Réponse"}
+Les bonnes réponses sont **A et C**.
+
+Avec Spark, il faut décrire le traitement sur un ensemble de lignes et laisser le moteur organiser son exécution sur les partitions.
+
+Les boucles lançant de nombreux jobs, `rowwise()` et les fonctions R personnalisées appliquées ligne par ligne empêchent Spark de profiter pleinement de son optimisation et de son exécution distribuée.
+
+Une opération globale peut néanmoins provoquer un shuffle : elle n’est donc pas toujours gratuite.
+:::
+
+# Quelques bonnes pratiques 🤝
+
 ## La mémoire du driver
 
 ![](images/collect.drawio.png){fig-align="center"}
 
 ## Programmer sans collecter {.smaller}
 
-La programmation en spark doit être adaptée aux contraintes de volumétrie des données : test de chaque étape, puis ne forcer le calcul qu'à la fin pour que Catalyst optimise l'ensemble du programme
+La programmation en spark doit être adaptée aux contraintes de volumétrie des données.
 
 La principale différence avec la programmation en R classique est que **la visualisation de tables complètes volumineuses n'est pas toujours possible et n'est pas recommandée** :
 
@@ -1341,8 +1579,6 @@ une_partie_de_ma_table <- ma_table %>%
 # une_partie_de_ma_table est ici un data.frame R classique que vous pouvez ouvrir!
 ```
 
-
-
 ## Exporter des données sur disque {.smaller}
 
 Sur la pause déjeuner par exemple.
@@ -1381,7 +1617,6 @@ Il est possible de maîtriser le nombre de partitions avec la commande `sdf_coal
 Avec `sdf_coalesce(partitions = 1)`, on n'aura qu'un seul fichier à télécharger depuis HDFS. L'export est beaucoup plus rapide.
 
 Avec `sdf_coalesce(partitions = 200)`, on aura 200 morceaux de notre fichier à télécharger à la main (pas possible de faire tout sélectionner sous HDFS !).
-
 :::
 
 ```{r}
@@ -1409,13 +1644,12 @@ Si on souhaite lancer un code le soir en partant, on n'oublie pas le `spark_disc
 ::: callout-warning
 ## Partage des ressources
 
-Les ressources réservées par un utilisateur ne sont libérées pour les autres que lorsqu'il se déconnecte. Ne pas se déconnecter, c'est bloquer les ressources. Si j'ai réservé deux ordinateurs du cluster sur 15, personne d'autres ne peut les réserver tant que je n'ai pas déconnecter ma session spark.
+Les ressources réservées par un utilisateur ne sont libérées pour les autres que lorsqu'il se déconnecte. Ne pas se déconnecter, c'est bloquer les ressources.
 
 Nous fermerons les sessions ouvertes trop longtemps (départ de congés sans déconnexion) si des utilisateurs présents en ont besoin : risque de perte du travail non enregistré.
 :::
 
-
-## Optimiser la mémoire : conclusion
+## Programmer de manière adaptée au calcul distribué : conclusion {.smaller}
 
 Pour programmer en spark de manière optimale :
 
@@ -1429,11 +1663,9 @@ Pour programmer en spark de manière optimale :
 
 5.  Exporter les tables intermédiaires volumineuses en 10 partitions, et les tables finales en 1 seule partition
 
-
 ## Et ensuite ? {.smaller}
 
-Spark est un outil de traitement de données volumineuses. Il n'est pas adapté **pour faire de l'économétrie** : tous les packages R ne sont pas traduits en spark.
-**Conseils :**
+Spark est un outil de traitement de données volumineuses. Il n'est pas adapté **pour faire de l'économétrie** : tous les packages R ne sont pas traduits en spark. **Conseils :**
 
 1.  Créer sa table d'étude en appariant les tables de MiDAS avec le cluster spark
 
@@ -1443,14 +1675,144 @@ Spark est un outil de traitement de données volumineuses. Il n'est pas adapté 
 
 4.  La charger en R classique pour faire de l'économétrie
 
-## Les bonnes pratiques 🤝
+## Les bonnes pratiques 🤝 {.smaller}
 
 1.  Ne jamais modifier la configuration fournie
 
 2.  Consulter les tutoriels pratiques sur la bulle
 
-3.  Consulter les fiches de la documentation Midas
-![](images/documentation_midas_fiches.PNG){fig-align="center"}
+3.  Consulter les fiches de la documentation Midas ![](images/documentation_midas_fiches.PNG){fig-align="center"}
+
+# ❓ Quiz — Bonnes pratiques sur cluster YARN
+
+## Question 1 — Libérer les ressources {.smaller .scrollable}
+
+**Que faut-il faire à la fin d’une session de travail Spark ?**
+
+-   A. Laisser la session ouverte au cas où
+-   B. Fermer la connexion Spark avec `spark_disconnect(sc)`
+-   C. Arrêter les traitements inutiles
+-   D. Collecter toutes les tables avant de quitter
+-   E. Fermer la connexion Spark en fermant RStudio
+
+. . .
+
+::: {.callout-tip title="Réponse"}
+Les bonnes réponses sont **B, C et E**.
+
+Sur un cluster partagé, une session Spark ouverte continue à réserver des ressources. Il faut donc libérer les ressources dès qu’on n’en a plus besoin.
+:::
+
+## Question 2 — Configuration recommandée {.smaller .scrollable}
+
+**Peut-on modifier librement la configuration Spark recommandée ?**
+
+-   A. Oui, pour obtenir plus de RAM et plus de cœurs
+-   B. Oui, si le traitement échoue une première fois
+-   C. Non, sauf consigne ou validation explicite
+-   D. Non, car le cluster est partagé et les ressources doivent rester équilibrées entre utilisateurs
+
+. . .
+
+::: {.callout-tip title="Réponse"}
+Les bonnes réponses sont **C et D**.
+
+Sur un cluster YARN partagé, demander trop de mémoire ou trop de cœurs peut pénaliser les autres utilisateurs, créer de l’attente ou provoquer des échecs d’allocation. On utilise donc la configuration recommandée, sauf besoin justifié et validé. La configuration a été testée par l'équipe en charge du cluster : elle est adaptée pour des traitements lourds sur les données Midas.
+:::
+
+## Question 3 — Erreur Out Of Memory {.smaller .scrollable}
+
+**En cas d’erreur mémoire, quelles sont les bonnes premières réactions ?**
+
+-   A. Vérifier qu’on ne fait pas un `collect()` trop tôt ou sur une table trop grosse
+-   B. Réduire le volume avant les opérations coûteuses : `select()`, `filter()`, agrégation
+-   C. Vérifier les jointures qui peuvent multiplier le nombre de lignes
+-   D. Augmenter soi-même fortement la mémoire des exécuteurs
+-   E. Découper ou matérialiser des étapes intermédiaires avec `tbl_cache()` voire un export parquet intermédiaire si le pipeline est trop lourd
+
+. . .
+
+::: {.callout-tip title="Réponse"}
+Les bonnes réponses sont **A, B, C et E**.
+
+Une erreur mémoire ne se règle pas en demandant plus de ressources. Il faut d’abord chercher à réduire la taille des données traitées, éviter les `collect()` inutiles, contrôler les jointures et simplifier le plan de traitement.
+:::
+
+## Question 4 — `collect()` sur cluster {.smaller .scrollable}
+
+**Quelle est la bonne utilisation de `collect()` ?**
+
+-   A. Collecter la table source complète pour travailler ensuite en R
+-   B. Collecter seulement un résultat réduit et exploitable localement
+-   C. Collecter après avoir filtré, sélectionné et agrégé dans Spark
+-   D. Collecter uniquement quelques lignes pour vérifier chaque étape du pipeline
+
+. . .
+
+::: {.callout-tip title="Réponse"}
+Les bonnes réponses sont **B, C** **et D**.
+
+`collect()` ramène le résultat dans la session R. Il faut donc l’utiliser uniquement lorsque le résultat est suffisamment petit pour tenir en mémoire locale.
+:::
+
+## Question 5 — Déclencher des actions {.smaller .scrollable}
+
+**Quand faut-il déclencher une action Spark ?**
+
+-   A. Après chaque ligne de code pour vérifier immédiatement
+-   B. Jamais avant la toute fin, même si le pipeline devient très long
+-   C. À des moments stratégiques pour vérifier, matérialiser ou récupérer un résultat
+-   D. Avec `compute()` lorsqu’on veut exécuter une étape intermédiaire tout en gardant le résultat côté Spark
+-   E. Avec `collect()` lorsqu’on veut récupérer un petit résultat final dans R
+
+. . .
+
+::: {.callout-tip title="Réponse"}
+Les bonnes réponses sont **C et E**.
+
+Déclencher trop souvent des actions crée beaucoup de jobs et ralentit le traitement. Mais ne jamais matérialiser un pipeline très long peut aussi poser problème : la requête SQL générée par `sparklyr/dbplyr` peut devenir trop complexe ou trop longue. `compute()` doit être abandonné au profit de `tbl_cache()`.
+:::
+
+## Question 6 — Bonne stratégie globale {.smaller .scrollable}
+
+**Quelle stratégie est la plus adaptée sur un cluster Spark partagé ?**
+
+-   A. Écrire un seul très long pipeline, puis tout collecter à la fin
+-   B. Réduire les données tôt, éviter les actions inutiles et matérialiser quelques étapes clés
+-   C. Augmenter les ressources dès qu’un traitement est lent
+-   D. Programmer comme en R local, mais avec plus de RAM
+-   E. Eviter les étapes qui induisent des shuffles qui ne sont pas absolument nécessaires : le tri de confort par exemple
+
+. . .
+
+::: {.callout-tip title="Réponse"}
+Les réponses sont **B et E**.
+
+Sur cluster, il faut limiter les données lues, déplacées et collectées, tout en déclenchant quelques actions utiles pour contrôler et stabiliser le traitement.
+:::
+
+## Question 7 — Nombre de partitions avant un export {.smaller .scrollable}
+
+**Quelles sont les bonnes pratiques avant d’exporter une table Spark ?**
+
+-   A. Exporter systématiquement toutes les tables dans une seule partition
+-   B. Pour une table intermédiaire encore utilisée dans Spark, conserver environ 10 à 20 partitions
+-   C. Pour une table finale suffisamment réduite, regrouper les données dans une seule partition
+-   D. Créer le plus grand nombre possible de partitions
+-   E. Limiter le nombre de partitions permet de réduire le temps d'export
+
+. . .
+
+::: {.callout-tip title="Réponse"}
+Les bonnes réponses sont **B, C et E**.
+
+Chaque partition Spark produit généralement un fichier lors de l’écriture. Sur notre cluster, multiplier les partitions augmente donc le nombre de fichiers à créer et le temps d’export.
+
+-   Une **table finale suffisamment petite** peut être exportée dans une seule partition, ce qui facilite son téléchargement puis son chargement dans R pour l’économétrie.
+-   Une **table intermédiaire** doit conserver environ 10 à 20 partitions afin de rester distribuée et de pouvoir être retraitée efficacement par Spark.
+
+La partition unique est donc réservée aux résultats finaux réduits : elle serait inefficace pour une table encore très volumineuse.
+:::
 
 # Pour aller plus loin
 
@@ -1532,11 +1894,6 @@ La création de tâches entraîne des surcharges, qui doivent toujours être inf
 -   La répartition est une opération très coûteuse, utilisez-la judicieusement.
 
 -   En général, la taille recommandée des partitions est d'environ 128 à 512 Mo.
-
-
-## Tâches Maximales en parallèles {.smaller}
-
-<br>
 
 ## SparkUI {.smaller .scrollable}
 

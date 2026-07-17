@@ -6,11 +6,11 @@ title: "Out of memory"
 
 ## Collecter le moins possible 🤏
 
--   L'export direct d'un spark data frame en parquet sur HDFS est une meilleure alternative : tu peux ensuite charger la table parquet en data frame R si tu souhaites la traiter en mémoire vive. 
+-   L'export direct d'un spark data frame en parquet sur HDFS est une meilleure alternative : tu peux ensuite charger la table parquet en data frame R si tu souhaites la traiter en mémoire vive. Il faut bien penser à réduire le nombre de partitions avant d'exporter la table pour gagner du temps.
 
 -   Contrairement au `collect()`, quelle que soit la taille de la table, exporter sous HDFS ne renverra jamais d'erreur, tandis que le `collect()`ne fonctionne pas pour les tables volumineuses.
 
--   Cet export direct n'est pas fonctionnel en spark local : encore une raison de passer sur le cluster Spark !
+-   Cet export direct n'est pas fonctionnel en spark local : encore une raison de s'interdire d'utiliser ce mode.
 
 -   Si tu souhaites voir ta table, tu peux collecter les premières lignes de celle-ci en combinant les fonctions `head()`et `collect()`.
 
@@ -22,11 +22,8 @@ title: "Out of memory"
 
 ## Laisser Spark travailler pour nous 💻
 
--   Forcer l'exécution du programme le plus tard possible pour permettre à Spark d'optimiser tout le programme et d'utiiliser les ressources de la manière la plus parcimonieuse possible.
+-   Forcer l'exécution du programme après plusieurs transformations pour permettre à Spark d'optimiser le programme et d'utiiliser les ressources de la manière la plus parcimonieuse possible.
 
--   Tester son programme sur une toute petite partie des tables, étape par étape, en forçant l'exécution (appel d'une action telle que `print()` ou `collect()` ) à chaque étape pour la phase de débuggage, puis supprimer toutes les actions intermédiaires non nécessaires du programme pour que Spark optimise tout le programme.
+-   Tester son programme sur une toute petite partie des tables, étape par étape, en forçant l'exécution (appel d'une action telle que `head()` + `collect()` ) à chaque étape pour la phase de débuggage, puis supprimer toutes les actions intermédiaires non nécessaires du programme pour que Spark optimise tout le programme.
 
-
-## Si tout ceci ne fonctionne pas : passer à la configuration traitement très lourd
-
-Par souci de parcimonie et pour faciliter le travail de nos collègues sur des ressources partagées, cette option doit rester l'ultime recours pour éviter l'erreur `Out of memory` 🤝
+## Si tout ceci ne fonctionne pas : demander de l'aide
