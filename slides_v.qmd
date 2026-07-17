@@ -1396,21 +1396,14 @@ Au-delà, il utilise un **shuffle join** classique (plus lent).
 
 ## Calcule distribué, calcul vectoriel {.smaller}
 
-+----------------------------------------+------------------------------------------------------+--------------------------------------------------------------------+
-| **Opération logique**                  | **Solution non vectorielle**                         | **Solution vectorielle**                                           |
-+========================================+======================================================+====================================================================+
-| situation à m + 1, 2...                | Boucle for sur les mois                              | utilisation de `lag()` et `lead()`, ou auto jointure sur les dates |
-+----------------------------------------+------------------------------------------------------+--------------------------------------------------------------------+
-| Répéter une fonction                   | user defined functions (UDF)                         | éviter les UDF                                                     |
-+----------------------------------------+------------------------------------------------------+--------------------------------------------------------------------+
-| opération groupe de lignes             | `group_by %>% mutate %>% distinct`                   | `group_by %>% summarise`                                           |
-+----------------------------------------+------------------------------------------------------+--------------------------------------------------------------------+
-| joindre petite table avec grosse table | `petite_table %>% left_join(grosse_table)`           | broadcast join                                                     |
-+----------------------------------------+------------------------------------------------------+--------------------------------------------------------------------+
-| joindre deux grosses tables            | boucle for en divisant les tables en petits morceaux | unique jointure et partition par la clef de jointure               |
-+----------------------------------------+------------------------------------------------------+--------------------------------------------------------------------+
-| construire un panel cylindré           | boucle for                                           | `cross_join()` de deux tables                                      |
-+----------------------------------------+------------------------------------------------------+--------------------------------------------------------------------+
+| **Opération logique** | **Solution non vectorielle** | **Solution vectorielle** |
+|----|----|----|
+| situation à m + 1, 2... | Boucle for sur les mois | utilisation de `lag()` et `lead()`, ou auto jointure sur les dates |
+| Répéter une fonction | user defined functions (UDF) | éviter les UDF |
+| opération groupe de lignes | `group_by %>% mutate %>% distinct` | `group_by %>% summarise` |
+| joindre petite table avec grosse table | `petite_table %>% left_join(grosse_table)` | broadcast join |
+| joindre deux grosses tables | boucle for en divisant les tables en petits morceaux | unique jointure et partition par la clef de jointure |
+| construire un panel cylindré | boucle for | `cross_join()` de deux tables |
 
 # ❓ Quiz — La distribution des traitements dans Spark
 
@@ -1828,15 +1821,11 @@ Le partitionnement a un impact sur la manière dont les données sont organisée
 
 <br>
 
-+----------------------------------------+-----------+-----------+-----------+
-| Partitions                             | 2         | 5         | 1000      |
-+========================================+===========+===========+===========+
-| Colonne qui a servi au partitionnement | 74,50%    | 46,30%    | 16,66%    |
-+----------------------------------------+-----------+-----------+-----------+
-| Vers une autre colonne                 | 89,51%    | 191,01%   | 556,99%   |
-+----------------------------------------+-----------+-----------+-----------+
-| Select distinct(\*)                    | 136,79%   | 163,68%   | 1194,88%  |
-+----------------------------------------+-----------+-----------+-----------+
+| Partitions                             | 2       | 5       | 1000     |
+|----------------------------------------|---------|---------|----------|
+| Colonne qui a servi au partitionnement | 74,50%  | 46,30%  | 16,66%   |
+| Vers une autre colonne                 | 89,51%  | 191,01% | 556,99%  |
+| Select distinct(\*)                    | 136,79% | 163,68% | 1194,88% |
 
 <br>
 
