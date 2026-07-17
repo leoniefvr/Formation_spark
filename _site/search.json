@@ -857,7 +857,7 @@
     "href": "slides_v.html#télécharger-des-données-en-local",
     "title": "Initiation à Spark avec R en mode cluster",
     "section": "Télécharger des données en local",
-    "text": "Télécharger des données en local\nIl est également possible de transférer des données de HDFS vers la bulle en les téléchargeant.",
+    "text": "Télécharger des données en local\nIl est également possible de transférer des données de HDFS vers la bulle en les téléchargeant : c’est utile par exemple quand on a créé notre table finale avec spark et qu’on veut utiliser un package d’économétrie sur la bulle en local.",
     "crumbs": [
       "Slides"
     ]
@@ -2261,7 +2261,7 @@
     "href": "slides_v.html#exporter-des-données-depuis-spark-vers-hdfs",
     "title": "Initiation à Spark avec R en mode cluster",
     "section": "Exporter des données depuis Spark vers HDFS",
-    "text": "Exporter des données depuis Spark vers HDFS\nAprès un traitement Spark, le résultat peut être exporté sur HDFS sans être rapatrié dans la session R.\n\nresultat_spark %&gt;%\n  spark_write_parquet(\n    path = \"hdfs:///user/votre_dossier/resultat_final\",\n    mode = \"overwrite\"\n  )\n\n\n\n\n\n\n\n\nA retenir\n\n\nExporter avec spark_write_parquet() écrit le résultat côté cluster, dans HDFS.\nCela permet de conserver une table produite par Spark sans utiliser collect().\n\n\n\n\n\n\n\n\n\n\n\nAttention\n\n\nmode = \"overwrite\" remplace les données déjà présentes dans le dossier cible.\nL’export déclenche une action Spark : le plan de traitement est réellement exécuté au moment de l’écriture.\n\n\n\n\nspark_write_parquet() sert bien à écrire une table en Parquet, avec un chemin pouvant être en hdfs://.",
+    "text": "Exporter des données depuis Spark vers HDFS\nAprès un traitement Spark, le résultat peut être exporté sur HDFS sans être rapatrié dans la session R.\n\nresultat_spark %&gt;%\n  spark_write_parquet(\n    path = \"hdfs:///votre_dossier/resultat_final\",\n    mode = \"overwrite\"\n  )\n\n\n\n\n\n\n\n\nA retenir\n\n\nExporter avec spark_write_parquet() écrit le résultat côté cluster, dans HDFS.\nCela permet de conserver une table produite par Spark sans utiliser collect().\n\n\n\n\n\n\n\n\n\n\n\nAttention\n\n\nmode = \"overwrite\" remplace les données déjà présentes dans le dossier cible.\nL’export déclenche une action Spark : le plan de traitement est réellement exécuté au moment de l’écriture.\n\n\n\n\nspark_write_parquet() sert bien à écrire une table en Parquet, avec un chemin pouvant être en hdfs://.",
     "crumbs": [
       "Slides"
     ]
