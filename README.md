@@ -1,5 +1,7 @@
 Ce dépôt contient le programme de création du site web de formation à sparklyr et spark sur cluster développée par Léonie Fauvre. 
 
+# Avertissement
+
 © [2026] [Dares]. Tous droits réservés.
 
 Aucune licence d’utilisation ou d’exploitation n’est accordée. Sauf
